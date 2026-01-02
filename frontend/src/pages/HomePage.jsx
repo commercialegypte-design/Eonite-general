@@ -65,24 +65,30 @@ const HomePage = () => {
           />
         </video>
 
-        {/* Olive Overlay - 40% opacity as specified */}
-        <div className="absolute inset-0 bg-[#6B705C]/40" />
+        {/* Olive Overlay - 50% opacity for better readability */}
+        <div className="absolute inset-0 bg-[#6B705C]/50" />
         
         {/* Gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-[#F9F8EF]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#F9F8EF]" />
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
           <div className="max-w-5xl">
-            {/* Main Headline - DOMINANTE +20% */}
-            <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black text-[#F9F8EF] leading-[0.85] mb-8 drop-shadow-lg tracking-tight">
+            {/* Main Headline - DOMINANTE +20% avec text-shadow */}
+            <h1 
+              className="text-6xl md:text-8xl lg:text-[10rem] font-black text-[#F9F8EF] leading-[0.85] mb-8 tracking-tight"
+              style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)' }}
+            >
               Le neutre est<br />
               <span className="text-[#F9F8EF]">une insulte</span><br />
               à votre cuisine.
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-xl md:text-2xl lg:text-3xl text-[#F9F8EF]/90 max-w-2xl mb-12 leading-relaxed drop-shadow">
+            {/* Subheadline avec text-shadow */}
+            <p 
+              className="text-xl md:text-2xl lg:text-3xl text-[#F9F8EF] max-w-2xl mb-12 leading-relaxed"
+              style={{ textShadow: '0 2px 15px rgba(0,0,0,0.4), 0 1px 5px rgba(0,0,0,0.2)' }}
+            >
               Obtenez vos emballages personnalisés au prix du neutre. 
               <span className="font-semibold"> Direct usine. Design validé en 30 min.</span>
             </p>
