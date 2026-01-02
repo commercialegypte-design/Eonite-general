@@ -72,6 +72,10 @@ async def health_check():
 @api_router.post("/auth/register", response_model=dict)
 async def register(user_data: UserCreate):
     """Register a new user with email/password"""
+    # Validate password is required for email auth
+    if user_data.auth_provider == "email" and not user_data.password:
+        raise HTTPException(status_code=422, detail="Le mot de passe est requis")
+    
     # Check if user exists
     existing = await db.users.find_one({"email": user_data.email})
     if existing:
