@@ -8,13 +8,11 @@ import {
   Award, 
   Shield,
   ChevronDown,
-  Leaf,
-  Package,
+  Sparkles,
   Clock,
   Check
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import Configurator from '../components/home/Configurator';
 
 const HomePage = () => {
   const videoRef = useRef(null);
@@ -38,10 +36,6 @@ const HomePage = () => {
     { icon: Shield, title: 'Normes Alimentaires', desc: 'Encres et matériaux 100% conformes.' },
     { icon: Truck, title: 'Livraison DDP', desc: 'Dédouanement géré. Zéro frais cachés.' },
   ];
-
-  const scrollToConfigurator = () => {
-    document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <main className="bg-[#F9F8EF]">
@@ -74,14 +68,14 @@ const HomePage = () => {
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
           <div className="max-w-5xl">
-            {/* Main Headline - DOMINANTE +20% avec text-shadow */}
+            {/* Main Headline - NOUVEAU H1 */}
             <h1 
-              className="text-6xl md:text-8xl lg:text-[10rem] font-black text-[#F9F8EF] leading-[0.85] mb-8 tracking-tight"
+              className="text-5xl md:text-7xl lg:text-[8rem] font-black text-[#F9F8EF] leading-[0.9] mb-8 tracking-tight"
               style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)' }}
             >
-              Le neutre est<br />
-              <span className="text-[#F9F8EF]">une insulte</span><br />
-              à votre cuisine.
+              Votre emballage<br />
+              <span className="text-[#F9F8EF]">personnalisé</span><br />
+              au prix du neutre.
             </h1>
 
             {/* Subheadline avec text-shadow */}
@@ -89,19 +83,21 @@ const HomePage = () => {
               className="text-xl md:text-2xl lg:text-3xl text-[#F9F8EF] max-w-2xl mb-12 leading-relaxed"
               style={{ textShadow: '0 2px 15px rgba(0,0,0,0.4), 0 1px 5px rgba(0,0,0,0.2)' }}
             >
-              Obtenez vos emballages personnalisés au prix du neutre. 
+              Notre IA co-conçoit votre design en 5 questions.
               <span className="font-semibold"> Direct usine. Design validé en 30 min.</span>
             </p>
 
-            {/* CTA Buttons - IMPOSANTS */}
+            {/* CTA Buttons - Vers l'Assistant IA */}
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <Button 
-                onClick={scrollToConfigurator}
-                className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-12 py-8 text-xl font-black uppercase tracking-wider border-0 shadow-2xl"
-              >
-                Démarrer mon design
-                <ArrowRight className="ml-3" size={24} />
-              </Button>
+              <Link to="/assistant">
+                <Button 
+                  className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-12 py-8 text-xl font-black uppercase tracking-wider border-0 shadow-2xl flex items-center"
+                >
+                  <Sparkles className="mr-3" size={24} />
+                  Lancer l'Assistant Design
+                  <ArrowRight className="ml-3" size={24} />
+                </Button>
+              </Link>
               <Link to="/usine">
                 <Button className="bg-transparent text-[#F9F8EF] border-2 border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-12 py-8 text-xl font-bold uppercase tracking-wider">
                   <Play className="mr-3" size={24} />
@@ -124,7 +120,7 @@ const HomePage = () => {
 
         {/* Scroll Indicator */}
         <button 
-          onClick={scrollToConfigurator}
+          onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#F9F8EF]/70 hover:text-[#F9F8EF] transition-colors animate-bounce"
         >
           <ChevronDown size={32} />
@@ -132,52 +128,58 @@ const HomePage = () => {
       </section>
 
       {/* ============================================ */}
-      {/* CONFIGURATOR SECTION */}
+      {/* AI ASSISTANT TEASER */}
       {/* ============================================ */}
-      <section id="configurator" className="py-24 bg-[#F9F8EF]">
+      <section className="py-24 bg-[#1A1A1A]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-start">
-            {/* Left: Text */}
-            <div className="space-y-8">
-              <div>
-                <span className="text-[#6B705C] font-bold text-sm uppercase tracking-widest">
-                  Prix Transparent
-                </span>
-                <h2 className="text-4xl md:text-5xl font-black text-[#1A1A1A] mt-4 leading-tight">
-                  VOTRE DEVIS<br />
-                  <span className="text-[#1A1A1A]/40">EN TEMPS RÉEL</span>
-                </h2>
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Left: AI Animation Placeholder */}
+            <div className="relative bg-[#6B705C]/20 aspect-square flex items-center justify-center border border-[#6B705C]/30">
+              <div className="text-center space-y-6">
+                <div className="w-24 h-24 bg-[#6B705C] mx-auto flex items-center justify-center">
+                  <Sparkles size={48} className="text-[#F9F8EF]" />
+                </div>
+                <p className="text-[#F9F8EF]/60 text-lg max-w-xs mx-auto">
+                  Notre IA analyse votre projet et génère un aperçu en temps réel
+                </p>
               </div>
-              
-              <p className="text-[#1A1A1A]/70 text-lg leading-relaxed">
-                Plus vous commandez, plus le prix fond. Notre logique tarifaire est 100% transparente. 
-                Pas de surprise, pas de frais cachés.
-              </p>
-
-              <div className="space-y-4">
-                {[
-                  { qty: '5 000', price: '0,35 €' },
-                  { qty: '10 000', price: '0,28 €' },
-                  { qty: '25 000', price: '0,22 €' },
-                  { qty: '50 000', price: '0,18 €' },
-                ].map((tier, i) => (
-                  <div 
-                    key={i} 
-                    className="flex justify-between items-center p-4 bg-[#CDCEBD] border-l-4 border-[#6B705C]"
-                  >
-                    <span className="text-[#1A1A1A] font-medium">{tier.qty} pièces</span>
-                    <span className="text-[#6B705C] font-bold text-xl">{tier.price}</span>
-                  </div>
-                ))}
-              </div>
-
-              <p className="text-[#1A1A1A]/50 text-sm">
-                * Prix indicatif HT pour sacs kraft standard.
-              </p>
             </div>
 
-            {/* Right: Configurator Widget */}
-            <Configurator />
+            {/* Right: Text */}
+            <div className="space-y-8">
+              <span className="text-[#CDCEBD] font-bold text-sm uppercase tracking-widest">
+                Nouveau
+              </span>
+              <h2 className="text-4xl md:text-5xl font-black text-[#F9F8EF] leading-tight">
+                ASSISTANT<br />
+                <span className="text-[#F9F8EF]/50">DESIGN IA</span>
+              </h2>
+              <p className="text-[#F9F8EF]/80 text-lg leading-relaxed">
+                En 5 questions, notre intelligence artificielle :
+              </p>
+              <ul className="space-y-4">
+                {[
+                  'Analyse votre secteur d\'activité',
+                  'Génère un conseil stratégique personnalisé',
+                  'Crée un aperçu de votre emballage',
+                  'Vous oriente vers le bon interlocuteur'
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-[#F9F8EF]">
+                    <div className="w-8 h-8 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
+                      <Check size={16} className="text-[#F9F8EF]" />
+                    </div>
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link to="/assistant">
+                <Button className="bg-[#6B705C] text-[#F9F8EF] hover:bg-[#5A5F4D] px-10 py-6 text-lg font-bold uppercase tracking-wider">
+                  <Sparkles className="mr-2" size={20} />
+                  Lancer l'Assistant
+                  <ArrowRight className="ml-2" size={20} />
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -218,7 +220,7 @@ const HomePage = () => {
       {/* ============================================ */}
       {/* HOW IT WORKS SECTION */}
       {/* ============================================ */}
-      <section className="py-24 bg-[#F9F8EF]">
+      <section id="how-it-works" className="py-24 bg-[#F9F8EF]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="text-[#6B705C] font-bold text-sm uppercase tracking-widest">
@@ -232,7 +234,7 @@ const HomePage = () => {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { num: '01', icon: Clock, title: 'Configurez', desc: 'Choisissez votre produit, format et quantité. Prix calculé en temps réel.' },
+              { num: '01', icon: Sparkles, title: 'Lancez l\'Assistant', desc: 'Répondez à 5 questions. Notre IA génère un conseil stratégique et un aperçu.' },
               { num: '02', icon: Play, title: 'Designez en visio', desc: 'On crée ensemble votre design en 30 minutes. Vous validez en direct.' },
               { num: '03', icon: Truck, title: 'Recevez', desc: 'Production en 2-3 semaines. Livraison DDP, dédouanement inclus.' },
             ].map((step, i) => (
@@ -306,9 +308,10 @@ const HomePage = () => {
                   </li>
                 ))}
               </ul>
-              <Link to="/contact">
+              <Link to="/assistant">
                 <Button className="bg-[#F9F8EF] text-[#6B705C] hover:bg-[#CDCEBD] px-8 py-4 font-semibold uppercase tracking-wider">
-                  Démarrer mon design
+                  <Sparkles className="mr-2" size={18} />
+                  Lancer l'Assistant Design
                   <ArrowRight className="ml-2" size={18} />
                 </Button>
               </Link>
@@ -359,12 +362,13 @@ const HomePage = () => {
             VOS CLIENTS ?
           </h2>
           <p className="text-[#1A1A1A]/70 text-xl mb-12 max-w-2xl mx-auto">
-            Demandez votre devis gratuit. Design validé en 30 minutes. Réponse sous 24h.
+            Lancez l'Assistant Design IA. Obtenez un conseil stratégique et un aperçu en 2 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/contact">
-              <Button className="btn-primary px-12 py-6 text-lg">
-                Démarrer mon design
+            <Link to="/assistant">
+              <Button className="btn-primary px-12 py-6 text-lg flex items-center">
+                <Sparkles className="mr-2" size={20} />
+                Lancer l'Assistant Design
                 <ArrowRight className="ml-2" size={20} />
               </Button>
             </Link>
