@@ -42,34 +42,34 @@ const STYLE_OPTIONS = [
   { id: 'eco', label: 'Éco / Nature' },
 ];
 
-// Oracle comments based on choices
+// Oracle comments based on choices - WITH TECHNICAL EXPERTISE
 const ORACLE_COMMENTS = {
   business_type: {
-    restaurant: "Un restaurant ! La qualité de vos emballages reflète directement la qualité de votre cuisine. On va créer quelque chose de mémorable.",
-    boulangerie: "Une boulangerie artisanale ? L'emballage est le premier contact avec l'arôme qui se cache dedans. Passionnant.",
-    cafe: "Un Coffee Shop ! L'emballage devient une extension de l'expérience café. Vos clients partagent ça sur Instagram.",
-    dark_kitchen: "Une Dark Kitchen ? C'est un secteur qui exige une solidité de sac irréprochable. On va regarder ça.",
-    epicerie: "Une épicerie fine ! L'emballage doit être à la hauteur des produits d'exception que vous proposez.",
-    franchise: "Une franchise ! Volume important, cohérence de marque sur tous les points de vente. On active le programme Grands Comptes.",
-    retail: "Du retail ! Votre sac va se promener dans la rue. C'est de la pub gratuite. Autant qu'il soit magnifique.",
+    restaurant: "Un restaurant ! Pour vos sacs à emporter, je recommande des poignées torsadées kraft renforcé – résistance jusqu'à 8kg. La qualité de vos emballages reflète directement celle de votre cuisine.",
+    boulangerie: "Une boulangerie artisanale ! Pour les viennoiseries, un kraft 90-110 Gsm avec poignées plates suffit. Pour les gâteaux, on passe sur du carton SBS 250-300 Gsm avec fenêtre PET.",
+    cafe: "Un Coffee Shop ! Je recommande nos gobelets Ripple Wall – l'ondulation offre grip + isolation sans manchon. C'est le standard Starbucks/Costa. Impression 1-2 couleurs recommandée pour le budget.",
+    dark_kitchen: "Une Dark Kitchen ! C'est un secteur qui exige une solidité de sac irréprochable. Je recommande minimum 100 Gsm avec poignées torsadées, et surtout : un QR code pour collecter les avis clients (+30% d'avis en moyenne).",
+    epicerie: "Une épicerie fine ! L'emballage doit être à la hauteur des produits d'exception. Je recommande du kraft nature FSC non blanchi pour l'authenticité, avec une impression quadri HD pour mettre en valeur votre identité.",
+    franchise: "Une franchise ! Volume important, cohérence de marque sur tous les points de vente. On active le programme Grands Comptes : stockage dédié, livraisons échelonnées, tarifs négociés.",
+    retail: "Du retail ! Votre sac va se promener dans la rue – c'est de la pub gratuite. Pour un effet 'Wow', je recommande le pelliculage soft-touch avec marquage à chaud sur le logo.",
   },
   product_type: {
-    sac_kraft: "Le sac kraft, un classique indémodable. Robuste, éco-responsable, et tellement personnalisable.",
-    sac_luxe: "Le sac luxe ! Poignées en ruban, finition premium... Vos clients vont vouloir le garder.",
-    boite: "Les boîtes personnalisées transforment la livraison en moment d'ouverture magique.",
-    gobelet: "Le gobelet personnalisé ! Chaque café devient une occasion de marquer les esprits.",
+    sac_kraft: "Le sac kraft poignées torsadées, grammage 100-120 Gsm. Un classique indémodable : robuste, éco-responsable, impression jusqu'à quadri HD. Résistance jusqu'à 8kg.",
+    sac_luxe: "Le sac luxe avec poignées ruban satin ! Grammage 170-230 Gsm, pelliculage mat ou brillant disponible. Vos clients vont vouloir le garder – c'est de la publicité gratuite.",
+    boite: "Les boîtes personnalisées ! Grammage 230-300 Gsm selon l'usage. Pour le chaud (burgers), j'exige minimum 280 Gsm avec aération intégrée pour éviter la condensation.",
+    gobelet: "Les gobelets personnalisés ! Simple paroi pour le froid, double paroi ou Ripple Wall pour le chaud. Contenance de 4oz à 16oz. Chaque café devient une occasion de marquer les esprits.",
   },
   volume: {
-    '<5k': "Un premier test ou un petit commerce ? Parfait pour valider le concept avant de scaler.",
-    '5k-10k': "5 à 10 000 unités, c'est le volume d'un commerce bien établi. On optimise le prix unitaire.",
-    '10k-50k': "10 à 50 000 ! Vous avez plusieurs points de vente ou une belle fréquentation. On parle stockage dédié.",
-    '50k+': "Plus de 50 000 unités ! Vous êtes dans la cour des grands. Programme Grands Comptes activé.",
+    '<5k': "Moins de 5000 unités – parfait pour valider le concept. Notre approche Bespoke (sur-mesure) fonctionne même en quantités modérées. Vous n'êtes pas obligé de commander du générique.",
+    '5k-10k': "5 à 10 000 unités, c'est le volume d'un commerce bien établi. À ce niveau, on optimise le prix unitaire et on peut proposer toutes les finitions premium.",
+    '10k-50k': "10 à 50 000 ! Vous avez plusieurs points de vente ou une belle fréquentation. On parle stockage dédié et livraisons planifiées.",
+    '50k+': "Plus de 50 000 unités ! Vous êtes dans la cour des grands. Programme Grands Comptes activé : tarifs industriels, chef de projet dédié, production prioritaire.",
   },
   style: {
-    minimaliste: "Minimaliste ! L'élégance dans la simplicité. Less is more, comme disent les designers.",
-    luxe: "Style luxe ! Vous voulez que chaque détail transpire la qualité. Excellent choix.",
-    fun: "Fun et coloré ! Vous voulez que votre marque rayonne d'énergie positive. J'adore.",
-    eco: "Style éco ! Le kraft naturel, les tons terreux... Vos clients vont sentir votre engagement.",
+    minimaliste: "Minimaliste ! L'élégance dans la simplicité. Peu d'encre = éco-responsable + économique. Typographie soignée sur kraft nature, c'est redoutablement efficace.",
+    luxe: "Style luxe ! Pelliculage soft-touch, marquage à chaud, vernis sélectif... Vous voulez que chaque détail transpire la qualité. Le grammage 200+ Gsm est recommandé.",
+    fun: "Fun et coloré ! Impression quadri HD pour des couleurs vibrantes. On peut aller jusqu'au pelliculage brillant pour un effet 'pop' maximum.",
+    eco: "Style éco ! Kraft nature non blanchi, encres végétales, certification FSC. On ajoute un message 'Emballage 100% recyclable' pour rassurer vos clients engagés.",
   },
 };
 
