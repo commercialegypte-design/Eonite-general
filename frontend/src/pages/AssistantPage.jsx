@@ -482,9 +482,34 @@ const AssistantPage = () => {
     } else if (currentStep === 'text_on_bag') {
       setFormData(prev => ({ ...prev, text_on_bag: value }));
       await simulateTyping(800);
-      await addMessage('ai', `"${value}" - Excellent choix ! C'est accrocheur.`);
-      // Start generation
-      handleGenerate({ ...formData, text_on_bag: value });
+      await addMessage('ai', `"${value}" - Excellent choix ! C'est accrocheur et mémorable.`);
+      await simulateTyping(1200);
+      await addMessage('ai', "Dernière question : quels sont vos concurrents ou le style d'emballage que vous admirez ? (ex: Kedypack, Firplast, ou décrivez simplement un style)");
+      setShowInput(true);
+      setInputType('competitor_inspiration');
+      setCurrentStep('competitor_inspiration');
+    } else if (currentStep === 'competitor_inspiration') {
+      setFormData(prev => ({ ...prev, competitor_inspiration: value }));
+      await simulateTyping(1000);
+      
+      // Analyze competitor for custom response
+      const competitorLower = value.toLowerCase();
+      let analysisComment = "Merci pour cette référence ! Je vais adapter mes recommandations pour égaler voire surpasser ce standard.";
+      
+      if (competitorLower.includes('kedypack')) {
+        analysisComment = "Kedypack ? Je connais bien. Pour égaler leur standard industriel, nous allons miser sur un design épuré avec impression flexo haute fidélité. Prix compétitif dès 5000 unités.";
+      } else if (competitorLower.includes('firplast')) {
+        analysisComment = "Firplast ! Un concurrent sérieux. Pour égaler leur niveau, nous allons privilégier un design minimaliste avec impression HD et finitions premium.";
+      } else if (competitorLower.includes('raja')) {
+        analysisComment = "Raja est un généraliste. EONITE se différencie par le sur-mesure (Bespoke). Même en quantités modérées, vous obtenez un packaging unique, pas un produit de catalogue.";
+      } else if (competitorLower.includes('packhelp')) {
+        analysisComment = "Packhelp est digital-first. Notre avantage : un accompagnement humain expert. Votre design sera validé en visio avec un spécialiste packaging, pas par un algorithme.";
+      }
+      
+      await addMessage('ai', analysisComment);
+      
+      // Start generation with full data
+      handleGenerate({ ...formData, competitor_inspiration: value });
     }
   };
 
