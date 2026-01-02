@@ -54,25 +54,77 @@ async def generate_strategic_advice(
     volume_estimate: str,
     brand_style: str,
     text_on_bag: str,
-    business_name: Optional[str] = None
+    business_name: Optional[str] = None,
+    usage_details: Optional[str] = None,
+    competitor_inspiration: Optional[str] = None
 ) -> str:
     """
-    Génère un conseil stratégique personnalisé via Emergent LLM (GPT-5.2).
+    Génère un conseil stratégique et technique personnalisé via Emergent LLM (GPT-5.2).
+    Intègre la base de connaissances catalogue et l'analyse concurrentielle.
     """
     try:
         from emergentintegrations.llm.chat import LlmChat, UserMessage
         
-        system_message = """Tu es un expert en packaging et branding pour EONITE, une entreprise B2B spécialisée dans les emballages personnalisés haut de gamme.
+        # Get technical specs from knowledge base
+        specs = get_technical_specs(product_type)
+        usage_recs = analyze_usage(usage_details or business_type) if usage_details else []
+        competitor_analysis = analyze_competitor(competitor_inspiration) if competitor_inspiration else None
         
-Ton rôle est de donner un conseil stratégique court et impactant (3-4 phrases max) sur pourquoi l'emballage personnalisé va transformer l'image de marque du client.
+        # Build context for LLM
+        technical_context = ""
+        if specs:
+            technical_context = f"""
+SPÉCIFICATIONS TECHNIQUES (Catalogue EONITE 2024):
+- Produit: {specs.get('nom', product_type)}
+- Grammage recommandé: {specs.get('grammage', 'Standard')}
+- Finitions disponibles: {', '.join(specs.get('finitions', ['Standard']))}
+- Conseil technique: {specs.get('conseil_technique', '')}
+"""
+        
+        usage_context = ""
+        if usage_recs:
+            usage_context = "\nDIAGNOSTIC INTELLIGENT:\n"
+            for rec in usage_recs:
+                usage_context += f"- {rec['conseil']}\n"
+        
+        competitor_context = ""
+        if competitor_analysis and competitor_inspiration:
+            competitor_context = f"""
+ANALYSE CONCURRENTIELLE:
+Le client s'inspire de: {competitor_inspiration}
+Positionnement EONITE: {competitor_analysis.get('conseil_eonite', '')}
+"""
 
-Sois enthousiaste mais professionnel. Utilise des données concrètes quand possible (ex: "Les études montrent que 72% des consommateurs...").
+        system_message = f"""Tu es EON, le conseiller technique et marketing expert d'EONITE, spécialiste des emballages personnalisés B2B depuis 2024.
 
-Termine toujours par une phrase d'encouragement liée à leur choix de style."""
+TON EXPERTISE:
+- Maîtrise des grammages (90-350 Gsm selon applications)
+- Connaissance des finitions (pelliculage, marquage à chaud, gaufrage, vernis sélectif)
+- Expertise poignées (plates, torsadées, ruban satin, cordelette coton)
+- Standards qualité FSC, encres végétales, normes alimentaires
+
+TON STYLE:
+- Utilise des termes techniques précis mais accessibles
+- Cite des données concrètes (grammages, pourcentages, références)
+- Sois enthousiaste mais professionnel
+- Propose toujours une solution Bespoke (sur-mesure)
+
+MESSAGE CLÉ: "Notre objectif est de décider du BON produit pour votre client avant même de passer commande."
+
+{technical_context}
+{usage_context}
+{competitor_context}
+
+CONSIGNES:
+1. Donne un conseil technique personnalisé (3-4 phrases)
+2. Mentionne au moins une spécification technique (grammage, finition)
+3. Si vente à emporter détectée, recommande un QR code pour les avis clients
+4. Termine par une phrase d'encouragement liée à leur style choisi
+"""
 
         chat = LlmChat(
             api_key=EMERGENT_LLM_KEY,
-            session_id=f"eonite-advice-{business_name or 'client'}",
+            session_id=f"eonite-expert-{business_name or 'client'}",
             system_message=system_message
         ).with_model("openai", "gpt-5.2")
         
@@ -81,9 +133,11 @@ Type d'activité: {business_type}
 Produit choisi: {product_type}
 Volume estimé: {volume_estimate}
 Style de marque: {brand_style}
-Texte sur le sac: "{text_on_bag}"
+Texte sur l'emballage: "{text_on_bag}"
+{f"Détails d'usage: {usage_details}" if usage_details else ""}
+{f"Inspiration/Concurrents: {competitor_inspiration}" if competitor_inspiration else ""}
 
-Donne un conseil stratégique personnalisé en français."""
+Génère un conseil technique et marketing expert en français."""
 
         user_message = UserMessage(text=user_prompt)
         response = await chat.send_message(user_message)
@@ -92,8 +146,14 @@ Donne un conseil stratégique personnalisé en français."""
         
     except Exception as e:
         logger.error(f"Error generating strategic advice: {e}")
-        # Fallback advice
-        return f"Excellent choix ! Un emballage {brand_style} personnalisé avec \"{text_on_bag}\" va créer une identité mémorable pour votre {business_type}. Les études montrent que 72% des consommateurs sont plus susceptibles de recommander une marque avec un packaging distinctif. Votre vision {brand_style} va vraiment faire la différence !"
+        # Fallback with technical terms
+        specs = get_technical_specs(product_type)
+        grammage = specs.get('grammage', '100-120 Gsm')
+        return f"""Pour {business_name or 'votre établissement'}, je recommande un {product_type} en grammage {grammage} avec finition {brand_style}.
+
+Les études montrent que 72% des consommateurs sont plus susceptibles de recommander une marque avec un packaging distinctif. 
+
+Notre approche Bespoke (sur-mesure) vous garantit un emballage unique, même en quantités modérées. Votre choix de style {brand_style} avec "{text_on_bag}" va créer une signature mémorable !"""
 
 
 # ============================================
