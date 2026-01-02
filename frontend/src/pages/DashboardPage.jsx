@@ -50,53 +50,82 @@ const DashboardHome = () => {
 
   const currentOrder = orders.find(o => o.status !== 'completed');
 
+  // 4 étapes de progression : Brief Design (Visio) -> BAT Validé -> En Impression (Usine) -> Expédition
+  const progressSteps = [
+    { id: 'brief_design', label: 'Brief Design', sublabel: '(Visio)', icon: Clock },
+    { id: 'bat_validated', label: 'BAT Validé', sublabel: '', icon: CheckCircle2 },
+    { id: 'in_production', label: 'En Impression', sublabel: '(Usine)', icon: Package },
+    { id: 'shipped', label: 'Expédition', sublabel: '', icon: Truck },
+  ];
+
+  const getStepIndex = (status) => {
+    const statusMap = {
+      'draft': 0,
+      'pending_design': 0,
+      'bat_validated': 1,
+      'in_production': 2,
+      'shipped': 3,
+      'completed': 4
+    };
+    return statusMap[status] ?? 0;
+  };
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-black text-[#1A1A1A]">Bienvenue, {user?.company_name}</h1>
-        <p className="text-[#1A1A1A]/60 mt-2">Gérez vos commandes et votre compte</p>
+    <div className="space-y-8" data-testid="dashboard-home">
+      {/* Welcome Message - Prêt à lancer votre prochaine production ? */}
+      <div className="bg-[#1A1A1A] p-8">
+        <h1 className="text-3xl font-black text-[#F9F8EF]">
+          Prêt à lancer votre prochaine production ?
+        </h1>
+        <p className="text-[#F9F8EF]/70 mt-2">
+          Bienvenue, <span className="text-[#CDCEBD] font-semibold">{user?.company_name}</span>
+        </p>
       </div>
 
-      {/* Current Order Status - Progress Bar */}
+      {/* Current Order Status - Progress Bar with 4 steps */}
       {currentOrder ? (
-        <div className="bg-[#F9F8EF] border border-[#6B705C] p-6">
+        <div className="bg-[#F9F8EF] border border-[#6B705C] p-6" data-testid="current-order">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-[#1A1A1A] font-bold text-lg">Commande en cours</h2>
             <StatusBadge status={currentOrder.status} />
           </div>
           
-          {/* Progress Steps */}
+          {/* Progress Steps - 4 étapes industrielles */}
           <div className="relative">
-            <div className="absolute top-5 left-0 right-0 h-0.5 bg-[#6B705C]/20" />
+            <div className="absolute top-6 left-[12%] right-[12%] h-1 bg-[#CDCEBD]">
+              <div 
+                className="h-full bg-[#6B705C] transition-all duration-500"
+                style={{ width: `${Math.min(getStepIndex(currentOrder.status) / 3 * 100, 100)}%` }}
+              />
+            </div>
             <div className="relative flex justify-between">
-              {['draft', 'pending_design', 'in_production', 'shipped', 'completed'].map((step, i) => {
-                const steps = ['draft', 'pending_design', 'in_production', 'shipped', 'completed'];
-                const currentIdx = steps.indexOf(currentOrder.status);
+              {progressSteps.map((step, i) => {
+                const currentIdx = getStepIndex(currentOrder.status);
                 const isActive = i <= currentIdx;
                 const isCurrent = i === currentIdx;
-                const labels = ['Créée', 'Design', 'Production', 'Livraison', 'Livrée'];
                 
                 return (
-                  <div key={step} className="flex flex-col items-center">
-                    <div className={`w-10 h-10 flex items-center justify-center ${
+                  <div key={step.id} className="flex flex-col items-center text-center" style={{ width: '24%' }}>
+                    <div className={`w-12 h-12 flex items-center justify-center relative z-10 ${
                       isActive ? 'bg-[#6B705C]' : 'bg-[#CDCEBD]'
                     } ${isCurrent ? 'ring-4 ring-[#6B705C]/30' : ''}`}>
-                      {i === 0 && <Package size={18} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />}
-                      {i === 1 && <Clock size={18} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />}
-                      {i === 2 && <AlertCircle size={18} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />}
-                      {i === 3 && <Truck size={18} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />}
-                      {i === 4 && <CheckCircle2 size={18} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />}
+                      <step.icon size={20} className={isActive ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]/40'} />
                     </div>
-                    <span className={`text-xs mt-2 font-medium ${isActive ? 'text-[#6B705C]' : 'text-[#1A1A1A]/40'}`}>
-                      {labels[i]}
+                    <span className={`text-xs mt-3 font-bold ${isActive ? 'text-[#6B705C]' : 'text-[#1A1A1A]/40'}`}>
+                      {step.label}
                     </span>
+                    {step.sublabel && (
+                      <span className={`text-xs ${isActive ? 'text-[#6B705C]/70' : 'text-[#1A1A1A]/30'}`}>
+                        {step.sublabel}
+                      </span>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-[#6B705C]/20 flex justify-between items-center">
+          <div className="mt-8 pt-6 border-t border-[#6B705C]/20 flex justify-between items-center">
             <div>
               <p className="text-[#1A1A1A]/60 text-sm">Référence</p>
               <p className="text-[#1A1A1A] font-mono font-bold">#{currentOrder.id.slice(0, 8).toUpperCase()}</p>
@@ -108,7 +137,7 @@ const DashboardHome = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-[#CDCEBD] border border-[#6B705C] p-8 text-center">
+        <div className="bg-[#CDCEBD] border border-[#6B705C] p-8 text-center" data-testid="no-orders">
           <Package size={48} className="text-[#6B705C]/40 mx-auto mb-4" />
           <p className="text-[#1A1A1A]/60 mb-4">Aucune commande en cours</p>
           <Link to="/contact">
