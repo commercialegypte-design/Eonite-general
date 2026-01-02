@@ -430,10 +430,21 @@ const AssistantPage = () => {
     }
   }, [messages, isTyping, showInput]);
 
-  // Initialize chat
+  // Initialize chat - only once
   useEffect(() => {
-    startConversation();
-  }, []);
+    let mounted = true;
+    
+    const init = async () => {
+      if (!mounted) return;
+      await startConversation();
+    };
+    
+    if (messages.length === 0) {
+      init();
+    }
+    
+    return () => { mounted = false; };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addMessage = (type, content, delay = 0) => {
     return new Promise((resolve) => {
