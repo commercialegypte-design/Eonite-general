@@ -8,6 +8,11 @@ Plateforme B2B de vente d'emballages personnalisés (sacs kraft, boîtes, gobele
 - **Besoins**: Emballages personnalisés avec leur logo, prix compétitifs, qualité industrielle
 - **Pain points**: Prix du design séparé, délais de devis, complexité de commande
 
+## Brand Assets
+- **Logo**: https://customer-assets.emergentagent.com/job_brutalist-biz/artifacts/1sxp8kqj_logo.png
+- **Typographie logo**: Serif élégante avec feuille intégrée dans le "E"
+- **Couleur logo**: Olive (#6B705C)
+
 ## Core Requirements
 
 ### Design Philosophy: "Haute Couture Industrielle"
