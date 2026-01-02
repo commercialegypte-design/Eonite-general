@@ -46,10 +46,12 @@ const Header = () => {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="text-2xl font-black tracking-tight text-[#1A1A1A] group-hover:text-[#6B705C] transition-colors">
-              EONITE
-            </span>
+          <Link to="/" className="flex items-center group">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_brutalist-biz/artifacts/1sxp8kqj_logo.png" 
+              alt="Eonite" 
+              className="h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}

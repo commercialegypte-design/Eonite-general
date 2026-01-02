@@ -58,7 +58,11 @@ const LoginPage = () => {
       <div className="w-full max-w-md mx-auto px-4 py-12">
         <div className="text-center mb-8">
           <Link to="/" className="inline-block mb-6">
-            <span className="text-3xl font-black tracking-tight text-[#1A1A1A]">EONITE</span>
+            <img 
+              src="https://customer-assets.emergentagent.com/job_brutalist-biz/artifacts/1sxp8kqj_logo.png" 
+              alt="Eonite" 
+              className="h-16 w-auto object-contain mx-auto"
+            />
           </Link>
           <h1 className="text-2xl font-bold text-[#1A1A1A]">Espace Client</h1>
           <p className="text-[#1A1A1A]/60 mt-2">Connectez-vous pour gérer vos commandes</p>

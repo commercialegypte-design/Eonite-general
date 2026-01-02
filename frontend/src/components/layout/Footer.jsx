@@ -24,9 +24,11 @@ const Footer = () => {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
-              <span className="text-3xl font-black tracking-tight text-[#F9F8EF]">
-                EONITE
-              </span>
+              <img 
+                src="https://customer-assets.emergentagent.com/job_brutalist-biz/artifacts/1sxp8kqj_logo.png" 
+                alt="Eonite" 
+                className="h-14 w-auto object-contain brightness-0 invert"
+              />
             </Link>
             <p className="text-[#F9F8EF]/70 leading-relaxed mb-6">
               La puissance industrielle au service du beau. Emballages personnalisés pour professionnels exigeants.
