@@ -421,7 +421,8 @@ const AssistantPage = () => {
     product_type: '',
     volume_estimate: '',
     brand_style: '',
-    text_on_bag: ''
+    text_on_bag: '',
+    competitor_inspiration: ''
   });
 
   // Auto-scroll to bottom
