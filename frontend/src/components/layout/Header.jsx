@@ -108,9 +108,10 @@ const Header = () => {
               </Link>
             )}
             
-            <Link to="/contact">
-              <Button className="btn-primary px-6 py-2.5 text-sm">
-                Démarrer mon design
+            <Link to="/assistant">
+              <Button className="btn-primary px-6 py-2.5 text-sm flex items-center gap-2">
+                <Sparkles size={16} />
+                Lancer l'Assistant
               </Button>
             </Link>
           </div>
