@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage';
 import CataloguePage from './pages/CataloguePage';
 import UsinePage from './pages/UsinePage';
 import GrandsComptesPage from './pages/GrandsComptesPage';
+import VisionPage from './pages/VisionPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
@@ -15,7 +16,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App bg-[#0A0A0A] min-h-screen">
+    <div className="App bg-[#F9F8EF] min-h-screen">
       <AuthProvider>
         <BrowserRouter>
           <Header />
@@ -24,6 +25,7 @@ function App() {
             <Route path="/catalogue" element={<CataloguePage />} />
             <Route path="/usine" element={<UsinePage />} />
             <Route path="/grands-comptes" element={<GrandsComptesPage />} />
+            <Route path="/vision" element={<VisionPage />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/dashboard/*" element={<DashboardPage />} />
