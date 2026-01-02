@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { Menu, X, Phone, Mail, Calendar } from 'lucide-react';
 import { Button } from '../ui/button';
 
 const Header = () => {
@@ -18,8 +18,6 @@ const Header = () => {
 
   const navLinks = [
     { path: '/', label: 'Accueil' },
-    { path: '/catalogue', label: 'Catalogue' },
-    { path: '/a-propos', label: 'À Propos' },
     { path: '/contact', label: 'Contact' }
   ];
 
@@ -27,20 +25,11 @@ const Header = () => {
 
   return (
     <>
-      {/* Top Bar */}
-      <div className="bg-[#6B6B4E] text-white py-2 px-4 text-sm hidden md:block">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-6">
-            <a href="mailto:contact@eonite.fr" className="flex items-center gap-2 hover:text-[#C4C4A0] transition-colors">
-              <Mail size={14} />
-              contact@eonite.fr
-            </a>
-            <a href="tel:+33100000000" className="flex items-center gap-2 hover:text-[#C4C4A0] transition-colors">
-              <Phone size={14} />
-              +33 (0)1 XX XX XX XX
-            </a>
-          </div>
-          <p>Livraison rapide en France métropolitaine</p>
+      {/* Top Bar - Urgency/Value prop */}
+      <div className="bg-[#6B6B4E] text-white py-2.5 px-4 text-sm">
+        <div className="max-w-7xl mx-auto flex justify-center items-center gap-2">
+          <Calendar size={14} />
+          <span className="font-medium">Design de votre sac en 30 min · À partir de 0,10€/pièce</span>
         </div>
       </div>
 
@@ -58,8 +47,8 @@ const Header = () => {
             <Link to="/" className="flex items-center gap-3 group">
               <img 
                 src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/ws6x9cf4_eonite%20logo.png" 
-                alt="Eonite - Emballages Alimentaires Professionnels" 
-                className="h-14 w-auto transition-transform duration-300 group-hover:scale-105"
+                alt="Eonite - Sacs Kraft Personnalisés" 
+                className="h-12 w-auto transition-transform duration-300 group-hover:scale-105"
               />
             </Link>
 
@@ -81,13 +70,19 @@ const Header = () => {
                   )}
                 </Link>
               ))}
+              
+              <a href="tel:+33100000000" className="flex items-center gap-2 text-gray-600 hover:text-[#6B6B4E] transition-colors">
+                <Phone size={16} />
+                <span className="font-medium">+33 (0)1 XX XX XX XX</span>
+              </a>
             </div>
 
             {/* CTA Button */}
             <div className="hidden md:block">
-              <Link to="/contact">
-                <Button className="bg-[#6B6B4E] hover:bg-[#5A5A40] text-white px-6 py-2 rounded-lg transition-all duration-200 hover:shadow-lg">
-                  Demander un Devis
+              <Link to="/contact?type=visio">
+                <Button className="bg-[#6B6B4E] hover:bg-[#5A5A40] text-white px-6 py-2.5 rounded-lg transition-all duration-200 hover:shadow-lg flex items-center gap-2">
+                  <Calendar size={16} />
+                  Réserver ma visio
                 </Button>
               </Link>
             </div>
@@ -123,9 +118,17 @@ const Header = () => {
                   {link.label}
                 </Link>
               ))}
-              <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full mt-2 bg-[#6B6B4E] hover:bg-[#5A5A40] text-white">
-                  Demander un Devis
+              <a 
+                href="tel:+33100000000" 
+                className="px-4 py-3 rounded-lg font-medium text-gray-600 hover:bg-gray-50 flex items-center gap-2"
+              >
+                <Phone size={16} />
+                +33 (0)1 XX XX XX XX
+              </a>
+              <Link to="/contact?type=visio" onClick={() => setIsMenuOpen(false)}>
+                <Button className="w-full mt-2 bg-[#6B6B4E] hover:bg-[#5A5A40] text-white flex items-center justify-center gap-2">
+                  <Calendar size={16} />
+                  Réserver ma visio
                 </Button>
               </Link>
             </div>
