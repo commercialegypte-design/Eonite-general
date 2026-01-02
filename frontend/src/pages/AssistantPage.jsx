@@ -431,13 +431,12 @@ const AssistantPage = () => {
     }
   }, [messages, isTyping, showInput]);
 
-  // Initialize chat - only once
+  // Initialize chat - only once using ref
   useEffect(() => {
-    if (!conversationStarted) {
-      setConversationStarted(true);
-      startConversation();
-    }
-  }, [conversationStarted]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (initializedRef.current) return;
+    initializedRef.current = true;
+    startConversation();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addMessage = (type, content, delay = 0) => {
     return new Promise((resolve) => {
