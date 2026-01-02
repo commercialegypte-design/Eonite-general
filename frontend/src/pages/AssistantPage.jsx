@@ -207,7 +207,7 @@ const ResultDisplay = ({ result, onContinue }) => {
     <div className="space-y-6 animate-fade-in">
       {/* Strategic Advice as AI Message */}
       <AIMessage>
-        <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Votre concept est prêt !</span>
+        <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Analyse technique complète</span>
         {result.strategic_advice}
       </AIMessage>
 
@@ -215,6 +215,7 @@ const ResultDisplay = ({ result, onContinue }) => {
       {result.image_url && (
         <div className="ml-13 pl-13">
           <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <p className="text-[#6B705C] text-xs font-bold uppercase tracking-wider mb-3">Aperçu de votre concept</p>
             <img 
               src={result.image_url.startsWith('/api') 
                 ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
@@ -238,6 +239,12 @@ const ResultDisplay = ({ result, onContinue }) => {
         </div>
       )}
 
+      {/* Key Message */}
+      <AIMessage>
+        <span className="text-[#CDCEBD]/80 text-sm block mb-2">💡 Notre philosophie</span>
+        Notre objectif est de décider du <strong>BON produit</strong> pour votre client avant même de passer commande. Ce concept est un point de départ – en visio, on peut tout ajuster.
+      </AIMessage>
+
       {/* Lead Badge */}
       <div className={`ml-13 p-6 ${isGrosProfile ? 'bg-[#6B705C]' : 'bg-[#CDCEBD]'} max-w-md animate-fade-in`} style={{ animationDelay: '500ms' }}>
         <div className="flex items-center gap-2 mb-2">
@@ -255,7 +262,13 @@ const ResultDisplay = ({ result, onContinue }) => {
         </p>
       </div>
 
-      {/* CTA */}
+      {/* CTA - BAT industriel */}
+      <AIMessage>
+        <strong>Voulez-vous transformer ce concept en BAT industriel en 30 min ?</strong>
+        <br />
+        <span className="text-[#F9F8EF]/80 text-sm">Un expert packaging validera les spécifications techniques avec vous en visio.</span>
+      </AIMessage>
+
       <div className="ml-13 animate-fade-in" style={{ animationDelay: '700ms' }}>
         <Button 
           onClick={onContinue}
