@@ -1,6 +1,7 @@
 """
 EONITE V2 - AI Service
-Intégration Emergent LLM (conseils + images via gpt-image-1)
+Intégration Emergent LLM (conseils techniques + images via gpt-image-1)
+EON = Conseiller Technique & Marketing Expert
 """
 import os
 import logging
@@ -14,6 +15,24 @@ from dotenv import load_dotenv
 load_dotenv()
 
 logger = logging.getLogger(__name__)
+
+# Import knowledge base
+try:
+    from knowledge_base import (
+        get_technical_specs, 
+        analyze_usage, 
+        analyze_competitor,
+        get_diagnostic_conseil,
+        SACS_CATALOGUE,
+        BOITES_CATALOGUE,
+        GOBELETS_CATALOGUE
+    )
+except ImportError:
+    logger.warning("Knowledge base not found, using basic mode")
+    get_technical_specs = lambda x: {}
+    analyze_usage = lambda x: []
+    analyze_competitor = lambda x: {"conseil_eonite": "Solution sur-mesure recommandée."}
+    get_diagnostic_conseil = lambda *args: ""
 
 # ============================================
 # CONFIGURATION
