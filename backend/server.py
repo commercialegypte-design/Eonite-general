@@ -560,6 +560,183 @@ async def seed_products():
     return {"message": f"{len(products)} produits créés"}
 
 # ============================================
+# AI ASSISTANT V2 ROUTES
+# ============================================
+
+@api_router.post("/ai-design", response_model=dict)
+async def create_ai_design(input_data: AIDesignInput):
+    """
+    Crée un design IA avec:
+    1. Conseil stratégique (Emergent LLM)
+    2. Image générée (Hugging Face FLUX)
+    3. Lead scoring automatique
+    """
+    # Calculate lead score immediately
+    lead_score = calculate_lead_score(input_data.volume_estimate, input_data.business_type)
+    lead_info = get_lead_message(lead_score)
+    
+    # Generate AI content
+    ai_result = await ai_service.create_ai_design(
+        business_type=input_data.business_type.value,
+        product_type=input_data.product_type.value,
+        volume_estimate=input_data.volume_estimate.value,
+        brand_style=input_data.brand_style.value,
+        text_on_bag=input_data.text_on_bag,
+        business_name=input_data.business_name
+    )
+    
+    # Create design record
+    design = AIDesign(
+        business_type=input_data.business_type,
+        product_type=input_data.product_type,
+        volume_estimate=input_data.volume_estimate,
+        brand_style=input_data.brand_style,
+        text_on_bag=input_data.text_on_bag,
+        business_name=input_data.business_name,
+        prompt_generated=ai_result["prompt_generated"],
+        strategic_advice=ai_result["strategic_advice"],
+        image_url=ai_result["image_url"],
+        lead_score=lead_score
+    )
+    
+    # Store in database
+    design_doc = design.model_dump()
+    design_doc["created_at"] = design_doc["created_at"].isoformat()
+    design_doc["lead_score"] = design_doc["lead_score"].value
+    design_doc["business_type"] = design_doc["business_type"].value
+    design_doc["product_type"] = design_doc["product_type"].value
+    design_doc["volume_estimate"] = design_doc["volume_estimate"].value
+    design_doc["brand_style"] = design_doc["brand_style"].value
+    
+    await db.ai_designs.insert_one(design_doc)
+    
+    logger.info(f"AI Design created: {design.id} - Lead Score: {lead_score.value}")
+    
+    return {
+        "design_id": design.id,
+        "strategic_advice": ai_result["strategic_advice"],
+        "prompt_generated": ai_result["prompt_generated"],
+        "image_url": ai_result["image_url"],
+        "image_error": ai_result.get("image_error"),
+        "lead_score": lead_score.value,
+        "lead_info": lead_info
+    }
+
+
+@api_router.post("/ai-design/{design_id}/retry-image", response_model=dict)
+async def retry_image_generation(design_id: str):
+    """
+    Réessaye la génération d'image pour un design existant.
+    """
+    design = await db.ai_designs.find_one({"id": design_id}, {"_id": 0})
+    if not design:
+        raise HTTPException(status_code=404, detail="Design non trouvé")
+    
+    # Regenerate image
+    result = await ai_service.generate_image_only(design["prompt_generated"])
+    
+    # Update design with new image
+    if result["image_url"]:
+        await db.ai_designs.update_one(
+            {"id": design_id},
+            {"$set": {"image_url": result["image_url"]}}
+        )
+    
+    return {
+        "design_id": design_id,
+        "image_url": result["image_url"],
+        "image_error": result.get("image_error")
+    }
+
+
+@api_router.get("/ai-design/{design_id}", response_model=dict)
+async def get_ai_design(design_id: str):
+    """
+    Récupère un design IA par ID.
+    """
+    design = await db.ai_designs.find_one({"id": design_id}, {"_id": 0})
+    if not design:
+        raise HTTPException(status_code=404, detail="Design non trouvé")
+    return design
+
+
+@api_router.post("/visio-booking", response_model=dict)
+async def create_visio_booking(request_data: VisioRequestCreate):
+    """
+    Crée une demande de visio design (GROS_PROFIL).
+    """
+    # Verify design exists
+    design = await db.ai_designs.find_one({"id": request_data.ai_design_id})
+    if not design:
+        raise HTTPException(status_code=404, detail="Design non trouvé")
+    
+    # Create visio request
+    visio = VisioRequest(**request_data.model_dump())
+    
+    visio_doc = visio.model_dump()
+    visio_doc["created_at"] = visio_doc["created_at"].isoformat()
+    
+    await db.visio_requests.insert_one(visio_doc)
+    
+    # Send notification email (mocked)
+    await email_service.send_email(
+        to_email=request_data.email,
+        subject="EONITE - Votre demande de visio design",
+        body=f"Bonjour {request_data.nom_contact},\n\nNous avons bien reçu votre demande de visio design pour {request_data.nom_entreprise}.\n\nUn expert vous contactera sous 24h pour planifier un rendez-vous.\n\nL'équipe EONITE"
+    )
+    
+    logger.info(f"Visio booking created: {visio.id} for design {request_data.ai_design_id}")
+    
+    return {
+        "visio_id": visio.id,
+        "message": "Demande de visio enregistrée. Un expert vous contactera sous 24h."
+    }
+
+
+@api_router.post("/quote-request", response_model=dict)
+async def create_quote_request_v2(request_data: QuoteRequestV2Create):
+    """
+    Crée une demande de devis (PETIT_PROFIL).
+    """
+    # Verify design exists
+    design = await db.ai_designs.find_one({"id": request_data.ai_design_id})
+    if not design:
+        raise HTTPException(status_code=404, detail="Design non trouvé")
+    
+    # Create quote request
+    quote = QuoteRequestV2(**request_data.model_dump())
+    
+    quote_doc = quote.model_dump()
+    quote_doc["created_at"] = quote_doc["created_at"].isoformat()
+    
+    await db.quote_requests_v2.insert_one(quote_doc)
+    
+    # Send notification email (mocked)
+    await email_service.send_email(
+        to_email=request_data.email,
+        subject="EONITE - Votre demande de devis",
+        body=f"Bonjour {request_data.nom_contact},\n\nNous avons bien reçu votre demande de devis pour {request_data.nom_entreprise}.\n\nVous recevrez un devis personnalisé par email sous 24h.\n\nL'équipe EONITE"
+    )
+    
+    logger.info(f"Quote request created: {quote.id} for design {request_data.ai_design_id}")
+    
+    return {
+        "quote_id": quote.id,
+        "message": "Demande de devis enregistrée. Vous recevrez un devis sous 24h."
+    }
+
+
+# Route for serving generated images
+@api_router.get("/uploads/generated/{filename}")
+async def get_generated_image(filename: str):
+    """Serve AI generated images"""
+    generated_dir = ROOT_DIR / "uploads" / "generated"
+    file_path = generated_dir / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Image non trouvée")
+    return FileResponse(file_path, media_type="image/png")
+
+# ============================================
 # INCLUDE ROUTER & MIDDLEWARE
 # ============================================
 
