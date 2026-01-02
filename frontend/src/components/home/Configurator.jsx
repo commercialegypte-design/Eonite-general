@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calculator, TrendingDown, Leaf } from 'lucide-react';
+import { ArrowRight, Calculator, TrendingDown, Leaf, Sparkles } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 
@@ -31,6 +31,52 @@ const PRODUCTS = [
   { id: 'luxe', label: 'Luxe' },
 ];
 
+// Animated number component for "magic" effect
+const AnimatedNumber = ({ value, format = 'price', className = '' }) => {
+  const [displayValue, setDisplayValue] = useState(value);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const prevValue = useRef(value);
+
+  useEffect(() => {
+    if (prevValue.current !== value) {
+      setIsAnimating(true);
+      const duration = 300;
+      const startTime = Date.now();
+      const startValue = prevValue.current;
+      const diff = value - startValue;
+
+      const animate = () => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Easing function for smooth animation
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = startValue + diff * eased;
+        setDisplayValue(current);
+
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          setIsAnimating(false);
+          prevValue.current = value;
+        }
+      };
+      requestAnimationFrame(animate);
+    }
+  }, [value]);
+
+  const formatted = format === 'price' 
+    ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(displayValue)
+    : format === 'unit'
+    ? displayValue.toFixed(3) + ' €'
+    : displayValue.toFixed(1);
+
+  return (
+    <span className={`${className} ${isAnimating ? 'scale-105' : ''} transition-transform duration-150`}>
+      {formatted}
+    </span>
+  );
+};
+
 const Configurator = () => {
   const [product, setProduct] = useState('sacs_kraft');
   const [size, setSize] = useState('medium');
@@ -40,8 +86,13 @@ const Configurator = () => {
   const [totalPrice, setTotalPrice] = useState(0);
   const [savings, setSavings] = useState(0);
   const [plasticSaved, setPlasticSaved] = useState(0);
+  const [priceFlash, setPriceFlash] = useState(false);
 
   const calculatePrice = useCallback(() => {
+    // Trigger flash effect
+    setPriceFlash(true);
+    setTimeout(() => setPriceFlash(false), 200);
+
     // Get base price from tier
     let tierPrice = QUANTITY_TIERS[0].price;
     for (const tier of QUANTITY_TIERS) {
@@ -65,7 +116,7 @@ const Configurator = () => {
     const potentialSavings = quantity >= 10000 ? (maxPrice - calculatedUnitPrice) * quantity : 0;
     
     // Calculate plastic saved (eco variable) - ~15g of plastic avoided per paper bag
-    const plasticKg = (quantity * 0.015).toFixed(1);
+    const plasticKg = quantity * 0.015;
     
     setUnitPrice(calculatedUnitPrice);
     setTotalPrice(calculatedTotal);
@@ -78,7 +129,6 @@ const Configurator = () => {
   }, [calculatePrice]);
 
   const formatNumber = (num) => new Intl.NumberFormat('fr-FR').format(num);
-  const formatPrice = (num) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(num);
 
   const quantityToSlider = (qty) => {
     if (qty <= 5000) return 0;
@@ -95,30 +145,34 @@ const Configurator = () => {
   };
 
   return (
-    <div className="bg-[#F9F8EF] border border-[#6B705C] p-6 lg:p-8 shadow-xl">
+    <div className="bg-[#F9F8EF] border-2 border-[#6B705C] p-6 lg:p-8 shadow-2xl" data-testid="configurator">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-[#6B705C] flex items-center justify-center">
-          <Calculator size={24} className="text-[#F9F8EF]" />
+        <div className="w-14 h-14 bg-[#1A1A1A] flex items-center justify-center">
+          <Calculator size={28} className="text-[#F9F8EF]" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-[#1A1A1A]">Configurateur de Devis</h3>
-          <p className="text-[#1A1A1A]/60 text-sm">Estimez votre prix en temps réel</p>
+          <h3 className="text-2xl font-black text-[#1A1A1A]">Configurateur de Devis</h3>
+          <p className="text-[#1A1A1A]/60 text-sm flex items-center gap-1">
+            <Sparkles size={14} className="text-[#6B705C]" />
+            Prix calculé instantanément
+          </p>
         </div>
       </div>
 
       <div className="space-y-8">
         {/* Product Type */}
         <div>
-          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Type de produit</label>
+          <label className="block text-sm font-bold text-[#1A1A1A] mb-3 uppercase tracking-wider">Type de produit</label>
           <div className="grid grid-cols-2 gap-2">
             {PRODUCTS.map((p) => (
               <button
                 key={p.id}
                 onClick={() => setProduct(p.id)}
-                className={`p-3 text-sm font-semibold transition-all border ${
+                data-testid={`product-${p.id}`}
+                className={`p-4 text-sm font-bold transition-all border-2 ${
                   product === p.id
-                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
-                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
+                    ? 'bg-[#1A1A1A] text-[#F9F8EF] border-[#1A1A1A] scale-[1.02]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#1A1A1A] hover:bg-[#1A1A1A]/5'
                 }`}
               >
                 {p.label}
@@ -129,16 +183,17 @@ const Configurator = () => {
 
         {/* Size */}
         <div>
-          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Format</label>
+          <label className="block text-sm font-bold text-[#1A1A1A] mb-3 uppercase tracking-wider">Format</label>
           <div className="grid grid-cols-3 gap-2">
             {SIZES.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setSize(s.id)}
-                className={`p-3 text-sm font-semibold transition-all border ${
+                data-testid={`size-${s.id}`}
+                className={`p-4 text-sm font-bold transition-all border-2 ${
                   size === s.id
-                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
-                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
+                    ? 'bg-[#1A1A1A] text-[#F9F8EF] border-[#1A1A1A] scale-[1.02]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#1A1A1A] hover:bg-[#1A1A1A]/5'
                 }`}
               >
                 {s.label}
@@ -150,8 +205,10 @@ const Configurator = () => {
         {/* Quantity */}
         <div>
           <div className="flex justify-between items-center mb-3">
-            <label className="text-sm font-semibold text-[#1A1A1A]/80 uppercase tracking-wider">Quantité</label>
-            <span className="text-2xl font-bold text-[#6B705C]">{formatNumber(quantity)}</span>
+            <label className="text-sm font-bold text-[#1A1A1A] uppercase tracking-wider">Quantité</label>
+            <span className="text-3xl font-black text-[#1A1A1A]" data-testid="quantity-display">
+              {formatNumber(quantity)}
+            </span>
           </div>
           <Slider
             value={[quantityToSlider(quantity)]}
@@ -159,8 +216,9 @@ const Configurator = () => {
             max={100}
             step={1}
             className="py-4"
+            data-testid="quantity-slider"
           />
-          <div className="flex justify-between text-xs text-[#1A1A1A]/50 mt-2">
+          <div className="flex justify-between text-xs text-[#1A1A1A]/50 mt-2 font-medium">
             <span>5 000</span>
             <span>10 000</span>
             <span>25 000</span>
@@ -170,16 +228,17 @@ const Configurator = () => {
 
         {/* Print Type */}
         <div>
-          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Impression</label>
+          <label className="block text-sm font-bold text-[#1A1A1A] mb-3 uppercase tracking-wider">Impression</label>
           <div className="grid grid-cols-3 gap-2">
             {Object.entries(PRINT_COSTS).map(([key, { label }]) => (
               <button
                 key={key}
                 onClick={() => setPrintType(key)}
-                className={`p-3 text-sm font-semibold transition-all border ${
+                data-testid={`print-${key}`}
+                className={`p-4 text-sm font-bold transition-all border-2 ${
                   printType === key
-                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
-                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
+                    ? 'bg-[#1A1A1A] text-[#F9F8EF] border-[#1A1A1A] scale-[1.02]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#1A1A1A] hover:bg-[#1A1A1A]/5'
                 }`}
               >
                 {label}
@@ -188,54 +247,62 @@ const Configurator = () => {
           </div>
         </div>
 
-        {/* Results */}
-        <div className="border-t border-[#6B705C]/20 pt-6 space-y-4">
+        {/* Results - MAGIC ZONE */}
+        <div className={`border-t-2 border-[#1A1A1A] pt-6 space-y-4 transition-all duration-200 ${priceFlash ? 'bg-[#6B705C]/5' : ''}`}>
           <div className="flex justify-between items-center">
-            <span className="text-[#1A1A1A]/60">Prix unitaire</span>
-            <span className="text-2xl font-bold text-[#1A1A1A]">{unitPrice.toFixed(3)} €</span>
+            <span className="text-[#1A1A1A]/70 font-medium">Prix unitaire</span>
+            <AnimatedNumber value={unitPrice} format="unit" className="text-2xl font-black text-[#1A1A1A]" />
           </div>
           
-          <div className="flex justify-between items-center">
-            <span className="text-[#1A1A1A]/60">Total estimé</span>
-            <span className="text-3xl font-black text-[#6B705C]">{formatPrice(totalPrice)}</span>
+          <div className="flex justify-between items-center py-2">
+            <span className="text-[#1A1A1A]/70 font-medium">Total estimé</span>
+            <AnimatedNumber 
+              value={totalPrice} 
+              format="price" 
+              className="text-4xl font-black text-[#1A1A1A]" 
+              data-testid="total-price"
+            />
           </div>
           
-          {savings > 0 && (
-            <div className="flex items-center gap-2 bg-[#6B705C]/10 border border-[#6B705C]/30 p-3">
-              <TrendingDown size={18} className="text-[#6B705C]" />
-              <span className="text-[#6B705C] text-sm font-medium">
-                Économie de {formatPrice(savings)} vs. quantité min.
-              </span>
-            </div>
-          )}
-
-          {/* Eco Impact - FIER ET VISIBLE */}
-          <div className="bg-[#1A1A1A] p-5 border-l-4 border-[#6B705C]">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
-                <Leaf size={24} className="text-[#F9F8EF]" />
+          {/* ÉCONOMIE PLASTIQUE - VERT FONCÉ GRAS */}
+          <div className="bg-[#2D4F2D] p-5 mt-4" data-testid="eco-impact">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-[#1A3A1A] flex items-center justify-center flex-shrink-0">
+                <Leaf size={28} className="text-[#90EE90]" />
               </div>
               <div>
-                <p className="text-[#F9F8EF]/60 text-xs uppercase tracking-wider font-semibold">Impact Positif</p>
-                <p className="text-[#F9F8EF] text-xl font-black">
-                  -{plasticSaved} kg <span className="text-[#CDCEBD] font-normal text-base">de plastique générés</span>
+                <p className="text-[#90EE90]/80 text-xs uppercase tracking-wider font-bold">Impact Positif</p>
+                <p className="text-[#F9F8EF] text-2xl font-black">
+                  <AnimatedNumber value={plasticSaved} format="kg" className="text-[#90EE90]" />
+                  <span className="text-[#90EE90] ml-1">kg</span>
+                  <span className="text-[#F9F8EF]/70 font-medium text-base ml-2">de plastique évités</span>
                 </p>
               </div>
             </div>
           </div>
+          
+          {savings > 0 && (
+            <div className="flex items-center gap-2 bg-[#6B705C]/10 border-2 border-[#6B705C] p-4">
+              <TrendingDown size={20} className="text-[#6B705C]" />
+              <span className="text-[#6B705C] font-bold">
+                Économie de <AnimatedNumber value={savings} format="price" className="font-black" /> vs. quantité min.
+              </span>
+            </div>
+          )}
         </div>
 
-        {/* CTA - NOIR PUR pour trancher violemment */}
+        {/* CTA - IMPOSANT */}
         <Link 
           to={`/contact?product=${product}&size=${size}&quantity=${quantity}&print=${printType}&price=${totalPrice.toFixed(2)}`}
+          data-testid="configurator-cta"
         >
-          <Button className="w-full bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] py-6 text-lg font-bold uppercase tracking-wider border-0">
+          <Button className="w-full bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] py-8 text-xl font-black uppercase tracking-wider border-0 shadow-xl hover:shadow-2xl transition-all hover:scale-[1.02]">
             Démarrer mon design
-            <ArrowRight className="ml-2" size={20} />
+            <ArrowRight className="ml-3" size={24} />
           </Button>
         </Link>
         
-        <p className="text-center text-[#1A1A1A]/50 text-xs">
+        <p className="text-center text-[#1A1A1A]/50 text-xs font-medium">
           Prix indicatif HT. Design validé en 30 minutes.
         </p>
       </div>
