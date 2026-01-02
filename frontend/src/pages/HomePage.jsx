@@ -73,32 +73,32 @@ const HomePage = () => {
 
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-          <div className="max-w-4xl">
-            {/* Main Headline */}
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-[#F9F8EF] leading-[0.9] mb-8 drop-shadow-lg">
+          <div className="max-w-5xl">
+            {/* Main Headline - DOMINANTE +20% */}
+            <h1 className="text-6xl md:text-8xl lg:text-[10rem] font-black text-[#F9F8EF] leading-[0.85] mb-8 drop-shadow-lg tracking-tight">
               Le neutre est<br />
               <span className="text-[#F9F8EF]">une insulte</span><br />
               à votre cuisine.
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl md:text-2xl text-[#F9F8EF]/90 max-w-2xl mb-12 leading-relaxed drop-shadow">
+            <p className="text-xl md:text-2xl lg:text-3xl text-[#F9F8EF]/90 max-w-2xl mb-12 leading-relaxed drop-shadow">
               Obtenez vos emballages personnalisés au prix du neutre. 
               <span className="font-semibold"> Direct usine. Design validé en 30 min.</span>
             </p>
 
-            {/* CTA Buttons - NOIR PUR pour impact maximal */}
+            {/* CTA Buttons - IMPOSANTS */}
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Button 
                 onClick={scrollToConfigurator}
-                className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-10 py-6 text-lg font-bold uppercase tracking-wider border-0"
+                className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-12 py-8 text-xl font-black uppercase tracking-wider border-0 shadow-2xl"
               >
                 Démarrer mon design
-                <ArrowRight className="ml-2" size={20} />
+                <ArrowRight className="ml-3" size={24} />
               </Button>
               <Link to="/usine">
-                <Button className="btn-outline bg-transparent text-[#F9F8EF] border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-10 py-6 text-lg">
-                  <Play className="mr-2" size={20} />
+                <Button className="bg-transparent text-[#F9F8EF] border-2 border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-12 py-8 text-xl font-bold uppercase tracking-wider">
+                  <Play className="mr-3" size={24} />
                   Voir l'usine
                 </Button>
               </Link>
