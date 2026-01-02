@@ -131,12 +131,9 @@ async def generate_image_flux(prompt: str) -> Tuple[Optional[str], Optional[str]
         "Content-Type": "application/json"
     }
     
+    # Simple payload - HF Inference API handles parameters automatically
     payload = {
-        "inputs": prompt,
-        "parameters": {
-            "num_inference_steps": 4,  # FLUX.1-schnell is optimized for 4 steps
-            "guidance_scale": 0.0  # FLUX.1-schnell works best with 0 guidance
-        }
+        "inputs": prompt
     }
     
     try:
