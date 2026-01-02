@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, UploadFile, File, Form
+from fastapi.responses import FileResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -15,7 +16,10 @@ from models import (
     Product, ProductCreate, ProductCategory,
     Order, OrderCreate, OrderStatus, OrderItemBase,
     QuoteRequest, QuoteRequestBase,
-    Address, PrintType, ProductSize
+    Address, PrintType, ProductSize,
+    # AI Assistant V2 Models
+    AIDesign, AIDesignInput, VisioRequest, VisioRequestCreate,
+    QuoteRequestV2, QuoteRequestV2Create, LeadScore, VolumeEstimate, BusinessType
 )
 from auth import (
     get_password_hash, verify_password, create_access_token,
@@ -23,6 +27,8 @@ from auth import (
 )
 from email_service import email_service
 from pricing import calculate_total_price, get_price_breakdown, get_all_tiers_comparison
+from lead_scoring import calculate_lead_score, get_lead_message
+import ai_service
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
