@@ -12,6 +12,7 @@ import VisionPage from './pages/VisionPage';
 import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import AssistantPage from './pages/AssistantPage';
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
           <Header />
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/assistant" element={<AssistantPage />} />
             <Route path="/catalogue" element={<CataloguePage />} />
             <Route path="/usine" element={<UsinePage />} />
             <Route path="/grands-comptes" element={<GrandsComptesPage />} />
