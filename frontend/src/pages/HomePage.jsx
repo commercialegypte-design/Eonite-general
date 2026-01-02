@@ -87,17 +87,17 @@ const HomePage = () => {
               <span className="font-semibold"> Direct usine. Design validé en 30 min.</span>
             </p>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons - NOIR PUR pour impact maximal */}
             <div className="flex flex-col sm:flex-row gap-4 mb-16">
               <Button 
                 onClick={scrollToConfigurator}
-                className="btn-primary px-10 py-6 text-lg"
+                className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-10 py-6 text-lg font-bold uppercase tracking-wider border-0"
               >
                 Démarrer mon design
                 <ArrowRight className="ml-2" size={20} />
               </Button>
               <Link to="/usine">
-                <Button className="btn-outline bg-transparent text-[#F9F8EF] border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#6B705C] px-10 py-6 text-lg">
+                <Button className="btn-outline bg-transparent text-[#F9F8EF] border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-10 py-6 text-lg">
                   <Play className="mr-2" size={20} />
                   Voir l'usine
                 </Button>
