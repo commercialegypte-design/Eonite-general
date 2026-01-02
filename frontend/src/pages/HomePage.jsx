@@ -151,11 +151,11 @@ const HomePage = () => {
                 Nouveau
               </span>
               <h2 className="text-4xl md:text-5xl font-black text-[#F9F8EF] leading-tight">
-                ASSISTANT<br />
-                <span className="text-[#F9F8EF]/50">DESIGN IA</span>
+                EON<br />
+                <span className="text-[#F9F8EF]/50">CONSEILLER EXPERT</span>
               </h2>
               <p className="text-[#F9F8EF]/80 text-lg leading-relaxed">
-                En 5 questions, notre intelligence artificielle :
+                En quelques questions, EON votre conseiller packaging :
               </p>
               <ul className="space-y-4">
                 {[
