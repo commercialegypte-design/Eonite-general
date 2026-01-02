@@ -30,6 +30,7 @@ const Header = () => {
     { path: '/catalogue', label: 'Catalogue' },
     { path: '/usine', label: 'Notre Usine' },
     { path: '/grands-comptes', label: 'Grands Comptes' },
+    { path: '/vision', label: 'Vision' },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -38,20 +39,17 @@ const Header = () => {
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-black/95 backdrop-blur-md border-b border-white/10' 
-          : 'bg-transparent'
-      }`}
+          ? 'bg-[#F9F8EF]/95 backdrop-blur-md shadow-sm' 
+          : 'bg-[#F9F8EF]'
+      } border-b border-[#6B705C]/20`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <span className="text-2xl font-black tracking-tighter text-white group-hover:text-[#FF6B00] transition-colors">
-                EONITE
-              </span>
-              <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-[#FF6B00] transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
-            </div>
+            <span className="text-2xl font-black tracking-tight text-[#1A1A1A] group-hover:text-[#6B705C] transition-colors">
+              EONITE
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -60,10 +58,10 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-4 py-2 font-medium text-sm uppercase tracking-wider transition-colors ${
+                className={`px-4 py-2 text-sm uppercase tracking-wider transition-colors ${
                   isActive(link.path)
-                    ? 'text-[#FF6B00]'
-                    : 'text-white/70 hover:text-white'
+                    ? 'text-[#6B705C] font-semibold'
+                    : 'text-[#1A1A1A]/70 hover:text-[#6B705C]'
                 }`}
               >
                 {link.label}
@@ -76,30 +74,25 @@ const Header = () => {
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-white hover:text-[#FF6B00] gap-2">
+                  <Button variant="ghost" className="text-[#1A1A1A] hover:text-[#6B705C] gap-2">
                     <User size={18} />
                     <span className="font-medium">{user?.company_name || 'Mon compte'}</span>
                     <ChevronDown size={14} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-[#1A1A1A] border-white/10 text-white">
+                <DropdownMenuContent align="end" className="bg-[#F9F8EF] border-[#6B705C]/20">
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer hover:text-[#FF6B00]">
+                    <Link to="/dashboard" className="cursor-pointer hover:text-[#6B705C]">
                       Tableau de bord
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/dashboard/orders" className="cursor-pointer hover:text-[#FF6B00]">
+                    <Link to="/dashboard/orders" className="cursor-pointer hover:text-[#6B705C]">
                       Mes commandes
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard/profile" className="cursor-pointer hover:text-[#FF6B00]">
-                      Mon profil
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-white/10" />
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-500 hover:text-red-400">
+                  <DropdownMenuSeparator className="bg-[#6B705C]/20" />
+                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600">
                     <LogOut size={16} className="mr-2" />
                     Déconnexion
                   </DropdownMenuItem>
@@ -107,22 +100,22 @@ const Header = () => {
               </DropdownMenu>
             ) : (
               <Link to="/login">
-                <Button variant="ghost" className="text-white hover:text-[#FF6B00] font-medium">
+                <Button variant="ghost" className="text-[#1A1A1A] hover:text-[#6B705C] font-medium uppercase tracking-wider text-sm">
                   Connexion
                 </Button>
               </Link>
             )}
             
             <Link to="/contact">
-              <Button className="btn-brutal px-6 py-2.5 text-sm">
-                Demander un Devis
+              <Button className="btn-primary px-6 py-2.5 text-sm">
+                Démarrer mon design
               </Button>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 text-white"
+            className="lg:hidden p-2 text-[#1A1A1A]"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -135,44 +128,32 @@ const Header = () => {
             isMenuOpen ? 'max-h-[500px] pb-6' : 'max-h-0'
           }`}
         >
-          <div className="flex flex-col gap-2 pt-4 border-t border-white/10">
+          <div className="flex flex-col gap-2 pt-4 border-t border-[#6B705C]/20">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMenuOpen(false)}
-                className={`px-4 py-3 font-medium uppercase tracking-wider ${
+                className={`px-4 py-3 uppercase tracking-wider text-sm ${
                   isActive(link.path)
-                    ? 'text-[#FF6B00] bg-white/5'
-                    : 'text-white/70 hover:text-white hover:bg-white/5'
+                    ? 'text-[#6B705C] font-semibold bg-[#6B705C]/5'
+                    : 'text-[#1A1A1A]/70 hover:text-[#6B705C]'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
-            <div className="border-t border-white/10 mt-4 pt-4 flex flex-col gap-2">
-              {isAuthenticated ? (
-                <>
-                  <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-white">
-                      Tableau de bord
-                    </Button>
-                  </Link>
-                  <Button onClick={() => { logout(); setIsMenuOpen(false); }} variant="ghost" className="w-full justify-start text-red-500">
-                    <LogOut size={16} className="mr-2" />
-                    Déconnexion
-                  </Button>
-                </>
-              ) : (
+            <div className="border-t border-[#6B705C]/20 mt-4 pt-4 flex flex-col gap-2">
+              {!isAuthenticated && (
                 <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full text-white">
+                  <Button variant="ghost" className="w-full justify-start text-[#1A1A1A]">
                     Connexion
                   </Button>
                 </Link>
               )}
               <Link to="/contact" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full btn-brutal">
-                  Demander un Devis
+                <Button className="w-full btn-primary">
+                  Démarrer mon design
                 </Button>
               </Link>
             </div>

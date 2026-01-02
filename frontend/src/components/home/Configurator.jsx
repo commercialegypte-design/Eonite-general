@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Calculator, TrendingDown } from 'lucide-react';
+import { ArrowRight, Calculator, TrendingDown, Leaf } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Slider } from '../ui/slider';
 
@@ -26,7 +26,7 @@ const SIZES = [
 
 const PRODUCTS = [
   { id: 'sacs_kraft', label: 'Sacs Kraft' },
-  { id: 'boites', label: 'Boîtes Carton' },
+  { id: 'boites', label: 'Boîtes' },
   { id: 'gobelets', label: 'Gobelets' },
   { id: 'luxe', label: 'Luxe' },
 ];
@@ -39,6 +39,7 @@ const Configurator = () => {
   const [unitPrice, setUnitPrice] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
   const [savings, setSavings] = useState(0);
+  const [plasticSaved, setPlasticSaved] = useState(0);
 
   const calculatePrice = useCallback(() => {
     // Get base price from tier
@@ -63,9 +64,13 @@ const Configurator = () => {
     const maxPrice = (QUANTITY_TIERS[0].price + printCost) * sizeMultiplier;
     const potentialSavings = quantity >= 10000 ? (maxPrice - calculatedUnitPrice) * quantity : 0;
     
+    // Calculate plastic saved (eco variable) - ~15g of plastic avoided per paper bag
+    const plasticKg = (quantity * 0.015).toFixed(1);
+    
     setUnitPrice(calculatedUnitPrice);
     setTotalPrice(calculatedTotal);
     setSavings(potentialSavings);
+    setPlasticSaved(plasticKg);
   }, [product, size, quantity, printType]);
 
   useEffect(() => {
@@ -90,30 +95,30 @@ const Configurator = () => {
   };
 
   return (
-    <div className="bg-[#0A0A0A] border border-white/10 p-6 lg:p-8">
+    <div className="bg-[#F9F8EF] border border-[#6B705C] p-6 lg:p-8 shadow-xl">
       <div className="flex items-center gap-3 mb-8">
-        <div className="w-12 h-12 bg-[#FF6B00] flex items-center justify-center">
-          <Calculator size={24} className="text-black" />
+        <div className="w-12 h-12 bg-[#6B705C] flex items-center justify-center">
+          <Calculator size={24} className="text-[#F9F8EF]" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-white">Configurateur Rapide</h3>
-          <p className="text-white/60 text-sm">Estimez votre prix en 30 secondes</p>
+          <h3 className="text-xl font-bold text-[#1A1A1A]">Configurateur de Devis</h3>
+          <p className="text-[#1A1A1A]/60 text-sm">Estimez votre prix en temps réel</p>
         </div>
       </div>
 
       <div className="space-y-8">
         {/* Product Type */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3 uppercase tracking-wider">Type de produit</label>
+          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Type de produit</label>
           <div className="grid grid-cols-2 gap-2">
             {PRODUCTS.map((p) => (
               <button
                 key={p.id}
                 onClick={() => setProduct(p.id)}
-                className={`p-3 text-sm font-medium transition-all ${
+                className={`p-3 text-sm font-semibold transition-all border ${
                   product === p.id
-                    ? 'bg-[#FF6B00] text-black'
-                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
                 }`}
               >
                 {p.label}
@@ -124,16 +129,16 @@ const Configurator = () => {
 
         {/* Size */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3 uppercase tracking-wider">Format</label>
+          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Format</label>
           <div className="grid grid-cols-3 gap-2">
             {SIZES.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setSize(s.id)}
-                className={`p-3 text-sm font-medium transition-all ${
+                className={`p-3 text-sm font-semibold transition-all border ${
                   size === s.id
-                    ? 'bg-[#FF6B00] text-black'
-                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
                 }`}
               >
                 {s.label}
@@ -145,8 +150,8 @@ const Configurator = () => {
         {/* Quantity */}
         <div>
           <div className="flex justify-between items-center mb-3">
-            <label className="text-sm font-medium text-white/80 uppercase tracking-wider">Quantité</label>
-            <span className="text-2xl font-bold text-[#FF6B00]">{formatNumber(quantity)}</span>
+            <label className="text-sm font-semibold text-[#1A1A1A]/80 uppercase tracking-wider">Quantité</label>
+            <span className="text-2xl font-bold text-[#6B705C]">{formatNumber(quantity)}</span>
           </div>
           <Slider
             value={[quantityToSlider(quantity)]}
@@ -155,7 +160,7 @@ const Configurator = () => {
             step={1}
             className="py-4"
           />
-          <div className="flex justify-between text-xs text-white/40 mt-2">
+          <div className="flex justify-between text-xs text-[#1A1A1A]/50 mt-2">
             <span>5 000</span>
             <span>10 000</span>
             <span>25 000</span>
@@ -165,16 +170,16 @@ const Configurator = () => {
 
         {/* Print Type */}
         <div>
-          <label className="block text-sm font-medium text-white/80 mb-3 uppercase tracking-wider">Impression</label>
+          <label className="block text-sm font-semibold text-[#1A1A1A]/80 mb-3 uppercase tracking-wider">Impression</label>
           <div className="grid grid-cols-3 gap-2">
             {Object.entries(PRINT_COSTS).map(([key, { label }]) => (
               <button
                 key={key}
                 onClick={() => setPrintType(key)}
-                className={`p-3 text-sm font-medium transition-all ${
+                className={`p-3 text-sm font-semibold transition-all border ${
                   printType === key
-                    ? 'bg-[#FF6B00] text-black'
-                    : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'
+                    ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C]'
+                    : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C]'
                 }`}
               >
                 {label}
@@ -184,39 +189,47 @@ const Configurator = () => {
         </div>
 
         {/* Results */}
-        <div className="border-t border-white/10 pt-6 space-y-4">
+        <div className="border-t border-[#6B705C]/20 pt-6 space-y-4">
           <div className="flex justify-between items-center">
-            <span className="text-white/60">Prix unitaire</span>
-            <span className="text-2xl font-bold text-white">{unitPrice.toFixed(3)} €</span>
+            <span className="text-[#1A1A1A]/60">Prix unitaire</span>
+            <span className="text-2xl font-bold text-[#1A1A1A]">{unitPrice.toFixed(3)} €</span>
           </div>
           
           <div className="flex justify-between items-center">
-            <span className="text-white/60">Total estimé</span>
-            <span className="text-3xl font-black text-[#FF6B00]">{formatPrice(totalPrice)}</span>
+            <span className="text-[#1A1A1A]/60">Total estimé</span>
+            <span className="text-3xl font-black text-[#6B705C]">{formatPrice(totalPrice)}</span>
           </div>
           
           {savings > 0 && (
-            <div className="flex items-center gap-2 bg-green-500/10 border border-green-500/30 p-3">
-              <TrendingDown size={18} className="text-green-500" />
-              <span className="text-green-500 text-sm">
+            <div className="flex items-center gap-2 bg-[#6B705C]/10 border border-[#6B705C]/30 p-3">
+              <TrendingDown size={18} className="text-[#6B705C]" />
+              <span className="text-[#6B705C] text-sm font-medium">
                 Économie de {formatPrice(savings)} vs. quantité min.
               </span>
             </div>
           )}
+
+          {/* Eco Variable */}
+          <div className="flex items-center gap-2 bg-[#CDCEBD] p-4">
+            <Leaf size={20} className="text-[#6B705C]" />
+            <span className="text-[#1A1A1A] text-sm">
+              En choisissant EONITE, vous évitez l'utilisation de <strong>{plasticSaved} kg</strong> de plastique par an.
+            </span>
+          </div>
         </div>
 
         {/* CTA */}
         <Link 
           to={`/contact?product=${product}&size=${size}&quantity=${quantity}&print=${printType}&price=${totalPrice.toFixed(2)}`}
         >
-          <Button className="w-full btn-brutal py-6 text-lg">
-            Valider ce devis
+          <Button className="w-full btn-primary py-6 text-lg">
+            Démarrer mon design
             <ArrowRight className="ml-2" size={20} />
           </Button>
         </Link>
         
-        <p className="text-center text-white/40 text-xs">
-          Prix indicatif HT. Devis définitif après validation du design.
+        <p className="text-center text-[#1A1A1A]/50 text-xs">
+          Prix indicatif HT. Design validé en 30 minutes.
         </p>
       </div>
     </div>
