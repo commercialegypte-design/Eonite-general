@@ -1,12 +1,14 @@
 """
 EONITE V2 - AI Service
-Intégration Emergent LLM (conseils) + Hugging Face FLUX (images)
+Intégration Emergent LLM (conseils + images via gpt-image-1)
 """
 import os
 import logging
 import asyncio
-import aiohttp
+import base64
+import uuid
 from typing import Optional, Tuple
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -18,10 +20,6 @@ logger = logging.getLogger(__name__)
 # ============================================
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
-HF_API_TOKEN = os.environ.get("HF_API_TOKEN")
-
-# Hugging Face model endpoint - using Stable Diffusion XL (more reliable)
-HF_IMAGE_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
 
 # Image prompt prefix (forced for consistency)
 IMAGE_PROMPT_PREFIX = "A premium paper shopping bag, olive green color #6B705C, studio lighting, high resolution, professional product photography"
@@ -89,101 +87,78 @@ def generate_image_prompt(
     text_on_bag: str
 ) -> str:
     """
-    Génère le prompt pour FLUX avec le préfixe forcé.
+    Génère le prompt pour la génération d'image.
     """
     style_descriptors = {
-        "minimaliste": "minimalist design, clean typography, white space",
-        "luxe": "luxury premium finish, embossed effect, gold accents, elegant",
-        "fun": "playful colorful design, bold graphics, vibrant",
-        "eco": "eco-friendly natural kraft, recycled texture, sustainable look, earth tones"
+        "minimaliste": "minimalist design, clean typography, white space, modern",
+        "luxe": "luxury premium finish, embossed effect, gold accents, elegant, sophisticated",
+        "fun": "playful colorful design, bold graphics, vibrant colors, dynamic",
+        "eco": "eco-friendly natural kraft, recycled texture, sustainable look, earth tones, organic"
     }
     
     product_descriptors = {
-        "sac_kraft": "kraft paper shopping bag with handles",
-        "sac_luxe": "luxury gift bag with ribbon handles, premium finish",
-        "boite": "cardboard box packaging",
-        "gobelet": "paper coffee cup"
+        "sac_kraft": "kraft paper shopping bag with twisted handles",
+        "sac_luxe": "luxury gift bag with ribbon handles, glossy premium finish",
+        "boite": "cardboard food box packaging",
+        "gobelet": "paper coffee cup with lid"
     }
     
     style_desc = style_descriptors.get(brand_style, "professional design")
     product_desc = product_descriptors.get(product_type, "paper bag")
     
-    prompt = f"{IMAGE_PROMPT_PREFIX}, {product_desc}, {style_desc}, with text '{text_on_bag}' printed on it, mockup style, white background"
+    prompt = f"{IMAGE_PROMPT_PREFIX}, {product_desc}, {style_desc}, with elegant text '{text_on_bag}' printed on front, product mockup, white studio background, 4K quality"
     
     return prompt
 
 
 # ============================================
-# IMAGE GENERATION (Hugging Face FLUX)
+# IMAGE GENERATION (Emergent LLM - gpt-image-1)
 # ============================================
 
-async def generate_image_flux(prompt: str) -> Tuple[Optional[str], Optional[str]]:
+async def generate_image_emergent(prompt: str) -> Tuple[Optional[str], Optional[str]]:
     """
-    Génère une image via Hugging Face FLUX.1-schnell.
+    Génère une image via Emergent LLM (OpenAI gpt-image-1).
     Retourne (image_url, error_message)
     """
-    if not HF_API_TOKEN or HF_API_TOKEN == "your_huggingface_token_here":
-        logger.warning("HF_API_TOKEN not configured, returning placeholder")
-        return None, "HF_API_TOKEN non configuré"
-    
-    headers = {
-        "Authorization": f"Bearer {HF_API_TOKEN}",
-        "Content-Type": "application/json"
-    }
-    
-    # Simple payload - HF Inference API handles parameters automatically
-    payload = {
-        "inputs": prompt
-    }
+    if not EMERGENT_LLM_KEY:
+        logger.warning("EMERGENT_LLM_KEY not configured")
+        return None, "Clé API non configurée"
     
     try:
-        async with aiohttp.ClientSession() as session:
-            async with session.post(
-                HF_IMAGE_URL,
-                headers=headers,
-                json=payload,
-                timeout=aiohttp.ClientTimeout(total=120)
-            ) as response:
-                if response.status == 200:
-                    # FLUX returns binary image data
-                    image_data = await response.read()
-                    
-                    # Save to file and return URL (for MVP, save locally)
-                    import base64
-                    import uuid
-                    from pathlib import Path
-                    
-                    # Create uploads directory if not exists
-                    uploads_dir = Path(__file__).parent / "uploads" / "generated"
-                    uploads_dir.mkdir(parents=True, exist_ok=True)
-                    
-                    # Save image
-                    filename = f"design_{uuid.uuid4().hex[:8]}.png"
-                    filepath = uploads_dir / filename
-                    
-                    with open(filepath, "wb") as f:
-                        f.write(image_data)
-                    
-                    # Return relative URL
-                    image_url = f"/api/uploads/generated/{filename}"
-                    return image_url, None
-                    
-                elif response.status == 503:
-                    # Model is loading
-                    error_data = await response.json()
-                    estimated_time = error_data.get("estimated_time", 20)
-                    return None, f"Le modèle se charge, veuillez patienter {int(estimated_time)}s..."
-                    
-                else:
-                    error_text = await response.text()
-                    logger.error(f"FLUX API error: {response.status} - {error_text}")
-                    return None, f"Erreur de génération: {response.status}"
-                    
-    except asyncio.TimeoutError:
-        return None, "Timeout lors de la génération de l'image"
+        from emergentintegrations.llm.openai.image_generation import OpenAIImageGeneration
+        
+        # Initialize the image generator
+        image_gen = OpenAIImageGeneration(api_key=EMERGENT_LLM_KEY)
+        
+        # Generate image
+        images = await image_gen.generate_images(
+            prompt=prompt,
+            model="gpt-image-1",
+            number_of_images=1
+        )
+        
+        if images and len(images) > 0:
+            # Create uploads directory if not exists
+            uploads_dir = Path(__file__).parent / "uploads" / "generated"
+            uploads_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save image
+            filename = f"design_{uuid.uuid4().hex[:8]}.png"
+            filepath = uploads_dir / filename
+            
+            with open(filepath, "wb") as f:
+                f.write(images[0])
+            
+            # Return relative URL
+            image_url = f"/api/uploads/generated/{filename}"
+            logger.info(f"Image generated successfully: {filename}")
+            return image_url, None
+        else:
+            return None, "Aucune image générée"
+            
     except Exception as e:
         logger.error(f"Error generating image: {e}")
-        return None, str(e)
+        return None, f"Erreur de génération: {str(e)}"
 
 
 # ============================================
@@ -202,7 +177,7 @@ async def create_ai_design(
     Service principal qui:
     1. Génère le conseil stratégique (rapide)
     2. Génère le prompt d'image
-    3. Lance la génération d'image (peut être lent)
+    3. Lance la génération d'image
     
     Retourne le conseil immédiatement, l'image peut suivre.
     """
@@ -216,7 +191,7 @@ async def create_ai_design(
         brand_style, text_on_bag, business_name
     )
     
-    image_task = generate_image_flux(image_prompt)
+    image_task = generate_image_emergent(image_prompt)
     
     # Wait for both
     advice, (image_url, image_error) = await asyncio.gather(advice_task, image_task)
@@ -233,7 +208,7 @@ async def generate_image_only(prompt: str) -> dict:
     """
     Génère uniquement l'image (pour retry).
     """
-    image_url, image_error = await generate_image_flux(prompt)
+    image_url, image_error = await generate_image_emergent(prompt)
     return {
         "image_url": image_url,
         "image_error": image_error
