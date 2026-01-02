@@ -680,9 +680,15 @@ const AssistantPage = () => {
       {showInput && !isGenerating && (
         <div className="border-t-2 border-[#6B705C]/20 bg-white py-4 px-4">
           <div className="max-w-3xl mx-auto">
-            {inputType === 'business_name' || inputType === 'text_on_bag' ? (
+            {inputType === 'business_name' || inputType === 'text_on_bag' || inputType === 'competitor_inspiration' ? (
               <TextInput 
-                placeholder={inputType === 'business_name' ? "Ex: Le Petit Gourmet" : "Ex: Café Royal, Maison Dupain..."}
+                placeholder={
+                  inputType === 'business_name' 
+                    ? "Ex: Le Petit Gourmet" 
+                    : inputType === 'text_on_bag'
+                    ? "Ex: Café Royal, Maison Dupain..."
+                    : "Ex: Kedypack, Firplast, ou décrivez un style..."
+                }
                 onSubmit={handleTextSubmit}
                 disabled={isTyping}
               />
