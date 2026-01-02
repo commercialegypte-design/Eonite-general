@@ -433,19 +433,11 @@ const AssistantPage = () => {
 
   // Initialize chat - only once
   useEffect(() => {
-    let mounted = true;
-    
-    const init = async () => {
-      if (!mounted) return;
-      await startConversation();
-    };
-    
-    if (messages.length === 0) {
-      init();
+    if (!conversationStarted) {
+      setConversationStarted(true);
+      startConversation();
     }
-    
-    return () => { mounted = false; };
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [conversationStarted]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addMessage = (type, content, delay = 0) => {
     return new Promise((resolve) => {
