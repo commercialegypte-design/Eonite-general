@@ -1,68 +1,52 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Leaf, Calendar, ArrowRight, Check } from 'lucide-react';
-import { Button } from '../ui/button';
-import { companyInfo } from '../../data/mockData';
+import { Mail, Phone, MapPin, ArrowRight, Linkedin, Instagram } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#2D2D24] text-white">
-      {/* Pre-footer CTA */}
-      <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-              <h3 className="text-2xl font-bold">Prêt à personnaliser vos sacs ?</h3>
-              <p className="text-gray-400 mt-1">Visio design gratuite · Sans engagement</p>
-            </div>
-            <Link to="/contact?type=visio">
-              <Button size="lg" className="bg-[#6B6B4E] hover:bg-[#5A5A40] text-white px-8 py-6 rounded-xl flex items-center gap-2">
-                <Calendar size={18} />
-                Réserver ma visio
-                <ArrowRight size={18} />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-
+    <footer className="bg-black border-t border-white/10">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div className="lg:col-span-1">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/ws6x9cf4_eonite%20logo.png" 
-              alt="Eonite" 
-              className="h-10 w-auto mb-6 brightness-0 invert opacity-90"
-            />
-            <p className="text-gray-400 leading-relaxed mb-6">
-              Sacs kraft personnalisés pour restaurateurs, coffee shops et commerces alimentaires.
+            <Link to="/" className="inline-block mb-6">
+              <span className="text-3xl font-black tracking-tighter text-white">
+                EONITE
+              </span>
+            </Link>
+            <p className="text-white/60 leading-relaxed mb-6">
+              Emballages industriels personnalisés pour la restauration et le retail.
             </p>
-            <div className="flex items-center gap-2 text-[#A8A87A]">
-              <Leaf size={18} />
-              <span className="text-sm">100% éco-responsable</span>
+            <div className="flex gap-4">
+              <a href="#" className="w-10 h-10 bg-white/5 hover:bg-[#FF6B00] flex items-center justify-center transition-colors">
+                <Linkedin size={18} className="text-white" />
+              </a>
+              <a href="#" className="w-10 h-10 bg-white/5 hover:bg-[#FF6B00] flex items-center justify-center transition-colors">
+                <Instagram size={18} className="text-white" />
+              </a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Navigation */}
           <div>
-            <h3 className="text-lg font-semibold mb-6 text-white">Navigation</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-6">Navigation</h3>
             <ul className="space-y-3">
               {[
                 { label: 'Accueil', path: '/' },
-                { label: 'Contact', path: '/contact' },
-                { label: 'Réserver une visio', path: '/contact?type=visio' },
-                { label: 'Demander un devis', path: '/contact?type=devis' }
+                { label: 'Catalogue', path: '/catalogue' },
+                { label: 'Notre Usine', path: '/usine' },
+                { label: 'Grands Comptes', path: '/grands-comptes' },
+                { label: 'Contact', path: '/contact' }
               ].map((link) => (
                 <li key={link.path}>
                   <Link 
                     to={link.path}
-                    className="text-gray-400 hover:text-[#A8A87A] transition-colors flex items-center gap-2 group"
+                    className="text-white/60 hover:text-[#FF6B00] transition-colors flex items-center gap-2 group"
                   >
-                    <ArrowRight size={14} className="opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+                    <ArrowRight size={12} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all text-[#FF6B00]" />
                     {link.label}
                   </Link>
                 </li>
@@ -70,21 +54,25 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Guarantees */}
+          {/* Products */}
           <div>
-            <h3 className="text-lg font-semibold mb-6 text-white">Nos garanties</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-6">Produits</h3>
             <ul className="space-y-3">
               {[
-                'Papier kraft certifié FSC',
-                'Production européenne',
-                'Encres alimentaires',
-                'Livraison France entière',
-                'Devis gratuit',
-                'Paiement sécurisé'
-              ].map((item) => (
-                <li key={item} className="flex items-center gap-2 text-gray-400">
-                  <Check size={14} className="text-[#A8A87A]" />
-                  {item}
+                'Sacs Kraft',
+                'Boîtes Carton',
+                'Emballages Luxe',
+                'Gobelets',
+                'Expédition'
+              ].map((product) => (
+                <li key={product}>
+                  <Link 
+                    to="/catalogue"
+                    className="text-white/60 hover:text-[#FF6B00] transition-colors flex items-center gap-2 group"
+                  >
+                    <ArrowRight size={12} className="opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all text-[#FF6B00]" />
+                    {product}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -92,50 +80,61 @@ const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-6 text-white">Contact</h3>
+            <h3 className="text-sm font-bold uppercase tracking-wider text-white mb-6">Contact</h3>
             <ul className="space-y-4">
               <li>
                 <a 
-                  href={`mailto:${companyInfo.email}`}
-                  className="flex items-start gap-3 text-gray-400 hover:text-[#A8A87A] transition-colors"
+                  href="mailto:contact@eonite.fr"
+                  className="flex items-start gap-3 text-white/60 hover:text-[#FF6B00] transition-colors"
                 >
                   <Mail size={18} className="mt-0.5 flex-shrink-0" />
-                  <span>{companyInfo.email}</span>
+                  <span>contact@eonite.fr</span>
                 </a>
               </li>
               <li>
                 <a 
-                  href={`tel:${companyInfo.phone}`}
-                  className="flex items-start gap-3 text-gray-400 hover:text-[#A8A87A] transition-colors"
+                  href="tel:+33100000000"
+                  className="flex items-start gap-3 text-white/60 hover:text-[#FF6B00] transition-colors"
                 >
                   <Phone size={18} className="mt-0.5 flex-shrink-0" />
-                  <span>{companyInfo.phone}</span>
+                  <span>+33 (0)1 XX XX XX XX</span>
                 </a>
               </li>
-              <li className="flex items-start gap-3 text-gray-400">
+              <li className="flex items-start gap-3 text-white/60">
                 <MapPin size={18} className="mt-0.5 flex-shrink-0" />
-                <span>{companyInfo.address}</span>
+                <span>France / Europe</span>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
+      {/* Industrial Strip */}
+      <div className="bg-[#FF6B00] overflow-hidden">
+        <div className="animate-marquee whitespace-nowrap py-3 flex">
+          {[...Array(10)].map((_, i) => (
+            <span key={i} className="text-black font-bold text-sm uppercase tracking-widest mx-8">
+              PRODUCTION EUROPE • FSC CERTIFIÉ • ISO 9001 • LIVRAISON 2-3 SEMAINES •
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Bottom Bar */}
-      <div className="border-t border-gray-700">
+      <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-500 text-sm">
-              © {currentYear} Eonite. Tous droits réservés.
+            <p className="text-white/40 text-sm">
+              © {currentYear} EONITE. Tous droits réservés.
             </p>
             <div className="flex gap-6 text-sm">
-              <Link to="/mentions-legales" className="text-gray-500 hover:text-[#A8A87A] transition-colors">
+              <Link to="/mentions-legales" className="text-white/40 hover:text-[#FF6B00] transition-colors">
                 Mentions légales
               </Link>
-              <Link to="/politique-confidentialite" className="text-gray-500 hover:text-[#A8A87A] transition-colors">
+              <Link to="/confidentialite" className="text-white/40 hover:text-[#FF6B00] transition-colors">
                 Confidentialité
               </Link>
-              <Link to="/cgv" className="text-gray-500 hover:text-[#A8A87A] transition-colors">
+              <Link to="/cgv" className="text-white/40 hover:text-[#FF6B00] transition-colors">
                 CGV
               </Link>
             </div>
