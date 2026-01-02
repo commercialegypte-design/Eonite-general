@@ -42,7 +42,7 @@ Plateforme B2B de vente d'emballages personnalisés (sacs kraft, boîtes, gobele
 
 ### Intégrations
 - [x] **Emergent LLM Key** (GPT-5.2) → Conseils stratégiques ✅
-- [ ] **Hugging Face FLUX.1-schnell** → Génération images (EN ATTENTE HF_API_TOKEN)
+- [x] **Emergent LLM Key** (gpt-image-1) → Génération images ✅
 
 ### Homepage V2
 - [x] Nouveau H1: "Votre emballage personnalisé au prix du neutre."
