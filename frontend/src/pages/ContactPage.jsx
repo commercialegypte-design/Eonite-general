@@ -1,436 +1,307 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Clock, 
-  Send, 
-  CheckCircle2,
-  Calendar,
-  FileText,
-  MessageSquare,
-  Check,
-  Video
-} from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Send, CheckCircle2, Upload, X, Calendar, FileText, Package } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
 import { Label } from '../components/ui/label';
-import { Card, CardContent } from '../components/ui/card';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../components/ui/select';
-import { companyInfo } from '../data/mockData';
+import { quotes, upload as uploadApi } from '../lib/api';
 
 const ContactPage = () => {
   const [searchParams] = useSearchParams();
-  const typeFromUrl = searchParams.get('type');
+  
+  // Pre-fill from URL params (from configurator)
+  const productFromUrl = searchParams.get('product');
+  const quantityFromUrl = searchParams.get('quantity');
+  const priceFromUrl = searchParams.get('price');
+  const sizeFromUrl = searchParams.get('size');
+  const printFromUrl = searchParams.get('print');
 
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    company_name: '',
+    contact_name: '',
     email: '',
     phone: '',
-    company: '',
-    requestType: typeFromUrl || 'visio',
-    quantity: '',
-    format: '',
-    message: ''
+    product_type: productFromUrl || 'sacs_kraft',
+    size: sizeFromUrl || 'medium',
+    quantity: quantityFromUrl || '',
+    print_type: printFromUrl || '1_color',
+    estimated_price: parseFloat(priceFromUrl) || 0,
+    message: '',
+    design_file_url: ''
   });
 
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (typeFromUrl) {
-      setFormData(prev => ({ ...prev, requestType: typeFromUrl }));
-    }
-  }, [typeFromUrl]);
+  const handleFileUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.firstName.trim()) newErrors.firstName = 'Prénom requis';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Nom requis';
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email requis';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Email invalide';
+    setIsUploading(true);
+    try {
+      const result = await uploadApi.file(file);
+      setUploadedFile({ name: file.name, url: result.url });
+      setFormData(prev => ({ ...prev, design_file_url: result.url }));
+    } catch (err) {
+      setError('Erreur lors de l\'upload du fichier');
+    } finally {
+      setIsUploading(false);
     }
-    if (!formData.company.trim()) newErrors.company = 'Nom de l\'établissement requis';
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  };
+
+  const removeFile = () => {
+    setUploadedFile(null);
+    setFormData(prev => ({ ...prev, design_file_url: '' }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) return;
-
+    setError('');
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
+
+    try {
+      await quotes.create({
+        ...formData,
+        quantity: parseInt(formData.quantity) || 5000,
+        estimated_price: parseFloat(formData.estimated_price) || 0
+      });
+      setIsSubmitted(true);
+    } catch (err) {
+      setError(err.message || 'Une erreur est survenue');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
   };
 
   if (isSubmitted) {
     return (
-      <main className="min-h-screen bg-[#F8F7F4] flex items-center justify-center px-4">
-        <Card className="max-w-lg w-full border-0 shadow-xl">
-          <CardContent className="p-12 text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle2 className="text-green-600" size={40} />
-            </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              {formData.requestType === 'visio' ? 'Demande de visio envoyée !' : 'Demande de devis envoyée !'}
-            </h2>
-            <p className="text-gray-600 mb-8">
-              {formData.requestType === 'visio' 
-                ? 'Nous vous recontactons sous 24h pour fixer un créneau de visio design.'
-                : 'Nous préparons votre devis personnalisé. Réponse sous 24h ouvrées.'
-              }
+      <main className="bg-[#0A0A0A] min-h-screen pt-20 flex items-center justify-center">
+        <div className="max-w-lg mx-auto px-4 text-center">
+          <div className="w-20 h-20 bg-[#FF6B00] flex items-center justify-center mx-auto mb-8">
+            <CheckCircle2 size={40} className="text-black" />
+          </div>
+          <h2 className="text-3xl font-black text-white mb-4">DEMANDE ENVOYÉE</h2>
+          <p className="text-white/60 mb-4">
+            Nous avons bien reçu votre demande de devis. Notre équipe vous contactera sous 24h.
+          </p>
+          {formData.estimated_price > 0 && (
+            <p className="text-[#FF6B00] font-bold text-2xl mb-8">
+              Estimation : {formData.estimated_price.toFixed(2)} € HT
             </p>
-            <div className="bg-[#F8F7F4] rounded-xl p-6 mb-8">
-              <h3 className="font-semibold text-gray-900 mb-3">Prochaines étapes :</h3>
-              <ul className="text-left space-y-2 text-gray-600">
-                <li className="flex items-start gap-2">
-                  <Check size={18} className="text-green-600 mt-0.5" />
-                  <span>Vérifiez votre boîte mail (et vos spams)</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check size={18} className="text-green-600 mt-0.5" />
-                  <span>On vous contacte sous 24h</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <Check size={18} className="text-green-600 mt-0.5" />
-                  <span>Préparez votre logo si vous en avez un</span>
-                </li>
-              </ul>
-            </div>
-            <Button 
-              onClick={() => {
-                setIsSubmitted(false);
-                setFormData({
-                  firstName: '', lastName: '', email: '', phone: '',
-                  company: '', requestType: 'visio', quantity: '', format: '', message: ''
-                });
-              }}
-              className="bg-[#6B6B4E] hover:bg-[#5A5A40] text-white"
-            >
-              Nouvelle demande
-            </Button>
-          </CardContent>
-        </Card>
+          )}
+          <Link to="/">
+            <Button className="btn-brutal">Retour à l'accueil</Button>
+          </Link>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen">
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#6B6B4E] via-[#7A7A5E] to-[#8B8B6E] py-16 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            {typeFromUrl === 'visio' ? 'Réserver ma visio design' : 'Contactez-nous'}
+    <main className="bg-[#0A0A0A] min-h-screen pt-20">
+      {/* Hero */}
+      <section className="bg-black border-b border-white/10 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <span className="text-[#FF6B00] font-bold text-sm uppercase tracking-widest">
+            Contact
+          </span>
+          <h1 className="text-4xl md:text-6xl font-black text-white mt-4">
+            DEMANDEZ<br />
+            <span className="text-white/40">VOTRE DEVIS</span>
           </h1>
-          <p className="text-xl text-white/80 max-w-2xl">
-            {typeFromUrl === 'visio' 
-              ? 'En 30 minutes, on crée ensemble le design de votre sac personnalisé.'
-              : 'Une question ? Un projet ? On vous répond sous 24h.'
-            }
+          <p className="text-white/60 text-lg mt-4 max-w-2xl">
+            Réponse sous 24h. Devis gratuit et sans engagement.
           </p>
         </div>
       </section>
 
-      {/* Contact Section */}
-      <section className="py-16 bg-[#F8F7F4]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-12">
+      {/* Form */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Price Summary if from configurator */}
+          {priceFromUrl && (
+            <div className="bg-[#FF6B00]/10 border border-[#FF6B00]/30 p-6 mb-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Package size={24} className="text-[#FF6B00]" />
+                  <div>
+                    <p className="text-white font-medium">Votre configuration</p>
+                    <p className="text-white/60 text-sm">
+                      {quantityFromUrl} pièces · {productFromUrl} · {sizeFromUrl}
+                    </p>
+                  </div>
+                </div>
+                <p className="text-[#FF6B00] font-black text-3xl">
+                  {parseFloat(priceFromUrl).toFixed(2)} €
+                </p>
+              </div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="bg-black border border-white/10 p-8 md:p-12 space-y-8">
+            {error && (
+              <div className="bg-red-500/10 border border-red-500/30 p-4 text-red-500">
+                {error}
+              </div>
+            )}
+
             {/* Contact Info */}
-            <div className="lg:col-span-1 space-y-8">
+            <div>
+              <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 bg-[#FF6B00] flex items-center justify-center text-black text-sm font-bold">1</span>
+                Vos coordonnées
+              </h3>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <Label className="text-white/80 mb-2 block">Nom de l'entreprise *</Label>
+                  <Input
+                    value={formData.company_name}
+                    onChange={(e) => handleChange('company_name', e.target.value)}
+                    required
+                    className="h-12 bg-white/5 border-white/10 text-white"
+                    placeholder="Restaurant Le Gourmet"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white/80 mb-2 block">Votre nom *</Label>
+                  <Input
+                    value={formData.contact_name}
+                    onChange={(e) => handleChange('contact_name', e.target.value)}
+                    required
+                    className="h-12 bg-white/5 border-white/10 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white/80 mb-2 block">Email *</Label>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    required
+                    className="h-12 bg-white/5 border-white/10 text-white"
+                  />
+                </div>
+                <div>
+                  <Label className="text-white/80 mb-2 block">Téléphone</Label>
+                  <Input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => handleChange('phone', e.target.value)}
+                    className="h-12 bg-white/5 border-white/10 text-white"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Product Config */}
+            {!priceFromUrl && (
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">Comment ça marche ?</h2>
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold">1</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Remplissez le formulaire</h3>
-                      <p className="text-gray-600 text-sm">30 secondes suffisent</p>
-                    </div>
+                <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                  <span className="w-8 h-8 bg-[#FF6B00] flex items-center justify-center text-black text-sm font-bold">2</span>
+                  Votre besoin
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="text-white/80 mb-2 block">Type de produit</Label>
+                    <select
+                      value={formData.product_type}
+                      onChange={(e) => handleChange('product_type', e.target.value)}
+                      className="w-full h-12 bg-white/5 border border-white/10 text-white px-4"
+                    >
+                      <option value="sacs_kraft">Sacs Kraft</option>
+                      <option value="boites">Boîtes Carton</option>
+                      <option value="gobelets">Gobelets</option>
+                      <option value="luxe">Luxe</option>
+                      <option value="autre">Autre</option>
+                    </select>
                   </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold">2</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">On vous recontacte</h3>
-                      <p className="text-gray-600 text-sm">Sous 24h max</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
-                      <span className="text-white font-bold">3</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">On design en visio</h3>
-                      <p className="text-gray-600 text-sm">30 min et c'est bouclé</p>
-                    </div>
+                  <div>
+                    <Label className="text-white/80 mb-2 block">Quantité souhaitée</Label>
+                    <Input
+                      type="number"
+                      value={formData.quantity}
+                      onChange={(e) => handleChange('quantity', e.target.value)}
+                      className="h-12 bg-white/5 border-white/10 text-white"
+                      placeholder="Ex: 10000"
+                    />
                   </div>
                 </div>
               </div>
+            )}
 
-              <div className="space-y-4 pt-8 border-t border-gray-200">
-                <h3 className="font-semibold text-gray-900">Ou contactez-nous directement</h3>
-                
-                <Card className="border-0 shadow-md">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
-                      <Mail className="text-[#6B6B4E]" size={20} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <a href={`mailto:${companyInfo.email}`} className="font-medium text-gray-900 hover:text-[#6B6B4E]">
-                        {companyInfo.email}
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-md">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
-                      <Phone className="text-[#6B6B4E]" size={20} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Téléphone</p>
-                      <a href={`tel:${companyInfo.phone}`} className="font-medium text-gray-900 hover:text-[#6B6B4E]">
-                        {companyInfo.phone}
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-md">
-                  <CardContent className="p-4 flex items-center gap-4">
-                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
-                      <Clock className="text-[#6B6B4E]" size={20} />
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Horaires</p>
-                      <p className="font-medium text-gray-900">Lun - Ven : 9h - 18h</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="lg:col-span-2">
-              <Card className="border-0 shadow-xl">
-                <CardContent className="p-8 md:p-10">
-                  {/* Request Type Selector */}
-                  <div className="flex gap-4 mb-8">
-                    <button
-                      type="button"
-                      onClick={() => handleChange('requestType', 'visio')}
-                      className={`flex-1 p-4 rounded-xl border-2 transition-all ${
-                        formData.requestType === 'visio'
-                          ? 'border-[#6B6B4E] bg-[#6B6B4E]/5'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <Video className={`mx-auto mb-2 ${formData.requestType === 'visio' ? 'text-[#6B6B4E]' : 'text-gray-400'}`} size={28} />
-                      <p className={`font-semibold ${formData.requestType === 'visio' ? 'text-[#6B6B4E]' : 'text-gray-600'}`}>
-                        Visio Design
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">On crée ensemble</p>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleChange('requestType', 'devis')}
-                      className={`flex-1 p-4 rounded-xl border-2 transition-all ${
-                        formData.requestType === 'devis'
-                          ? 'border-[#6B6B4E] bg-[#6B6B4E]/5'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <FileText className={`mx-auto mb-2 ${formData.requestType === 'devis' ? 'text-[#6B6B4E]' : 'text-gray-400'}`} size={28} />
-                      <p className={`font-semibold ${formData.requestType === 'devis' ? 'text-[#6B6B4E]' : 'text-gray-600'}`}>
-                        Demande de Devis
-                      </p>
-                      <p className="text-xs text-gray-500 mt-1">Juste un prix</p>
-                    </button>
+            {/* File Upload */}
+            <div>
+              <h3 className="text-white font-bold text-lg mb-6 flex items-center gap-2">
+                <span className="w-8 h-8 bg-[#FF6B00] flex items-center justify-center text-black text-sm font-bold">{priceFromUrl ? '2' : '3'}</span>
+                Votre logo (optionnel)
+              </h3>
+              
+              {uploadedFile ? (
+                <div className="flex items-center justify-between bg-white/5 border border-white/10 p-4">
+                  <div className="flex items-center gap-3">
+                    <FileText size={24} className="text-[#FF6B00]" />
+                    <span className="text-white">{uploadedFile.name}</span>
                   </div>
-
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="firstName">Prénom *</Label>
-                        <Input
-                          id="firstName"
-                          value={formData.firstName}
-                          onChange={(e) => handleChange('firstName', e.target.value)}
-                          placeholder="Votre prénom"
-                          className={`h-12 ${errors.firstName ? 'border-red-500' : ''}`}
-                        />
-                        {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="lastName">Nom *</Label>
-                        <Input
-                          id="lastName"
-                          value={formData.lastName}
-                          onChange={(e) => handleChange('lastName', e.target.value)}
-                          placeholder="Votre nom"
-                          className={`h-12 ${errors.lastName ? 'border-red-500' : ''}`}
-                        />
-                        {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
-                      </div>
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email professionnel *</Label>
-                        <Input
-                          id="email"
-                          type="email"
-                          value={formData.email}
-                          onChange={(e) => handleChange('email', e.target.value)}
-                          placeholder="vous@votre-resto.fr"
-                          className={`h-12 ${errors.email ? 'border-red-500' : ''}`}
-                        />
-                        {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="phone">Téléphone</Label>
-                        <Input
-                          id="phone"
-                          type="tel"
-                          value={formData.phone}
-                          onChange={(e) => handleChange('phone', e.target.value)}
-                          placeholder="06 XX XX XX XX"
-                          className="h-12"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Nom de l'établissement *</Label>
-                      <Input
-                        id="company"
-                        value={formData.company}
-                        onChange={(e) => handleChange('company', e.target.value)}
-                        placeholder="Restaurant, coffee shop, boulangerie..."
-                        className={`h-12 ${errors.company ? 'border-red-500' : ''}`}
-                      />
-                      {errors.company && <p className="text-red-500 text-sm">{errors.company}</p>}
-                    </div>
-
-                    <div className="grid md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="quantity">Quantité estimée</Label>
-                        <Select value={formData.quantity} onValueChange={(value) => handleChange('quantity', value)}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Sélectionnez une quantité" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="500-1000">500 - 1 000 pièces</SelectItem>
-                            <SelectItem value="1000-2500">1 000 - 2 500 pièces</SelectItem>
-                            <SelectItem value="2500-5000">2 500 - 5 000 pièces</SelectItem>
-                            <SelectItem value="5000-10000">5 000 - 10 000 pièces</SelectItem>
-                            <SelectItem value="10000+">10 000+ pièces</SelectItem>
-                            <SelectItem value="unsure">Je ne sais pas encore</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="format">Format souhaité</Label>
-                        <Select value={formData.format} onValueChange={(value) => handleChange('format', value)}>
-                          <SelectTrigger className="h-12">
-                            <SelectValue placeholder="Sélectionnez un format" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="petit">Petit (viennoiseries, snacks)</SelectItem>
-                            <SelectItem value="moyen">Moyen (repas à emporter)</SelectItem>
-                            <SelectItem value="grand">Grand (commandes multiples)</SelectItem>
-                            <SelectItem value="plusieurs">Plusieurs formats</SelectItem>
-                            <SelectItem value="unsure">Je ne sais pas encore</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message (optionnel)</Label>
-                      <Textarea
-                        id="message"
-                        value={formData.message}
-                        onChange={(e) => handleChange('message', e.target.value)}
-                        placeholder="Précisions sur votre projet, vos besoins spécifiques..."
-                        rows={4}
-                      />
-                    </div>
-
-                    <Button 
-                      type="submit" 
-                      size="lg"
-                      disabled={isSubmitting}
-                      className="w-full bg-[#6B6B4E] hover:bg-[#5A5A40] text-white py-7 text-lg rounded-xl transition-all"
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center gap-2">
-                          <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                          </svg>
-                          Envoi en cours...
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2 justify-center">
-                          {formData.requestType === 'visio' ? (
-                            <>
-                              <Calendar size={20} />
-                              Demander ma visio design
-                            </>
-                          ) : (
-                            <>
-                              <Send size={20} />
-                              Demander mon devis gratuit
-                            </>
-                          )}
-                        </span>
-                      )}
-                    </Button>
-
-                    <p className="text-center text-sm text-gray-500">
-                      ✓ Sans engagement · ✓ Réponse sous 24h · ✓ 100% gratuit
+                  <button type="button" onClick={removeFile} className="text-white/50 hover:text-red-500">
+                    <X size={20} />
+                  </button>
+                </div>
+              ) : (
+                <label className="block">
+                  <div className="border-2 border-dashed border-white/20 hover:border-[#FF6B00]/50 p-8 text-center cursor-pointer transition-colors">
+                    <Upload size={32} className="text-white/40 mx-auto mb-4" />
+                    <p className="text-white/60 mb-2">
+                      {isUploading ? 'Upload en cours...' : 'Cliquez pour uploader votre logo'}
                     </p>
-                  </form>
-                </CardContent>
-              </Card>
+                    <p className="text-white/40 text-sm">PNG, JPG, PDF, AI (max 10MB)</p>
+                  </div>
+                  <input
+                    type="file"
+                    onChange={handleFileUpload}
+                    accept=".png,.jpg,.jpeg,.pdf,.ai,.svg"
+                    className="hidden"
+                    disabled={isUploading}
+                  />
+                </label>
+              )}
             </div>
-          </div>
+
+            {/* Message */}
+            <div>
+              <Label className="text-white/80 mb-2 block">Message / Précisions</Label>
+              <Textarea
+                value={formData.message}
+                onChange={(e) => handleChange('message', e.target.value)}
+                className="bg-white/5 border-white/10 text-white min-h-[120px]"
+                placeholder="Décrivez vos besoins spécifiques, dimensions souhaitées, couleurs..."
+              />
+            </div>
+
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full btn-brutal py-6 text-lg"
+            >
+              {isSubmitting ? 'Envoi en cours...' : (
+                <>
+                  <Send className="mr-2" size={20} />
+                  Envoyer ma demande de devis
+                </>
+              )}
+            </Button>
+
+            <p className="text-center text-white/40 text-sm">
+              Réponse sous 24h · Devis gratuit · Sans engagement
+            </p>
+          </form>
         </div>
       </section>
     </main>
