@@ -6,42 +6,42 @@ export const categories = [
     name: 'Sacs Poignées',
     description: 'Sacs en papier avec poignées plates ou torsadées',
     icon: 'ShoppingBag',
-    image: 'https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=400'
+    image: 'https://images.unsplash.com/photo-1567016432779-094069958ea5?w=400&q=80'
   },
   {
     id: 'sacs-sos',
     name: 'Sacs SOS',
     description: 'Sacs en papier kraft brun ou blanc',
     icon: 'Package',
-    image: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400'
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80'
   },
   {
     id: 'boites-food',
     name: 'Boîtes Food',
     description: 'Boîtes pizza, burger, sandwich et wrap',
     icon: 'Box',
-    image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400'
+    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80'
   },
   {
     id: 'gobelets',
     name: 'Gobelets',
     description: 'Gobelets simple, double et triple paroi',
     icon: 'Coffee',
-    image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400'
+    image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=400&q=80'
   },
   {
     id: 'bols-kraft',
     name: 'Bols Kraft',
     description: 'Bols salade et contenants kraft',
     icon: 'Circle',
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400'
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80'
   },
   {
     id: 'expedition',
     name: 'Expédition',
     description: 'Sacs d\'expédition et emballages courrier',
     icon: 'Truck',
-    image: 'https://images.unsplash.com/photo-1566576912321-d58ddd7a6088?w=400'
+    image: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&q=80'
   }
 ];
 
