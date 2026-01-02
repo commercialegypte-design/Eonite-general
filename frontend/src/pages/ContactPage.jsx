@@ -7,8 +7,11 @@ import {
   Clock, 
   Send, 
   CheckCircle2,
-  Building2,
-  MessageSquare
+  Calendar,
+  FileText,
+  MessageSquare,
+  Check,
+  Video
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -22,11 +25,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../components/ui/select';
-import { companyInfo, categories } from '../data/mockData';
+import { companyInfo } from '../data/mockData';
 
 const ContactPage = () => {
   const [searchParams] = useSearchParams();
-  const productFromUrl = searchParams.get('product');
+  const typeFromUrl = searchParams.get('type');
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -34,14 +37,21 @@ const ContactPage = () => {
     email: '',
     phone: '',
     company: '',
-    subject: productFromUrl ? 'devis' : '',
-    category: '',
-    message: productFromUrl ? `Bonjour,\n\nJe souhaite obtenir un devis pour le produit suivant :\n- ${productFromUrl}\n\nMerci de me recontacter.` : ''
+    requestType: typeFromUrl || 'visio',
+    quantity: '',
+    format: '',
+    message: ''
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (typeFromUrl) {
+      setFormData(prev => ({ ...prev, requestType: typeFromUrl }));
+    }
+  }, [typeFromUrl]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -52,8 +62,7 @@ const ContactPage = () => {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = 'Email invalide';
     }
-    if (!formData.subject) newErrors.subject = 'Sujet requis';
-    if (!formData.message.trim()) newErrors.message = 'Message requis';
+    if (!formData.company.trim()) newErrors.company = 'Nom de l\'établissement requis';
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -82,30 +91,49 @@ const ContactPage = () => {
 
   if (isSubmitted) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <main className="min-h-screen bg-[#F8F7F4] flex items-center justify-center px-4">
         <Card className="max-w-lg w-full border-0 shadow-xl">
           <CardContent className="p-12 text-center">
             <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="text-green-600" size={40} />
             </div>
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
-              Message Envoyé !
+              {formData.requestType === 'visio' ? 'Demande de visio envoyée !' : 'Demande de devis envoyée !'}
             </h2>
             <p className="text-gray-600 mb-8">
-              Merci pour votre message. Notre équipe vous répondra dans les plus brefs délais, 
-              généralement sous 24 heures ouvrées.
+              {formData.requestType === 'visio' 
+                ? 'Nous vous recontactons sous 24h pour fixer un créneau de visio design.'
+                : 'Nous préparons votre devis personnalisé. Réponse sous 24h ouvrées.'
+              }
             </p>
+            <div className="bg-[#F8F7F4] rounded-xl p-6 mb-8">
+              <h3 className="font-semibold text-gray-900 mb-3">Prochaines étapes :</h3>
+              <ul className="text-left space-y-2 text-gray-600">
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-green-600 mt-0.5" />
+                  <span>Vérifiez votre boîte mail (et vos spams)</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-green-600 mt-0.5" />
+                  <span>On vous contacte sous 24h</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check size={18} className="text-green-600 mt-0.5" />
+                  <span>Préparez votre logo si vous en avez un</span>
+                </li>
+              </ul>
+            </div>
             <Button 
               onClick={() => {
                 setIsSubmitted(false);
                 setFormData({
                   firstName: '', lastName: '', email: '', phone: '',
-                  company: '', subject: '', category: '', message: ''
+                  company: '', requestType: 'visio', quantity: '', format: '', message: ''
                 });
               }}
               className="bg-[#6B6B4E] hover:bg-[#5A5A40] text-white"
             >
-              Envoyer un autre message
+              Nouvelle demande
             </Button>
           </CardContent>
         </Card>
@@ -116,81 +144,101 @@ const ContactPage = () => {
   return (
     <main className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[#6B6B4E] to-[#8B8B6E] py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="bg-gradient-to-br from-[#6B6B4E] via-[#7A7A5E] to-[#8B8B6E] py-16 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full blur-3xl" />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Contactez-Nous
+            {typeFromUrl === 'visio' ? 'Réserver ma visio design' : 'Contactez-nous'}
           </h1>
           <p className="text-xl text-white/80 max-w-2xl">
-            Une question ? Un projet ? Notre équipe est à votre écoute pour vous accompagner.
+            {typeFromUrl === 'visio' 
+              ? 'En 30 minutes, on crée ensemble le design de votre sac personnalisé.'
+              : 'Une question ? Un projet ? On vous répond sous 24h.'
+            }
           </p>
         </div>
       </section>
 
       {/* Contact Section */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-[#F8F7F4]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-12">
             {/* Contact Info */}
             <div className="lg:col-span-1 space-y-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-6">Nos Coordonnées</h2>
-                <p className="text-gray-600">
-                  N'hésitez pas à nous contacter par téléphone ou email. 
-                  Nous répondons généralement sous 24h.
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Mail className="text-[#6B6B4E]" size={24} />
+                <h2 className="text-2xl font-bold text-gray-900 mb-4">Comment ça marche ?</h2>
+                <div className="space-y-4">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold">1</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Email</h3>
-                      <a href={`mailto:${companyInfo.email}`} className="text-[#6B6B4E] hover:underline">
+                      <h3 className="font-semibold text-gray-900">Remplissez le formulaire</h3>
+                      <p className="text-gray-600 text-sm">30 secondes suffisent</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold">2</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">On vous recontacte</h3>
+                      <p className="text-gray-600 text-sm">Sous 24h max</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E] rounded-xl flex items-center justify-center flex-shrink-0">
+                      <span className="text-white font-bold">3</span>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900">On design en visio</h3>
+                      <p className="text-gray-600 text-sm">30 min et c'est bouclé</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-8 border-t border-gray-200">
+                <h3 className="font-semibold text-gray-900">Ou contactez-nous directement</h3>
+                
+                <Card className="border-0 shadow-md">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
+                      <Mail className="text-[#6B6B4E]" size={20} />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500">Email</p>
+                      <a href={`mailto:${companyInfo.email}`} className="font-medium text-gray-900 hover:text-[#6B6B4E]">
                         {companyInfo.email}
                       </a>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Phone className="text-[#6B6B4E]" size={24} />
+                <Card className="border-0 shadow-md">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
+                      <Phone className="text-[#6B6B4E]" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Téléphone</h3>
-                      <a href={`tel:${companyInfo.phone}`} className="text-[#6B6B4E] hover:underline">
+                      <p className="text-sm text-gray-500">Téléphone</p>
+                      <a href={`tel:${companyInfo.phone}`} className="font-medium text-gray-900 hover:text-[#6B6B4E]">
                         {companyInfo.phone}
                       </a>
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <MapPin className="text-[#6B6B4E]" size={24} />
+                <Card className="border-0 shadow-md">
+                  <CardContent className="p-4 flex items-center gap-4">
+                    <div className="w-10 h-10 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
+                      <Clock className="text-[#6B6B4E]" size={20} />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900">Adresse</h3>
-                      <p className="text-gray-600">{companyInfo.address}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-0 shadow-md hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6 flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-                      <Clock className="text-[#6B6B4E]" size={24} />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">Horaires</h3>
-                      <p className="text-gray-600">Lun - Ven : 9h - 18h</p>
-                      <p className="text-gray-500 text-sm">Sam - Dim : Fermé</p>
+                      <p className="text-sm text-gray-500">Horaires</p>
+                      <p className="font-medium text-gray-900">Lun - Ven : 9h - 18h</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -201,14 +249,38 @@ const ContactPage = () => {
             <div className="lg:col-span-2">
               <Card className="border-0 shadow-xl">
                 <CardContent className="p-8 md:p-10">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 bg-[#6B6B4E]/10 rounded-xl flex items-center justify-center">
-                      <MessageSquare className="text-[#6B6B4E]" size={24} />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">Envoyez-nous un message</h2>
-                      <p className="text-gray-500">Nous vous répondrons rapidement</p>
-                    </div>
+                  {/* Request Type Selector */}
+                  <div className="flex gap-4 mb-8">
+                    <button
+                      type="button"
+                      onClick={() => handleChange('requestType', 'visio')}
+                      className={`flex-1 p-4 rounded-xl border-2 transition-all ${
+                        formData.requestType === 'visio'
+                          ? 'border-[#6B6B4E] bg-[#6B6B4E]/5'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <Video className={`mx-auto mb-2 ${formData.requestType === 'visio' ? 'text-[#6B6B4E]' : 'text-gray-400'}`} size={28} />
+                      <p className={`font-semibold ${formData.requestType === 'visio' ? 'text-[#6B6B4E]' : 'text-gray-600'}`}>
+                        Visio Design
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">On crée ensemble</p>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleChange('requestType', 'devis')}
+                      className={`flex-1 p-4 rounded-xl border-2 transition-all ${
+                        formData.requestType === 'devis'
+                          ? 'border-[#6B6B4E] bg-[#6B6B4E]/5'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <FileText className={`mx-auto mb-2 ${formData.requestType === 'devis' ? 'text-[#6B6B4E]' : 'text-gray-400'}`} size={28} />
+                      <p className={`font-semibold ${formData.requestType === 'devis' ? 'text-[#6B6B4E]' : 'text-gray-600'}`}>
+                        Demande de Devis
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">Juste un prix</p>
+                    </button>
                   </div>
 
                   <form onSubmit={handleSubmit} className="space-y-6">
@@ -220,7 +292,7 @@ const ContactPage = () => {
                           value={formData.firstName}
                           onChange={(e) => handleChange('firstName', e.target.value)}
                           placeholder="Votre prénom"
-                          className={errors.firstName ? 'border-red-500' : ''}
+                          className={`h-12 ${errors.firstName ? 'border-red-500' : ''}`}
                         />
                         {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
                       </div>
@@ -231,7 +303,7 @@ const ContactPage = () => {
                           value={formData.lastName}
                           onChange={(e) => handleChange('lastName', e.target.value)}
                           placeholder="Votre nom"
-                          className={errors.lastName ? 'border-red-500' : ''}
+                          className={`h-12 ${errors.lastName ? 'border-red-500' : ''}`}
                         />
                         {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
                       </div>
@@ -239,14 +311,14 @@ const ContactPage = () => {
 
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email *</Label>
+                        <Label htmlFor="email">Email professionnel *</Label>
                         <Input
                           id="email"
                           type="email"
                           value={formData.email}
                           onChange={(e) => handleChange('email', e.target.value)}
-                          placeholder="votre@email.com"
-                          className={errors.email ? 'border-red-500' : ''}
+                          placeholder="vous@votre-resto.fr"
+                          className={`h-12 ${errors.email ? 'border-red-500' : ''}`}
                         />
                         {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                       </div>
@@ -257,75 +329,74 @@ const ContactPage = () => {
                           type="tel"
                           value={formData.phone}
                           onChange={(e) => handleChange('phone', e.target.value)}
-                          placeholder="+33 6 XX XX XX XX"
+                          placeholder="06 XX XX XX XX"
+                          className="h-12"
                         />
                       </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="company">Nom de l'établissement *</Label>
+                      <Input
+                        id="company"
+                        value={formData.company}
+                        onChange={(e) => handleChange('company', e.target.value)}
+                        placeholder="Restaurant, coffee shop, boulangerie..."
+                        className={`h-12 ${errors.company ? 'border-red-500' : ''}`}
+                      />
+                      {errors.company && <p className="text-red-500 text-sm">{errors.company}</p>}
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="company">Entreprise</Label>
-                        <Input
-                          id="company"
-                          value={formData.company}
-                          onChange={(e) => handleChange('company', e.target.value)}
-                          placeholder="Nom de votre entreprise"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="subject">Sujet *</Label>
-                        <Select value={formData.subject} onValueChange={(value) => handleChange('subject', value)}>
-                          <SelectTrigger className={errors.subject ? 'border-red-500' : ''}>
-                            <SelectValue placeholder="Choisir un sujet" />
+                        <Label htmlFor="quantity">Quantité estimée</Label>
+                        <Select value={formData.quantity} onValueChange={(value) => handleChange('quantity', value)}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue placeholder="Sélectionnez une quantité" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="devis">Demande de devis</SelectItem>
-                            <SelectItem value="info">Demande d'information</SelectItem>
-                            <SelectItem value="commande">Suivi de commande</SelectItem>
-                            <SelectItem value="partenariat">Partenariat</SelectItem>
-                            <SelectItem value="autre">Autre</SelectItem>
+                            <SelectItem value="500-1000">500 - 1 000 pièces</SelectItem>
+                            <SelectItem value="1000-2500">1 000 - 2 500 pièces</SelectItem>
+                            <SelectItem value="2500-5000">2 500 - 5 000 pièces</SelectItem>
+                            <SelectItem value="5000-10000">5 000 - 10 000 pièces</SelectItem>
+                            <SelectItem value="10000+">10 000+ pièces</SelectItem>
+                            <SelectItem value="unsure">Je ne sais pas encore</SelectItem>
                           </SelectContent>
                         </Select>
-                        {errors.subject && <p className="text-red-500 text-sm">{errors.subject}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="format">Format souhaité</Label>
+                        <Select value={formData.format} onValueChange={(value) => handleChange('format', value)}>
+                          <SelectTrigger className="h-12">
+                            <SelectValue placeholder="Sélectionnez un format" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="petit">Petit (viennoiseries, snacks)</SelectItem>
+                            <SelectItem value="moyen">Moyen (repas à emporter)</SelectItem>
+                            <SelectItem value="grand">Grand (commandes multiples)</SelectItem>
+                            <SelectItem value="plusieurs">Plusieurs formats</SelectItem>
+                            <SelectItem value="unsure">Je ne sais pas encore</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
 
-                    {formData.subject === 'devis' && (
-                      <div className="space-y-2">
-                        <Label htmlFor="category">Catégorie de produits</Label>
-                        <Select value={formData.category} onValueChange={(value) => handleChange('category', value)}>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Sélectionnez une catégorie" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={category.id}>
-                                {category.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message *</Label>
+                      <Label htmlFor="message">Message (optionnel)</Label>
                       <Textarea
                         id="message"
                         value={formData.message}
                         onChange={(e) => handleChange('message', e.target.value)}
-                        placeholder="Décrivez votre demande en détail..."
-                        rows={6}
-                        className={errors.message ? 'border-red-500' : ''}
+                        placeholder="Précisions sur votre projet, vos besoins spécifiques..."
+                        rows={4}
                       />
-                      {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
                     </div>
 
                     <Button 
                       type="submit" 
                       size="lg"
                       disabled={isSubmitting}
-                      className="w-full bg-[#6B6B4E] hover:bg-[#5A5A40] text-white py-6 text-lg rounded-xl transition-all"
+                      className="w-full bg-[#6B6B4E] hover:bg-[#5A5A40] text-white py-7 text-lg rounded-xl transition-all"
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
@@ -336,12 +407,25 @@ const ContactPage = () => {
                           Envoi en cours...
                         </span>
                       ) : (
-                        <span className="flex items-center gap-2">
-                          <Send size={20} />
-                          Envoyer le message
+                        <span className="flex items-center gap-2 justify-center">
+                          {formData.requestType === 'visio' ? (
+                            <>
+                              <Calendar size={20} />
+                              Demander ma visio design
+                            </>
+                          ) : (
+                            <>
+                              <Send size={20} />
+                              Demander mon devis gratuit
+                            </>
+                          )}
                         </span>
                       )}
                     </Button>
+
+                    <p className="text-center text-sm text-gray-500">
+                      ✓ Sans engagement · ✓ Réponse sous 24h · ✓ 100% gratuit
+                    </p>
                   </form>
                 </CardContent>
               </Card>
