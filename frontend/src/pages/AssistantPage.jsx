@@ -473,9 +473,9 @@ const AssistantPage = () => {
 
   const startConversation = async () => {
     await simulateTyping(1000);
-    await addMessage('ai', "Bonjour ! 👋 Bienvenue chez Eonite, spécialiste des emballages personnalisés.");
+    await addMessage('ai', "Bonjour ! 👋 Je suis EON, votre conseiller packaging expert chez Eonite.");
     await simulateTyping(1500);
-    await addMessage('ai', "Je suis votre assistant design. En quelques questions, je vais créer un concept exclusif pour votre marque.");
+    await addMessage('ai', "En quelques questions, je vais analyser votre besoin et créer un concept de design exclusif pour votre marque.");
     await simulateTyping(1000);
     await addMessage('ai', "Pour commencer, quel est le nom de votre enseigne ?");
     setShowInput(true);
