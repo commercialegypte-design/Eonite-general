@@ -181,15 +181,19 @@ const MagicLoadingScreen = ({ businessName }) => (
       <p className="text-[#F9F8EF]/60 text-lg mb-8">
         Génération de votre concept de design exclusif pour <span className="text-[#CDCEBD] font-semibold">{businessName || 'votre enseigne'}</span>
       </p>
-      <div className="flex justify-center gap-2">
-        {['Analyse du secteur', 'Création du style', 'Génération de l\'image'].map((step, i) => (
-          <span 
+      <div className="space-y-2">
+        {[
+          '📊 Analyse du secteur d\'activité',
+          '📐 Calcul des spécifications techniques (Gsm, finitions)',
+          '🎨 Génération du design personnalisé'
+        ].map((step, i) => (
+          <p 
             key={i}
-            className="text-[#F9F8EF]/40 text-sm animate-pulse"
-            style={{ animationDelay: `${i * 500}ms` }}
+            className="text-[#F9F8EF]/50 text-sm animate-pulse"
+            style={{ animationDelay: `${i * 800}ms` }}
           >
             {step}
-          </span>
+          </p>
         ))}
       </div>
     </div>
