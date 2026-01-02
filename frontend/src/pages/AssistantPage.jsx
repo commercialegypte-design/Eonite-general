@@ -640,7 +640,7 @@ const AssistantPage = () => {
             <Sparkles size={20} className="text-[#F9F8EF]" />
           </div>
           <div>
-            <h1 className="text-[#F9F8EF] font-bold">Assistant Design Eonite</h1>
+            <h1 className="text-[#F9F8EF] font-bold">EON <span className="font-normal opacity-70">• Conseiller Packaging Expert</span></h1>
             <p className="text-[#F9F8EF]/60 text-sm">Conversation en cours...</p>
           </div>
         </div>
