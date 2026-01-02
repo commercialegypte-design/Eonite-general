@@ -179,3 +179,100 @@ class Address(BaseModel):
     country: str = "France"
     is_default_shipping: bool = False
     is_default_billing: bool = False
+
+# ============================================
+# AI ASSISTANT V2 MODELS
+# ============================================
+
+class VolumeEstimate(str, Enum):
+    LESS_5K = "<5k"
+    FROM_5K_TO_10K = "5k-10k"
+    FROM_10K_TO_50K = "10k-50k"
+    MORE_50K = "50k+"
+
+class BrandStyle(str, Enum):
+    MINIMALISTE = "minimaliste"
+    LUXE = "luxe"
+    FUN = "fun"
+    ECO = "eco"
+
+class BusinessType(str, Enum):
+    RESTAURANT = "restaurant"
+    BOULANGERIE = "boulangerie"
+    CAFE = "cafe"
+    EPICERIE = "epicerie"
+    FRANCHISE = "franchise"
+    RETAIL = "retail"
+    AUTRE = "autre"
+
+class AIProductType(str, Enum):
+    SAC_KRAFT = "sac_kraft"
+    SAC_LUXE = "sac_luxe"
+    BOITE = "boite"
+    GOBELET = "gobelet"
+
+class LeadScore(str, Enum):
+    GROS_PROFIL = "gros_profil"
+    PETIT_PROFIL = "petit_profil"
+
+# AI Design Request Input
+class AIDesignInput(BaseModel):
+    business_type: BusinessType
+    product_type: AIProductType
+    volume_estimate: VolumeEstimate
+    brand_style: BrandStyle
+    text_on_bag: str
+    business_name: Optional[str] = None
+
+# AI Design - stored in DB
+class AIDesign(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    business_type: BusinessType
+    product_type: AIProductType
+    volume_estimate: VolumeEstimate
+    brand_style: BrandStyle
+    text_on_bag: str
+    business_name: Optional[str] = None
+    prompt_generated: str
+    strategic_advice: Optional[str] = None
+    image_url: Optional[str] = None
+    lead_score: LeadScore
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        from_attributes = True
+
+# Visio Request (for GROS_PROFIL)
+class VisioRequestCreate(BaseModel):
+    ai_design_id: str
+    nom_entreprise: str
+    nom_contact: str
+    email: EmailStr
+    telephone: Optional[str] = None
+    notes: Optional[str] = None
+
+class VisioRequest(VisioRequestCreate):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "pending"  # pending, confirmed, completed, cancelled
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        from_attributes = True
+
+# Quote Request V2 (for PETIT_PROFIL)
+class QuoteRequestV2Create(BaseModel):
+    ai_design_id: str
+    nom_entreprise: str
+    nom_contact: str
+    email: EmailStr
+    telephone: Optional[str] = None
+    notes: Optional[str] = None
+
+class QuoteRequestV2(QuoteRequestV2Create):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    status: str = "pending"  # pending, sent, accepted, rejected
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    class Config:
+        from_attributes = True
+
