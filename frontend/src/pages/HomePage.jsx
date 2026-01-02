@@ -139,8 +139,9 @@ const HomePage = () => {
                 <div className="w-24 h-24 bg-[#6B705C] mx-auto flex items-center justify-center">
                   <Sparkles size={48} className="text-[#F9F8EF]" />
                 </div>
+                <p className="text-[#F9F8EF] text-3xl font-black">EON</p>
                 <p className="text-[#F9F8EF]/60 text-lg max-w-xs mx-auto">
-                  Notre IA analyse votre projet et génère un aperçu en temps réel
+                  Votre conseiller packaging expert analyse votre projet en temps réel
                 </p>
               </div>
             </div>
