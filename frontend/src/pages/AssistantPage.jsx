@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowRight, ArrowLeft, Sparkles, Store, Coffee, Briefcase, ShoppingBag, Package, Palette, Leaf, Zap, Send, Loader2, Download, CheckCircle2, Calendar, Mail } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Sparkles, Send, Download, CheckCircle2, Calendar, Mail, Loader2, Building2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
@@ -8,125 +8,220 @@ import { Label } from '../components/ui/label';
 import { assistantApi } from '../lib/api';
 
 // ============================================
-// STEP DATA
+// CHAT DATA
 // ============================================
 
 const BUSINESS_TYPES = [
-  { id: 'restaurant', label: 'Restaurant', icon: Coffee, desc: 'Gastronomie, bistrot, fast-food' },
-  { id: 'boulangerie', label: 'Boulangerie', icon: Store, desc: 'Pâtisserie, viennoiserie' },
-  { id: 'cafe', label: 'Café', icon: Coffee, desc: 'Coffee shop, salon de thé' },
-  { id: 'epicerie', label: 'Épicerie', icon: ShoppingBag, desc: 'Épicerie fine, caviste' },
-  { id: 'franchise', label: 'Franchise', icon: Briefcase, desc: 'Multi-sites, chaîne' },
-  { id: 'retail', label: 'Retail', icon: ShoppingBag, desc: 'Boutique, mode, lifestyle' },
+  { id: 'restaurant', label: 'Restaurant' },
+  { id: 'boulangerie', label: 'Boulangerie' },
+  { id: 'cafe', label: 'Coffee Shop' },
+  { id: 'dark_kitchen', label: 'Dark Kitchen' },
+  { id: 'epicerie', label: 'Épicerie Fine' },
+  { id: 'franchise', label: 'Franchise' },
+  { id: 'retail', label: 'Boutique / Retail' },
 ];
 
 const PRODUCT_TYPES = [
-  { id: 'sac_kraft', label: 'Sac Kraft', desc: 'Vente à emporter' },
-  { id: 'sac_luxe', label: 'Sac Luxe', desc: 'Shopping premium' },
-  { id: 'boite', label: 'Boîte', desc: 'Burger, pâtisserie' },
-  { id: 'gobelet', label: 'Gobelet', desc: 'Boissons chaudes/froides' },
+  { id: 'sac_kraft', label: 'Sac Kraft' },
+  { id: 'sac_luxe', label: 'Sac Luxe' },
+  { id: 'boite', label: 'Boîte / Box' },
+  { id: 'gobelet', label: 'Gobelet' },
 ];
 
 const VOLUME_OPTIONS = [
-  { id: '<5k', label: 'Moins de 5 000', desc: 'Test ou petit commerce' },
-  { id: '5k-10k', label: '5 000 - 10 000', desc: 'Commerce établi' },
-  { id: '10k-50k', label: '10 000 - 50 000', desc: 'Multi-points de vente' },
-  { id: '50k+', label: 'Plus de 50 000', desc: 'Franchise / Industriel' },
+  { id: '<5k', label: 'Moins de 5 000' },
+  { id: '5k-10k', label: '5 000 - 10 000' },
+  { id: '10k-50k', label: '10 000 - 50 000' },
+  { id: '50k+', label: 'Plus de 50 000' },
 ];
 
 const STYLE_OPTIONS = [
-  { id: 'minimaliste', label: 'Minimaliste', icon: Zap, desc: 'Épuré, moderne' },
-  { id: 'luxe', label: 'Luxe', icon: Sparkles, desc: 'Premium, raffiné' },
-  { id: 'fun', label: 'Fun', icon: Palette, desc: 'Coloré, dynamique' },
-  { id: 'eco', label: 'Éco', icon: Leaf, desc: 'Nature, responsable' },
+  { id: 'minimaliste', label: 'Minimaliste' },
+  { id: 'luxe', label: 'Luxe / Premium' },
+  { id: 'fun', label: 'Fun / Coloré' },
+  { id: 'eco', label: 'Éco / Nature' },
 ];
 
+// Oracle comments based on choices
+const ORACLE_COMMENTS = {
+  business_type: {
+    restaurant: "Un restaurant ! La qualité de vos emballages reflète directement la qualité de votre cuisine. On va créer quelque chose de mémorable.",
+    boulangerie: "Une boulangerie artisanale ? L'emballage est le premier contact avec l'arôme qui se cache dedans. Passionnant.",
+    cafe: "Un Coffee Shop ! L'emballage devient une extension de l'expérience café. Vos clients partagent ça sur Instagram.",
+    dark_kitchen: "Une Dark Kitchen ? C'est un secteur qui exige une solidité de sac irréprochable. On va regarder ça.",
+    epicerie: "Une épicerie fine ! L'emballage doit être à la hauteur des produits d'exception que vous proposez.",
+    franchise: "Une franchise ! Volume important, cohérence de marque sur tous les points de vente. On active le programme Grands Comptes.",
+    retail: "Du retail ! Votre sac va se promener dans la rue. C'est de la pub gratuite. Autant qu'il soit magnifique.",
+  },
+  product_type: {
+    sac_kraft: "Le sac kraft, un classique indémodable. Robuste, éco-responsable, et tellement personnalisable.",
+    sac_luxe: "Le sac luxe ! Poignées en ruban, finition premium... Vos clients vont vouloir le garder.",
+    boite: "Les boîtes personnalisées transforment la livraison en moment d'ouverture magique.",
+    gobelet: "Le gobelet personnalisé ! Chaque café devient une occasion de marquer les esprits.",
+  },
+  volume: {
+    '<5k': "Un premier test ou un petit commerce ? Parfait pour valider le concept avant de scaler.",
+    '5k-10k': "5 à 10 000 unités, c'est le volume d'un commerce bien établi. On optimise le prix unitaire.",
+    '10k-50k': "10 à 50 000 ! Vous avez plusieurs points de vente ou une belle fréquentation. On parle stockage dédié.",
+    '50k+': "Plus de 50 000 unités ! Vous êtes dans la cour des grands. Programme Grands Comptes activé.",
+  },
+  style: {
+    minimaliste: "Minimaliste ! L'élégance dans la simplicité. Less is more, comme disent les designers.",
+    luxe: "Style luxe ! Vous voulez que chaque détail transpire la qualité. Excellent choix.",
+    fun: "Fun et coloré ! Vous voulez que votre marque rayonne d'énergie positive. J'adore.",
+    eco: "Style éco ! Le kraft naturel, les tons terreux... Vos clients vont sentir votre engagement.",
+  },
+};
+
 // ============================================
-// STEP COMPONENTS
+// MESSAGE COMPONENTS
 // ============================================
 
-const StepIndicator = ({ currentStep, totalSteps }) => (
-  <div className="flex items-center justify-center gap-2 mb-8">
-    {Array.from({ length: totalSteps }).map((_, i) => (
-      <div 
-        key={i}
-        className={`h-1 w-12 transition-all duration-300 ${
-          i <= currentStep ? 'bg-[#6B705C]' : 'bg-[#CDCEBD]'
-        }`}
-      />
+const TypingIndicator = () => (
+  <div className="flex items-center gap-1 px-4 py-3 bg-[#6B705C] text-[#F9F8EF] rounded-2xl rounded-bl-none w-fit max-w-[80px] animate-fade-in">
+    <span className="w-2 h-2 bg-[#F9F8EF]/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+    <span className="w-2 h-2 bg-[#F9F8EF]/60 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+    <span className="w-2 h-2 bg-[#F9F8EF]/60 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+  </div>
+);
+
+const AIMessage = ({ children, delay = 0 }) => (
+  <div 
+    className="flex items-start gap-3 animate-fade-in"
+    style={{ animationDelay: `${delay}ms` }}
+  >
+    <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
+      <Sparkles size={20} className="text-[#F9F8EF]" />
+    </div>
+    <div className="bg-[#6B705C] text-[#F9F8EF] px-5 py-4 rounded-2xl rounded-bl-none max-w-[80%]">
+      <p className="leading-relaxed">{children}</p>
+    </div>
+  </div>
+);
+
+const UserMessage = ({ children }) => (
+  <div className="flex justify-end animate-fade-in">
+    <div className="bg-[#CDCEBD] text-[#1A1A1A] px-5 py-4 rounded-2xl rounded-br-none max-w-[80%]">
+      <p className="font-medium">{children}</p>
+    </div>
+  </div>
+);
+
+const QuickReplies = ({ options, onSelect, disabled }) => (
+  <div className="flex flex-wrap gap-2 mt-4 animate-fade-in">
+    {options.map((option) => (
+      <button
+        key={option.id}
+        onClick={() => !disabled && onSelect(option)}
+        disabled={disabled}
+        className={`px-5 py-3 border-2 border-[#6B705C] text-[#1A1A1A] font-medium transition-all
+          ${disabled 
+            ? 'opacity-50 cursor-not-allowed' 
+            : 'hover:bg-[#6B705C] hover:text-[#F9F8EF] hover:scale-105'
+          }`}
+      >
+        {option.label}
+      </button>
     ))}
   </div>
 );
 
-const OptionCard = ({ option, selected, onClick, showIcon = true }) => {
-  const Icon = option.icon;
+const TextInput = ({ placeholder, onSubmit, disabled }) => {
+  const [value, setValue] = useState('');
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (value.trim() && !disabled) {
+      onSubmit(value.trim());
+      setValue('');
+    }
+  };
+
   return (
-    <button
-      onClick={() => onClick(option.id)}
-      className={`p-6 border-2 text-left transition-all duration-300 ${
-        selected === option.id
-          ? 'bg-[#6B705C] text-[#F9F8EF] border-[#6B705C] scale-[1.02]'
-          : 'bg-transparent text-[#1A1A1A] border-[#6B705C]/30 hover:border-[#6B705C] hover:bg-[#6B705C]/5'
-      }`}
-    >
-      <div className="flex items-start gap-4">
-        {showIcon && Icon && (
-          <Icon size={24} className={selected === option.id ? 'text-[#F9F8EF]' : 'text-[#6B705C]'} />
-        )}
-        <div>
-          <h3 className="font-bold text-lg">{option.label}</h3>
-          {option.desc && (
-            <p className={`text-sm mt-1 ${selected === option.id ? 'text-[#F9F8EF]/80' : 'text-[#1A1A1A]/60'}`}>
-              {option.desc}
-            </p>
-          )}
-        </div>
-      </div>
-    </button>
+    <form onSubmit={handleSubmit} className="flex gap-2 mt-4 animate-fade-in">
+      <Input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={placeholder}
+        disabled={disabled}
+        className="flex-1 h-12 bg-white border-2 border-[#6B705C]/30 focus:border-[#6B705C] text-lg"
+        autoFocus
+      />
+      <Button 
+        type="submit" 
+        disabled={!value.trim() || disabled}
+        className="h-12 px-6 bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF]"
+      >
+        <Send size={20} />
+      </Button>
+    </form>
   );
 };
 
 // ============================================
-// LOADING / RESULT COMPONENTS
+// LOADING SCREEN
 // ============================================
 
-const LoadingState = ({ message }) => (
-  <div className="flex flex-col items-center justify-center py-20 animate-fade-in">
-    <div className="w-20 h-20 border-4 border-[#6B705C]/20 border-t-[#6B705C] rounded-full animate-spin mb-6" />
-    <p className="text-[#6B705C] font-medium text-lg">{message}</p>
-    <p className="text-[#1A1A1A]/50 text-sm mt-2">Cela peut prendre quelques secondes...</p>
+const MagicLoadingScreen = ({ businessName }) => (
+  <div className="fixed inset-0 bg-[#1A1A1A] z-50 flex items-center justify-center animate-fade-in">
+    <div className="text-center max-w-lg px-8">
+      <div className="mb-8">
+        <div className="w-24 h-24 bg-[#6B705C] mx-auto flex items-center justify-center mb-6 animate-pulse">
+          <Sparkles size={48} className="text-[#F9F8EF]" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-1 bg-[#6B705C]/30 rounded overflow-hidden">
+            <div className="h-full bg-[#6B705C] animate-loading-bar" />
+          </div>
+        </div>
+      </div>
+      <h2 className="text-3xl font-black text-[#F9F8EF] mb-4">
+        Analyse de votre marque...
+      </h2>
+      <p className="text-[#F9F8EF]/60 text-lg mb-8">
+        Génération de votre concept de design exclusif pour <span className="text-[#CDCEBD] font-semibold">{businessName || 'votre enseigne'}</span>
+      </p>
+      <div className="flex justify-center gap-2">
+        {['Analyse du secteur', 'Création du style', 'Génération de l\'image'].map((step, i) => (
+          <span 
+            key={i}
+            className="text-[#F9F8EF]/40 text-sm animate-pulse"
+            style={{ animationDelay: `${i * 500}ms` }}
+          >
+            {step}
+          </span>
+        ))}
+      </div>
+    </div>
   </div>
 );
 
-const AIResultDisplay = ({ result, onRetryImage, retrying }) => {
+// ============================================
+// RESULT DISPLAY
+// ============================================
+
+const ResultDisplay = ({ result, onContinue }) => {
   const isGrosProfile = result.lead_score === 'gros_profil';
   
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Strategic Advice */}
-      <div className="bg-[#1A1A1A] p-8">
-        <div className="flex items-center gap-3 mb-4">
-          <Sparkles className="text-[#CDCEBD]" size={24} />
-          <h3 className="text-[#F9F8EF] font-bold text-xl">Conseil Stratégique</h3>
-        </div>
-        <p className="text-[#F9F8EF]/90 text-lg leading-relaxed">
-          {result.strategic_advice}
-        </p>
-      </div>
+    <div className="space-y-6 animate-fade-in">
+      {/* Strategic Advice as AI Message */}
+      <AIMessage>
+        <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Votre concept est prêt !</span>
+        {result.strategic_advice}
+      </AIMessage>
 
-      {/* Generated Image or Placeholder */}
-      <div className="bg-[#CDCEBD] border-2 border-[#6B705C] p-6">
-        <h3 className="text-[#1A1A1A] font-bold text-lg mb-4">Aperçu de votre design</h3>
-        
-        {result.image_url ? (
-          <div className="relative">
+      {/* Generated Image */}
+      {result.image_url && (
+        <div className="ml-13 pl-13">
+          <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md animate-fade-in" style={{ animationDelay: '300ms' }}>
             <img 
               src={result.image_url.startsWith('/api') 
                 ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
                 : result.image_url
               }
               alt="Design généré"
-              className="w-full max-w-md mx-auto border-2 border-[#6B705C]"
+              className="w-full"
             />
             <a 
               href={result.image_url.startsWith('/api') 
@@ -134,72 +229,53 @@ const AIResultDisplay = ({ result, onRetryImage, retrying }) => {
                 : result.image_url
               }
               download="eonite-design.png"
-              className="mt-4 inline-flex items-center gap-2 text-[#6B705C] hover:text-[#1A1A1A] font-medium"
+              className="mt-3 inline-flex items-center gap-2 text-[#6B705C] hover:text-[#1A1A1A] font-medium text-sm"
             >
-              <Download size={18} />
+              <Download size={16} />
               Télécharger l'aperçu
             </a>
           </div>
-        ) : (
-          <div className="bg-[#F9F8EF] border-2 border-dashed border-[#6B705C]/50 p-12 text-center">
-            {result.image_error ? (
-              <>
-                <p className="text-[#1A1A1A]/60 mb-4">{result.image_error}</p>
-                <Button 
-                  onClick={onRetryImage}
-                  disabled={retrying}
-                  className="btn-primary"
-                >
-                  {retrying ? (
-                    <>
-                      <Loader2 className="animate-spin mr-2" size={18} />
-                      Génération...
-                    </>
-                  ) : (
-                    'Réessayer la génération'
-                  )}
-                </Button>
-              </>
-            ) : (
-              <>
-                <Loader2 className="animate-spin mx-auto mb-4 text-[#6B705C]" size={32} />
-                <p className="text-[#1A1A1A]/60">Génération de l'image en cours...</p>
-              </>
-            )}
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Lead Score Badge */}
-      <div className={`p-6 ${isGrosProfile ? 'bg-[#6B705C]' : 'bg-[#F9F8EF] border-2 border-[#6B705C]'}`}>
-        <div className="flex items-center gap-3 mb-2">
+      {/* Lead Badge */}
+      <div className={`ml-13 p-6 ${isGrosProfile ? 'bg-[#6B705C]' : 'bg-[#CDCEBD]'} max-w-md animate-fade-in`} style={{ animationDelay: '500ms' }}>
+        <div className="flex items-center gap-2 mb-2">
           {isGrosProfile ? (
-            <Calendar className="text-[#F9F8EF]" size={24} />
+            <Calendar className="text-[#F9F8EF]" size={20} />
           ) : (
-            <Mail className="text-[#6B705C]" size={24} />
+            <Mail className="text-[#6B705C]" size={20} />
           )}
-          <span className={`text-sm font-bold uppercase tracking-wider ${isGrosProfile ? 'text-[#CDCEBD]' : 'text-[#6B705C]'}`}>
+          <span className={`text-xs font-bold uppercase tracking-wider ${isGrosProfile ? 'text-[#CDCEBD]' : 'text-[#6B705C]'}`}>
             {result.lead_info.badge}
           </span>
         </div>
-        <h3 className={`text-xl font-bold mb-2 ${isGrosProfile ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]'}`}>
-          {result.lead_info.title}
-        </h3>
-        <p className={`${isGrosProfile ? 'text-[#F9F8EF]/80' : 'text-[#1A1A1A]/70'}`}>
+        <p className={`font-bold ${isGrosProfile ? 'text-[#F9F8EF]' : 'text-[#1A1A1A]'}`}>
           {result.lead_info.message}
         </p>
+      </div>
+
+      {/* CTA */}
+      <div className="ml-13 animate-fade-in" style={{ animationDelay: '700ms' }}>
+        <Button 
+          onClick={onContinue}
+          className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold"
+        >
+          {result.lead_info.cta_text}
+          <ArrowRight className="ml-2" size={20} />
+        </Button>
       </div>
     </div>
   );
 };
 
 // ============================================
-// FORMS (Visio / Quote)
+// CONTACT FORM
 // ============================================
 
-const ContactForm = ({ type, designId, onSubmit, submitting }) => {
+const ContactForm = ({ type, designId, businessName, onSubmit, submitting }) => {
   const [formData, setFormData] = useState({
-    nom_entreprise: '',
+    nom_entreprise: businessName || '',
     nom_contact: '',
     email: '',
     telephone: '',
@@ -218,225 +294,275 @@ const ContactForm = ({ type, designId, onSubmit, submitting }) => {
   const isVisio = type === 'visio';
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in">
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Entreprise *</Label>
-          <Input
-            name="nom_entreprise"
-            value={formData.nom_entreprise}
-            onChange={handleChange}
-            required
-            className="h-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-            placeholder="Restaurant Le Gourmet"
-          />
-        </div>
-        <div>
-          <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Votre nom *</Label>
-          <Input
-            name="nom_contact"
-            value={formData.nom_contact}
-            onChange={handleChange}
-            required
-            className="h-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-            placeholder="Jean Dupont"
-          />
-        </div>
-      </div>
-
-      <div className="grid md:grid-cols-2 gap-4">
-        <div>
-          <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Email *</Label>
-          <Input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            className="h-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-            placeholder="contact@entreprise.fr"
-          />
-        </div>
-        <div>
-          <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Téléphone</Label>
-          <Input
-            type="tel"
-            name="telephone"
-            value={formData.telephone}
-            onChange={handleChange}
-            className="h-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-            placeholder="06 12 34 56 78"
-          />
-        </div>
-      </div>
-
-      <div>
-        <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">
-          {isVisio ? 'Questions pour la visio' : 'Notes complémentaires'}
-        </Label>
-        <Textarea
-          name="notes"
-          value={formData.notes}
-          onChange={handleChange}
-          className="min-h-[100px] bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-          placeholder={isVisio 
-            ? "Points que vous souhaitez aborder lors de la visio..."
-            : "Détails supplémentaires pour votre devis..."
-          }
-        />
-      </div>
-
-      <Button 
-        type="submit" 
-        disabled={submitting}
-        className="w-full bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] py-6 text-lg font-bold uppercase tracking-wider"
-      >
-        {submitting ? (
-          <>
-            <Loader2 className="animate-spin mr-2" size={20} />
-            Envoi en cours...
-          </>
-        ) : (
-          <>
-            {isVisio ? 'Réserver ma visio design' : 'Recevoir mon devis'}
-            <ArrowRight className="ml-2" size={20} />
-          </>
-        )}
-      </Button>
-    </form>
-  );
-};
-
-const SuccessMessage = ({ type }) => {
-  const isVisio = type === 'visio';
-  
-  return (
-    <div className="text-center py-12 animate-fade-in">
-      <div className="w-20 h-20 bg-[#6B705C] mx-auto flex items-center justify-center mb-6">
-        <CheckCircle2 className="text-[#F9F8EF]" size={40} />
-      </div>
-      <h2 className="text-3xl font-black text-[#1A1A1A] mb-4">
-        {isVisio ? 'Visio réservée !' : 'Demande envoyée !'}
-      </h2>
-      <p className="text-[#1A1A1A]/70 text-lg max-w-md mx-auto">
+    <div className="space-y-4 animate-fade-in">
+      <AIMessage>
         {isVisio 
-          ? 'Un expert design vous contactera sous 24h pour planifier votre session.'
-          : 'Vous recevrez un devis personnalisé par email sous 24h.'
+          ? "Parfait ! Pour réserver votre session design avec un expert, j'ai besoin de quelques informations."
+          : "Très bien ! Pour vous envoyer un devis personnalisé, j'ai besoin de vos coordonnées."
         }
-      </p>
+      </AIMessage>
+
+      <div className="ml-13 max-w-md">
+        <form onSubmit={handleSubmit} className="bg-white border-2 border-[#6B705C] p-6 space-y-4">
+          <div>
+            <Label className="text-[#1A1A1A]/80 mb-1 block text-sm font-semibold">Entreprise</Label>
+            <Input
+              name="nom_entreprise"
+              value={formData.nom_entreprise}
+              onChange={handleChange}
+              required
+              className="h-11 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
+            />
+          </div>
+          <div>
+            <Label className="text-[#1A1A1A]/80 mb-1 block text-sm font-semibold">Votre nom</Label>
+            <Input
+              name="nom_contact"
+              value={formData.nom_contact}
+              onChange={handleChange}
+              required
+              className="h-11 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
+            />
+          </div>
+          <div>
+            <Label className="text-[#1A1A1A]/80 mb-1 block text-sm font-semibold">Email</Label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="h-11 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
+            />
+          </div>
+          <div>
+            <Label className="text-[#1A1A1A]/80 mb-1 block text-sm font-semibold">Téléphone</Label>
+            <Input
+              type="tel"
+              name="telephone"
+              value={formData.telephone}
+              onChange={handleChange}
+              className="h-11 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
+            />
+          </div>
+          {isVisio && (
+            <div>
+              <Label className="text-[#1A1A1A]/80 mb-1 block text-sm font-semibold">Questions pour la visio</Label>
+              <Textarea
+                name="notes"
+                value={formData.notes}
+                onChange={handleChange}
+                className="min-h-[80px] bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
+                placeholder="Points à aborder..."
+              />
+            </div>
+          )}
+          <Button 
+            type="submit" 
+            disabled={submitting}
+            className="w-full bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] py-5 font-bold"
+          >
+            {submitting ? (
+              <><Loader2 className="animate-spin mr-2" size={18} /> Envoi...</>
+            ) : (
+              <>{isVisio ? 'Réserver ma visio' : 'Recevoir mon devis'} <ArrowRight className="ml-2" size={18} /></>
+            )}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 };
 
 // ============================================
-// MAIN ASSISTANT PAGE
+// SUCCESS MESSAGE
+// ============================================
+
+const SuccessMessage = ({ type }) => (
+  <div className="space-y-4 animate-fade-in">
+    <AIMessage>
+      <span className="text-[#CDCEBD] text-2xl block mb-2">🎉</span>
+      {type === 'visio' 
+        ? "C'est noté ! Un expert design vous contactera dans les 24h pour planifier votre session. Préparez votre logo si vous en avez un !"
+        : "Parfait ! Vous recevrez votre devis personnalisé par email dans les 24h. Gardez un œil sur votre boîte de réception !"
+      }
+    </AIMessage>
+    <div className="ml-13 animate-fade-in" style={{ animationDelay: '300ms' }}>
+      <Link to="/">
+        <Button className="bg-[#6B705C] hover:bg-[#5A5F4D] text-[#F9F8EF] px-6 py-4">
+          Retour à l'accueil
+        </Button>
+      </Link>
+    </div>
+  </div>
+);
+
+// ============================================
+// MAIN CHAT COMPONENT
 // ============================================
 
 const AssistantPage = () => {
-  const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [retryingImage, setRetryingImage] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const chatRef = useRef(null);
+  const [messages, setMessages] = useState([]);
+  const [currentStep, setCurrentStep] = useState('intro');
+  const [isTyping, setIsTyping] = useState(false);
+  const [showInput, setShowInput] = useState(false);
+  const [inputType, setInputType] = useState(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiResult, setAiResult] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   
   const [formData, setFormData] = useState({
+    business_name: '',
     business_type: '',
     product_type: '',
     volume_estimate: '',
     brand_style: '',
-    text_on_bag: '',
-    business_name: ''
+    text_on_bag: ''
   });
-  
-  const [aiResult, setAiResult] = useState(null);
 
-  const steps = [
-    { key: 'business_type', title: "Quel est votre secteur d'activité ?", options: BUSINESS_TYPES },
-    { key: 'product_type', title: 'Quel produit souhaitez-vous personnaliser ?', options: PRODUCT_TYPES },
-    { key: 'volume_estimate', title: 'Quelle quantité annuelle estimez-vous ?', options: VOLUME_OPTIONS },
-    { key: 'brand_style', title: 'Quel style représente votre marque ?', options: STYLE_OPTIONS },
-    { key: 'text_on_bag', title: 'Quel texte voulez-vous sur votre emballage ?', isText: true },
-  ];
+  // Auto-scroll to bottom
+  useEffect(() => {
+    if (chatRef.current) {
+      chatRef.current.scrollTop = chatRef.current.scrollHeight;
+    }
+  }, [messages, isTyping, showInput]);
 
-  const handleSelect = (value) => {
-    const step = steps[currentStep];
-    setFormData({ ...formData, [step.key]: value });
-    
-    // Auto-advance after selection (except for text input)
-    if (!step.isText) {
+  // Initialize chat
+  useEffect(() => {
+    startConversation();
+  }, []);
+
+  const addMessage = (type, content, delay = 0) => {
+    return new Promise((resolve) => {
       setTimeout(() => {
-        if (currentStep < steps.length - 1) {
-          setCurrentStep(currentStep + 1);
-        }
-      }, 300);
+        setMessages(prev => [...prev, { type, content, id: Date.now() }]);
+        resolve();
+      }, delay);
+    });
+  };
+
+  const simulateTyping = async (duration = 1500) => {
+    setIsTyping(true);
+    await new Promise(r => setTimeout(r, duration));
+    setIsTyping(false);
+  };
+
+  const startConversation = async () => {
+    await simulateTyping(1000);
+    await addMessage('ai', "Bonjour ! 👋 Bienvenue chez Eonite, spécialiste des emballages personnalisés.");
+    await simulateTyping(1500);
+    await addMessage('ai', "Je suis votre assistant design. En quelques questions, je vais créer un concept exclusif pour votre marque.");
+    await simulateTyping(1000);
+    await addMessage('ai', "Pour commencer, quel est le nom de votre enseigne ?");
+    setShowInput(true);
+    setInputType('business_name');
+    setCurrentStep('business_name');
+  };
+
+  const handleTextSubmit = async (value) => {
+    setShowInput(false);
+    await addMessage('user', value);
+    
+    if (currentStep === 'business_name') {
+      setFormData(prev => ({ ...prev, business_name: value }));
+      await simulateTyping(1200);
+      await addMessage('ai', `Enchanté, ${value} ! 🎯`);
+      await simulateTyping(1000);
+      await addMessage('ai', "Quel type d'établissement gérez-vous ?");
+      setShowInput(true);
+      setInputType({ type: 'options', options: BUSINESS_TYPES, key: 'business_type' });
+      setCurrentStep('business_type');
+    } else if (currentStep === 'text_on_bag') {
+      setFormData(prev => ({ ...prev, text_on_bag: value }));
+      await simulateTyping(800);
+      await addMessage('ai', `"${value}" - Excellent choix ! C'est accrocheur.`);
+      // Start generation
+      handleGenerate({ ...formData, text_on_bag: value });
     }
   };
 
-  const handleTextChange = (e) => {
-    setFormData({ ...formData, text_on_bag: e.target.value });
-  };
+  const handleOptionSelect = async (option) => {
+    setShowInput(false);
+    await addMessage('user', option.label);
+    
+    const key = inputType.key;
+    const newFormData = { ...formData, [key]: option.id };
+    setFormData(newFormData);
 
-  const handleBusinessNameChange = (e) => {
-    setFormData({ ...formData, business_name: e.target.value });
-  };
+    // Oracle comment
+    const oracleKey = key === 'volume_estimate' ? 'volume' : key;
+    const oracleComment = ORACLE_COMMENTS[oracleKey]?.[option.id];
+    
+    if (oracleComment) {
+      await simulateTyping(1500);
+      await addMessage('ai', oracleComment);
+    }
 
-  const canProceed = () => {
-    const step = steps[currentStep];
-    return !!formData[step.key];
-  };
-
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      handleGenerate();
+    // Next step
+    await simulateTyping(1000);
+    
+    if (key === 'business_type') {
+      await addMessage('ai', "Quel produit souhaitez-vous personnaliser ?");
+      setShowInput(true);
+      setInputType({ type: 'options', options: PRODUCT_TYPES, key: 'product_type' });
+      setCurrentStep('product_type');
+    } else if (key === 'product_type') {
+      await addMessage('ai', "Quelle quantité annuelle estimez-vous avoir besoin ?");
+      setShowInput(true);
+      setInputType({ type: 'options', options: VOLUME_OPTIONS, key: 'volume_estimate' });
+      setCurrentStep('volume_estimate');
+    } else if (key === 'volume_estimate') {
+      await addMessage('ai', "Quel style correspond le mieux à votre marque ?");
+      setShowInput(true);
+      setInputType({ type: 'options', options: STYLE_OPTIONS, key: 'brand_style' });
+      setCurrentStep('brand_style');
+    } else if (key === 'brand_style') {
+      await addMessage('ai', `Dernière question : quel texte voulez-vous voir imprimé sur votre emballage ? (nom de marque, slogan...)`);
+      setShowInput(true);
+      setInputType('text_on_bag');
+      setCurrentStep('text_on_bag');
     }
   };
 
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const handleGenerate = async () => {
-    setLoading(true);
+  const handleGenerate = async (data) => {
+    setShowInput(false);
+    setIsGenerating(true);
+    
     try {
-      const result = await assistantApi.createDesign(formData);
+      const result = await assistantApi.createDesign({
+        business_type: data.business_type,
+        product_type: data.product_type,
+        volume_estimate: data.volume_estimate,
+        brand_style: data.brand_style,
+        text_on_bag: data.text_on_bag,
+        business_name: data.business_name
+      });
+      
       setAiResult(result);
     } catch (error) {
       console.error('Error generating design:', error);
-      // Show error but continue with fallback
       setAiResult({
         design_id: 'error',
-        strategic_advice: 'Une erreur est survenue. Notre équipe vous recontactera.',
+        strategic_advice: 'Une erreur est survenue, mais notre équipe va vous recontacter rapidement !',
         image_url: null,
-        image_error: 'Génération temporairement indisponible',
-        lead_score: formData.volume_estimate !== '<5k' || formData.business_type === 'franchise' 
+        lead_score: data.volume_estimate !== '<5k' || data.business_type === 'franchise' 
           ? 'gros_profil' : 'petit_profil',
-        lead_info: formData.volume_estimate !== '<5k' || formData.business_type === 'franchise'
-          ? { badge: 'Accompagnement Premium', title: 'Projet stratégique', message: 'Une visio avec un expert serait idéale.', form_type: 'visio' }
-          : { badge: 'Devis Express', title: 'Devis personnalisé', message: 'Nous vous envoyons un devis sous 24h.', form_type: 'quote' }
+        lead_info: data.volume_estimate !== '<5k' || data.business_type === 'franchise'
+          ? { badge: 'Accompagnement Premium', title: 'Projet stratégique', message: 'Une visio avec un expert serait idéale.', cta_text: 'Réserver ma visio', form_type: 'visio' }
+          : { badge: 'Devis Express', title: 'Devis personnalisé', message: 'Nous vous envoyons un devis sous 24h.', cta_text: 'Recevoir mon devis', form_type: 'quote' }
       });
     } finally {
-      setLoading(false);
+      setIsGenerating(false);
+      setCurrentStep('result');
     }
   };
 
-  const handleRetryImage = async () => {
-    if (!aiResult?.design_id || aiResult.design_id === 'error') return;
-    
-    setRetryingImage(true);
-    try {
-      const result = await assistantApi.retryImage(aiResult.design_id);
-      setAiResult({ ...aiResult, image_url: result.image_url, image_error: result.image_error });
-    } catch (error) {
-      console.error('Error retrying image:', error);
-    } finally {
-      setRetryingImage(false);
-    }
+  const handleContinue = () => {
+    setShowForm(true);
+    setCurrentStep('form');
   };
 
   const handleFormSubmit = async (data) => {
@@ -448,6 +574,7 @@ const AssistantPage = () => {
         await assistantApi.requestQuote(data);
       }
       setSuccess(true);
+      setCurrentStep('success');
     } catch (error) {
       console.error('Error submitting form:', error);
     } finally {
@@ -455,184 +582,108 @@ const AssistantPage = () => {
     }
   };
 
-  // Render current step
-  const renderStep = () => {
-    const step = steps[currentStep];
-    
-    if (step.isText) {
-      return (
-        <div className="space-y-6 animate-fade-in">
-          <div>
-            <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">
-              Texte principal (votre marque, slogan...)
-            </Label>
-            <Input
-              value={formData.text_on_bag}
-              onChange={handleTextChange}
-              className="h-14 text-lg bg-transparent border-2 border-[#6B705C]/30 focus:border-[#6B705C]"
-              placeholder="Ex: Le Petit Gourmet"
-              autoFocus
-            />
-          </div>
-          <div>
-            <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">
-              Nom de votre entreprise (optionnel)
-            </Label>
-            <Input
-              value={formData.business_name}
-              onChange={handleBusinessNameChange}
-              className="h-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
-              placeholder="Pour personnaliser nos conseils"
-            />
-          </div>
-        </div>
-      );
-    }
-
-    return (
-      <div className={`grid gap-4 animate-fade-in ${step.options.length > 4 ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-1 md:grid-cols-2'}`}>
-        {step.options.map((option) => (
-          <OptionCard
-            key={option.id}
-            option={option}
-            selected={formData[step.key]}
-            onClick={handleSelect}
-            showIcon={!!option.icon}
-          />
-        ))}
-      </div>
-    );
-  };
-
   return (
-    <main className="min-h-screen bg-[#F9F8EF]">
+    <main className="min-h-screen bg-[#F9F8EF] flex flex-col">
+      {/* Magic Loading Screen */}
+      {isGenerating && <MagicLoadingScreen businessName={formData.business_name} />}
+
       {/* Header */}
-      <section className="bg-[#6B705C] py-16">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Sparkles className="text-[#CDCEBD]" size={32} />
-            <h1 className="text-4xl md:text-5xl font-black text-[#F9F8EF]">
-              Assistant Design IA
-            </h1>
+      <div className="bg-[#6B705C] py-4 px-6">
+        <div className="max-w-3xl mx-auto flex items-center gap-3">
+          <div className="w-10 h-10 bg-[#1A1A1A] flex items-center justify-center">
+            <Sparkles size={20} className="text-[#F9F8EF]" />
           </div>
-          <p className="text-[#F9F8EF]/80 text-lg max-w-2xl mx-auto">
-            En 5 questions, recevez un conseil stratégique personnalisé et un aperçu de votre emballage.
-          </p>
+          <div>
+            <h1 className="text-[#F9F8EF] font-bold">Assistant Design Eonite</h1>
+            <p className="text-[#F9F8EF]/60 text-sm">Conversation en cours...</p>
+          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Main Content */}
-      <section className="py-12">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Loading State */}
-          {loading && (
-            <LoadingState message="Notre IA analyse votre projet..." />
+      {/* Chat Area */}
+      <div 
+        ref={chatRef}
+        className="flex-1 overflow-y-auto py-8 px-4"
+        style={{ maxHeight: 'calc(100vh - 180px)' }}
+      >
+        <div className="max-w-3xl mx-auto space-y-6">
+          {/* Messages */}
+          {messages.map((msg) => (
+            msg.type === 'ai' 
+              ? <AIMessage key={msg.id}>{msg.content}</AIMessage>
+              : <UserMessage key={msg.id}>{msg.content}</UserMessage>
+          ))}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
+                <Sparkles size={20} className="text-[#F9F8EF]" />
+              </div>
+              <TypingIndicator />
+            </div>
           )}
 
-          {/* Success State */}
+          {/* Result Display */}
+          {currentStep === 'result' && aiResult && !showForm && (
+            <ResultDisplay result={aiResult} onContinue={handleContinue} />
+          )}
+
+          {/* Contact Form */}
+          {showForm && !success && (
+            <ContactForm 
+              type={aiResult.lead_info.form_type}
+              designId={aiResult.design_id}
+              businessName={formData.business_name}
+              onSubmit={handleFormSubmit}
+              submitting={submitting}
+            />
+          )}
+
+          {/* Success */}
           {success && (
-            <SuccessMessage type={aiResult?.lead_info?.form_type} />
-          )}
-
-          {/* AI Result State */}
-          {!loading && !success && aiResult && (
-            <>
-              {!showForm ? (
-                <>
-                  <AIResultDisplay 
-                    result={aiResult} 
-                    onRetryImage={handleRetryImage}
-                    retrying={retryingImage}
-                  />
-                  <div className="mt-8 text-center">
-                    <Button 
-                      onClick={() => setShowForm(true)}
-                      className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-12 py-6 text-xl font-bold uppercase tracking-wider"
-                    >
-                      {aiResult.lead_info.cta_text}
-                      <ArrowRight className="ml-3" size={24} />
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <div className="bg-white border-2 border-[#6B705C] p-8">
-                  <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">
-                    {aiResult.lead_score === 'gros_profil' 
-                      ? 'Réservez votre session design'
-                      : 'Recevez votre devis personnalisé'
-                    }
-                  </h2>
-                  <ContactForm 
-                    type={aiResult.lead_info.form_type}
-                    designId={aiResult.design_id}
-                    onSubmit={handleFormSubmit}
-                    submitting={submitting}
-                  />
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Steps State */}
-          {!loading && !success && !aiResult && (
-            <>
-              <StepIndicator currentStep={currentStep} totalSteps={steps.length} />
-              
-              <div className="mb-8">
-                <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2">
-                  {steps[currentStep].title}
-                </h2>
-                <p className="text-[#1A1A1A]/60">
-                  Étape {currentStep + 1} sur {steps.length}
-                </p>
-              </div>
-
-              {renderStep()}
-
-              {/* Navigation */}
-              <div className="flex justify-between mt-12">
-                <Button
-                  onClick={handleBack}
-                  disabled={currentStep === 0}
-                  variant="outline"
-                  className="border-[#6B705C] text-[#6B705C] hover:bg-[#6B705C] hover:text-[#F9F8EF] px-6 py-3"
-                >
-                  <ArrowLeft className="mr-2" size={18} />
-                  Retour
-                </Button>
-                
-                <Button
-                  onClick={handleNext}
-                  disabled={!canProceed()}
-                  className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-3 font-bold"
-                >
-                  {currentStep === steps.length - 1 ? (
-                    <>
-                      <Sparkles className="mr-2" size={18} />
-                      Générer mon design
-                    </>
-                  ) : (
-                    <>
-                      Suivant
-                      <ArrowRight className="ml-2" size={18} />
-                    </>
-                  )}
-                </Button>
-              </div>
-            </>
+            <SuccessMessage type={aiResult.lead_info.form_type} />
           )}
         </div>
-      </section>
+      </div>
 
-      {/* CSS for animations */}
-      <style jsx>{`
+      {/* Input Area */}
+      {showInput && !isGenerating && (
+        <div className="border-t-2 border-[#6B705C]/20 bg-white py-4 px-4">
+          <div className="max-w-3xl mx-auto">
+            {inputType === 'business_name' || inputType === 'text_on_bag' ? (
+              <TextInput 
+                placeholder={inputType === 'business_name' ? "Ex: Le Petit Gourmet" : "Ex: Café Royal, Maison Dupain..."}
+                onSubmit={handleTextSubmit}
+                disabled={isTyping}
+              />
+            ) : inputType?.type === 'options' ? (
+              <QuickReplies 
+                options={inputType.options}
+                onSelect={handleOptionSelect}
+                disabled={isTyping}
+              />
+            ) : null}
+          </div>
+        </div>
+      )}
+
+      {/* CSS Animations */}
+      <style>{`
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in {
-          animation: fade-in 0.4s ease-out;
+          animation: fade-in 0.4s ease-out forwards;
+        }
+        @keyframes loading-bar {
+          0% { width: 0%; }
+          50% { width: 70%; }
+          100% { width: 100%; }
+        }
+        .animate-loading-bar {
+          animation: loading-bar 60s ease-out forwards;
         }
       `}</style>
     </main>
