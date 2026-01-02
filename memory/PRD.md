@@ -121,6 +121,15 @@ quote_requests_v2: {
 
 ## Changelog
 
+### 2026-01-02 - V2.1 Conseiller Technique Expert
+- EON transformé en conseiller technique & marketing expert
+- Base de connaissances catalogue (grammages, finitions, poignées)
+- Diagnostic intelligent (transport chaud → aération, vente à emporter → QR code)
+- Analyse concurrentielle (Kedypack, Firplast, Raja, Packhelp)
+- Oracle comments avec termes techniques (Gsm, Ripple Wall, soft-touch)
+- Nouvelle étape : inspiration concurrentielle
+- Clôture : "Voulez-vous transformer ce concept en BAT industriel en 30 min ?"
+
 ### 2026-01-02 - V2 Assistant IA
 - Nouveau H1 HomePage: "Votre emballage personnalisé au prix du neutre"
 - Suppression ancien Configurateur
