@@ -82,12 +82,13 @@ const LoginPage = () => {
             )}
 
             <TabsContent value="login">
-              <form onSubmit={handleLogin} className="space-y-6">
+              <form onSubmit={handleLogin} className="space-y-6" data-testid="login-form">
                 <div>
                   <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Email</Label>
                   <div className="relative">
                     <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="login-email"
                       type="email"
                       value={loginData.email}
                       onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
@@ -103,6 +104,7 @@ const LoginPage = () => {
                   <div className="relative">
                     <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="login-password"
                       type={showPassword ? 'text' : 'password'}
                       value={loginData.password}
                       onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
@@ -119,7 +121,7 @@ const LoginPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={isLoading} className="w-full btn-primary py-6">
+                <Button type="submit" data-testid="login-submit-btn" disabled={isLoading} className="w-full btn-primary py-6">
                   {isLoading ? 'Connexion...' : 'Se connecter'}
                   <ArrowRight className="ml-2" size={18} />
                 </Button>
@@ -127,12 +129,13 @@ const LoginPage = () => {
             </TabsContent>
 
             <TabsContent value="register">
-              <form onSubmit={handleRegister} className="space-y-6">
+              <form onSubmit={handleRegister} className="space-y-6" data-testid="register-form">
                 <div>
                   <Label className="text-[#1A1A1A]/80 mb-2 block font-semibold">Nom de l'entreprise *</Label>
                   <div className="relative">
                     <Building2 size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="register-company-name"
                       value={registerData.company_name}
                       onChange={(e) => setRegisterData({ ...registerData, company_name: e.target.value })}
                       required
@@ -147,6 +150,7 @@ const LoginPage = () => {
                   <div className="relative">
                     <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="register-contact-name"
                       value={registerData.contact_name}
                       onChange={(e) => setRegisterData({ ...registerData, contact_name: e.target.value })}
                       className="h-12 pl-12 bg-transparent border-[#6B705C]/30 focus:border-[#6B705C]"
@@ -159,6 +163,7 @@ const LoginPage = () => {
                   <div className="relative">
                     <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="register-email"
                       type="email"
                       value={registerData.email}
                       onChange={(e) => setRegisterData({ ...registerData, email: e.target.value })}
@@ -173,6 +178,7 @@ const LoginPage = () => {
                   <div className="relative">
                     <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1A1A1A]/40" />
                     <Input
+                      data-testid="register-password"
                       type={showPassword ? 'text' : 'password'}
                       value={registerData.password}
                       onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
@@ -190,8 +196,8 @@ const LoginPage = () => {
                   </div>
                 </div>
 
-                <Button type="submit" disabled={isLoading} className="w-full btn-primary py-6">
-                  {isLoading ? 'Inscription...' : 'Créer mon compte'}
+                <Button type="submit" data-testid="register-submit-btn" disabled={isLoading} className="w-full btn-primary py-6">
+                  {isLoading ? 'Inscription...' : "S'inscrire"}
                   <ArrowRight className="ml-2" size={18} />
                 </Button>
               </form>
