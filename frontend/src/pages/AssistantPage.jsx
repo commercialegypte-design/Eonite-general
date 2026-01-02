@@ -403,6 +403,7 @@ const SuccessMessage = ({ type }) => (
 
 const AssistantPage = () => {
   const chatRef = useRef(null);
+  const initializedRef = useRef(false);
   const [messages, setMessages] = useState([]);
   const [currentStep, setCurrentStep] = useState('intro');
   const [isTyping, setIsTyping] = useState(false);
@@ -413,7 +414,6 @@ const AssistantPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [conversationStarted, setConversationStarted] = useState(false);
   
   const [formData, setFormData] = useState({
     business_name: '',
