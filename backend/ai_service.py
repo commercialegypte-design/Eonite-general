@@ -139,10 +139,10 @@ async def generate_image_flux(prompt: str) -> Tuple[Optional[str], Optional[str]
     try:
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                HF_FLUX_URL,
+                HF_IMAGE_URL,
                 headers=headers,
                 json=payload,
-                timeout=aiohttp.ClientTimeout(total=60)
+                timeout=aiohttp.ClientTimeout(total=120)
             ) as response:
                 if response.status == 200:
                     # FLUX returns binary image data
