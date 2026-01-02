@@ -175,7 +175,7 @@ const HomePage = () => {
               <Link to="/assistant">
                 <Button className="bg-[#6B705C] text-[#F9F8EF] hover:bg-[#5A5F4D] px-10 py-6 text-lg font-bold uppercase tracking-wider">
                   <Sparkles className="mr-2" size={20} />
-                  Lancer l'Assistant
+                  Parler à EON
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </Link>
