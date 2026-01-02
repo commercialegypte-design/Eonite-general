@@ -124,3 +124,30 @@ export const upload = {
     return response.json();
   },
 };
+
+// AI Assistant API
+export const assistantApi = {
+  createDesign: (data) => apiCall('/ai-design', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  
+  getDesign: (id) => apiCall(`/ai-design/${id}`),
+  
+  retryImage: (designId) => apiCall(`/ai-design/${designId}/retry-image`, {
+    method: 'POST',
+  }),
+  
+  bookVisio: (data) => apiCall('/visio-booking', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+  
+  requestQuote: (data) => apiCall('/quote-request', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  }),
+};
+
+// Export ordersApi alias for compatibility
+export const ordersApi = orders;
