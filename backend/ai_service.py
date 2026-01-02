@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 HF_API_TOKEN = os.environ.get("HF_API_TOKEN")
 
-# Hugging Face FLUX endpoint
-HF_FLUX_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
+# Hugging Face model endpoint - using Stable Diffusion XL (more reliable)
+HF_IMAGE_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
 
 # Image prompt prefix (forced for consistency)
 IMAGE_PROMPT_PREFIX = "A premium paper shopping bag, olive green color #6B705C, studio lighting, high resolution, professional product photography"
