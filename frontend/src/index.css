@@ -84,20 +84,20 @@ h1, h2, h3, h4, h5, h6 {
   color: #F9F8EF;
 }
 
-/* Premium Button Styles */
+/* Premium Button Styles - NOIR PUR pour trancher */
 .btn-primary {
-  background-color: #6B705C;
+  background-color: #1A1A1A;
   color: #F9F8EF;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border: 1px solid #6B705C;
+  letter-spacing: 0.08em;
+  border: 1px solid #1A1A1A;
   transition: all 0.2s ease;
 }
 
 .btn-primary:hover {
-  background-color: #5A5F4D;
-  border-color: #5A5F4D;
+  background-color: #000000;
+  border-color: #000000;
 }
 
 .btn-outline {

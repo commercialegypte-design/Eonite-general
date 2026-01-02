@@ -209,20 +209,27 @@ const Configurator = () => {
             </div>
           )}
 
-          {/* Eco Variable */}
-          <div className="flex items-center gap-2 bg-[#CDCEBD] p-4">
-            <Leaf size={20} className="text-[#6B705C]" />
-            <span className="text-[#1A1A1A] text-sm">
-              En choisissant EONITE, vous évitez l'utilisation de <strong>{plasticSaved} kg</strong> de plastique par an.
-            </span>
+          {/* Eco Impact - FIER ET VISIBLE */}
+          <div className="bg-[#1A1A1A] p-5 border-l-4 border-[#6B705C]">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
+                <Leaf size={24} className="text-[#F9F8EF]" />
+              </div>
+              <div>
+                <p className="text-[#F9F8EF]/60 text-xs uppercase tracking-wider font-semibold">Impact Positif</p>
+                <p className="text-[#F9F8EF] text-xl font-black">
+                  -{plasticSaved} kg <span className="text-[#CDCEBD] font-normal text-base">de plastique générés</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* CTA */}
+        {/* CTA - NOIR PUR pour trancher violemment */}
         <Link 
           to={`/contact?product=${product}&size=${size}&quantity=${quantity}&print=${printType}&price=${totalPrice.toFixed(2)}`}
         >
-          <Button className="w-full btn-primary py-6 text-lg">
+          <Button className="w-full bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] py-6 text-lg font-bold uppercase tracking-wider border-0">
             Démarrer mon design
             <ArrowRight className="ml-2" size={20} />
           </Button>
