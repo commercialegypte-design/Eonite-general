@@ -334,7 +334,7 @@ const AssistantPage = () => {
   };
 
   // ============================================
-  // CONVERSATION FLOW - NOUVELLE VERSION
+  // CONVERSATION FLOW - VERSION CORRIGÉE
   // ============================================
 
   const startConversation = async () => {
@@ -372,17 +372,17 @@ const AssistantPage = () => {
         
       case 'activite':
         updateClientData('activite', value);
-        await simulateTyping(1000);
-        addMessage('ai', `D'accord, ${value.toLowerCase().includes('restaurant') ? 'belle activité' : 'intéressant'} !\n\nEt concrètement, c'est quoi le produit principal que vous voulez emballer ? Un sandwich, des plats à emporter, des gâteaux, du café...?`);
+        await simulateTyping(1200);
+        addMessage('ai', `Très bien, je vois le tableau.\n\nOn peut travailler sur différents packagings : sacs kraft, sacs SOS, sacs fruits/primeurs, boîtes, gobelets...\n\nQuel produit souhaitez-vous personnaliser en priorité ?`);
         setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Ex: Sandwichs, menus à emporter, pâtisseries...', key: 'produit' });
-        setCurrentStep('produit');
+        setInputConfig({ type: 'options', options: PRODUCT_FAMILY_OPTIONS, key: 'productFamily' });
+        setCurrentStep('product_family');
         break;
         
-      case 'produit':
-        updateClientData('produit', value);
+      case 'produit_detail':
+        updateClientData('produitDetail', value);
         await simulateTyping(1000);
-        addMessage('ai', `Parfait, donc on parle surtout d'emballer : ${value}.\n\nEn termes de volume, vous estimez avoir besoin de combien d'unités par an à peu près ?`);
+        addMessage('ai', `Ok, noté. En termes de volume, vous estimez avoir besoin de combien d'unités par an à peu près ?`);
         setShowInput(true);
         setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
         setCurrentStep('volume');
@@ -412,13 +412,42 @@ const AssistantPage = () => {
     addMessage('user', option.label);
     
     switch (currentStep) {
-      case 'volume':
-        updateClientData('volume', option.label);
-        await simulateTyping(1000);
-        addMessage('ai', `Noté. On est sur du ${option.label} unités/an.\n\nMaintenant un truc plus technique : le type de poignée, c'est quelque chose d'important pour vous, ou vous préférez qu'on en discute plus tard ?`);
-        setShowInput(true);
-        setInputConfig({ type: 'options', options: HANDLE_OPTIONS, key: 'poignees' });
-        setCurrentStep('poignees');
+      case 'product_family':
+        updateClientData('productFamily', option.id);
+        
+        // Si c'est un sac kraft, demander les poignées
+        if (option.id === 'sac_kraft') {
+          await simulateTyping(1000);
+          addMessage('ai', `Parfait, les sacs kraft c'est notre spécialité !\n\nPour vos sacs, avez-vous des exigences particulières sur les poignées ?`);
+          setShowInput(true);
+          setInputConfig({ type: 'options', options: HANDLE_OPTIONS, key: 'poignees' });
+          setCurrentStep('poignees');
+        } 
+        // Si c'est un sac SOS ou fruits, pas de question poignées
+        else if (option.id === 'sac_sos' || option.id === 'sac_fruits') {
+          updateClientData('poignees', 'Sans poignées');
+          await simulateTyping(1000);
+          addMessage('ai', `Bien noté.\n\nVous préférez un papier vierge ou recyclé pour vos sacs ?`);
+          setShowInput(true);
+          setInputConfig({ type: 'options', options: PAPER_OPTIONS, key: 'papier' });
+          setCurrentStep('papier');
+        }
+        // Si c'est "autre", demander des précisions
+        else if (option.id === 'autre') {
+          await simulateTyping(800);
+          addMessage('ai', `Pas de souci. Pouvez-vous me décrire plus précisément ce que vous recherchez ?`);
+          setShowInput(true);
+          setInputConfig({ type: 'text', placeholder: 'Décrivez votre besoin...', key: 'produitDetail' });
+          setCurrentStep('produit_detail');
+        }
+        // Pour boîtes ou gobelets, passer directement aux quantités
+        else {
+          await simulateTyping(1000);
+          addMessage('ai', `Très bien. En termes de volume, vous estimez avoir besoin de combien d'unités par an à peu près ?`);
+          setShowInput(true);
+          setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
+          setCurrentStep('volume');
+        }
         break;
         
       case 'poignees':
@@ -427,7 +456,7 @@ const AssistantPage = () => {
         const poigneesComment = option.id === 'indifferent' 
           ? "Pas de souci, on verra ça ensemble en détail."
           : `Ok, ${option.label.toLowerCase()}.`;
-        addMessage('ai', `${poigneesComment}\n\nEt côté papier, vous avez une préférence entre papier vierge classique ou papier recyclé ?`);
+        addMessage('ai', `${poigneesComment}\n\nVous préférez un papier vierge ou recyclé ?`);
         setShowInput(true);
         setInputConfig({ type: 'options', options: PAPER_OPTIONS, key: 'papier' });
         setCurrentStep('papier');
@@ -435,8 +464,27 @@ const AssistantPage = () => {
         
       case 'papier':
         updateClientData('papier', option.label);
+        await simulateTyping(800);
+        // Demander la couleur du kraft (marron ou blanc)
+        addMessage('ai', `Et plutôt kraft marron (rendu naturel, artisanal) ou kraft blanc (rendu moderne, épuré) ?`);
+        setShowInput(true);
+        setInputConfig({ type: 'options', options: KRAFT_COLOR_OPTIONS, key: 'couleurKraft' });
+        setCurrentStep('couleur_kraft');
+        break;
+        
+      case 'couleur_kraft':
+        updateClientData('couleurKraft', option.label);
         await simulateTyping(1000);
-        addMessage('ai', `Parfait.\n\nMaintenant parlons de votre identité visuelle. Est-ce que vous avez déjà un logo et une charte graphique en place ?`);
+        addMessage('ai', `Parfait. En termes de volume, vous estimez avoir besoin de combien d'unités par an ?`);
+        setShowInput(true);
+        setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
+        setCurrentStep('volume');
+        break;
+        
+      case 'volume':
+        updateClientData('volume', option.label);
+        await simulateTyping(1000);
+        addMessage('ai', `Noté : ${option.label} unités/an.\n\nMaintenant parlons de votre identité visuelle. Est-ce que vous avez déjà un logo et une charte graphique en place ?`);
         setShowInput(true);
         setInputConfig({ type: 'yesno', key: 'hasLogo' });
         setCurrentStep('branding_question');
