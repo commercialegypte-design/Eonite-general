@@ -123,6 +123,13 @@ quote_requests_v2: {
 
 ## Changelog
 
+### 2025-01-03 - V2.3 Corrections Flux Produits & Quantités ✅
+- Ajout sélection famille de produits : Sacs kraft, Sacs SOS, Sacs fruits/primeurs, Boîtes, Gobelets, Autre
+- Question couleur kraft : marron (naturel, artisanal) ou blanc (moderne, épuré)
+- Correction tranches quantités : 7 options (<5k, 5k, 10k, 15k, 20k, 30k, >30k)
+- Flux conditionnel : poignées demandées uniquement pour Sacs kraft
+- Tests E2E validés : 100% (13 features testées)
+
 ### 2025-01-03 - V2.2 Flux Conversationnel Naturel ✅
 - Refonte complète du flux EON : 10 étapes avec persona consultative
 - Questions ouvertes pour activité, produit, style, éléments (au lieu de boutons)
