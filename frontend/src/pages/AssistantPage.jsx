@@ -242,7 +242,7 @@ const ResultDisplay = ({ result, clientData }) => {
               className="mt-3 inline-flex items-center gap-2 text-[#6B705C] hover:text-[#1A1A1A] font-medium text-sm"
             >
               <Download size={16} />
-              Télécharger l'aperçu
+              Télécharger l&apos;aperçu
             </a>
           </div>
         </div>
@@ -251,12 +251,12 @@ const ResultDisplay = ({ result, clientData }) => {
       {/* Pitch pour la session design */}
       <AIMessage>
         <span className="text-[#CDCEBD] font-semibold block mb-2">🗓️ La suite ?</span>
-        On a fait un bon tour d'horizon. Pour passer à l'étape concrète — c'est-à-dire créer ensemble votre BAT (bon à tirer) avec les vraies dimensions, couleurs Pantone, et placement des éléments — le plus simple c'est qu'on se cale <strong>30 minutes en visio</strong>.
+        On a fait un bon tour d&apos;horizon. Pour passer à l&apos;étape concrète — c&apos;est-à-dire créer ensemble votre BAT (bon à tirer) avec les vraies dimensions, couleurs Pantone, et placement des éléments — le plus simple c&apos;est qu&apos;on se cale <strong>30 minutes en visio</strong>.
 
         En général, on ressort de cette session avec un design quasi finalisé. Vous validez, et on lance la prod.
 
         <span className="text-[#F9F8EF]/70 block mt-3 text-sm italic">
-          (Pas de panique, c'est sans engagement. On discute, vous voyez si ça vous convient.)
+          (Pas de panique, c&apos;est sans engagement. On discute, vous voyez si ça vous convient.)
         </span>
       </AIMessage>
 
