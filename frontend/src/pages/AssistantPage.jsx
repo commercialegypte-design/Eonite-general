@@ -192,87 +192,93 @@ const MagicLoadingScreen = ({ businessName }) => (
 // RESULT DISPLAY
 // ============================================
 
-const ResultDisplay = ({ result, clientData }) => (
-  <div className="space-y-6 animate-fade-in" data-testid="result-display">
-    {/* Résumé */}
-    <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-3">📋 Si je résume notre échange :</span>
-      <div className="space-y-2 text-sm">
-        <p>• <strong>Vous</strong> : {clientData.prenom} de {clientData.enseigne}</p>
-        <p>• <strong>Activité</strong> : {clientData.activite}</p>
-        <p>• <strong>Produit principal</strong> : {clientData.produit}</p>
-        <p>• <strong>Volume annuel</strong> : environ {clientData.volume}</p>
-        <p>• <strong>Poignées</strong> : {clientData.poignees || 'À définir ensemble'}</p>
-        <p>• <strong>Papier</strong> : {clientData.papier}</p>
-        <p>• <strong>Identité visuelle</strong> : {clientData.branding || 'À créer ou développer'}</p>
-        <p>• <strong>Éléments à intégrer</strong> : {clientData.elements || 'À préciser'}</p>
-      </div>
-    </AIMessage>
-
-    {/* Proposition de concept */}
-    <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Ma proposition</span>
-      {result.strategic_advice}
-    </AIMessage>
-
-    {/* Image générée */}
-    {result.image_url && (
-      <div className="ml-13" data-testid="generated-image">
-        <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md">
-          <p className="text-[#6B705C] text-xs font-bold uppercase tracking-wider mb-3">Aperçu du concept</p>
-          <img 
-            src={result.image_url.startsWith('/api') 
-              ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
-              : result.image_url
-            }
-            alt="Design généré"
-            className="w-full"
-          />
-          <a 
-            href={result.image_url.startsWith('/api') 
-              ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
-              : result.image_url
-            }
-            download="eonite-concept.png"
-            className="mt-3 inline-flex items-center gap-2 text-[#6B705C] hover:text-[#1A1A1A] font-medium text-sm"
-          >
-            <Download size={16} />
-            Télécharger l'aperçu
-          </a>
+const ResultDisplay = ({ result, clientData }) => {
+  // Obtenir le label du type de produit
+  const productLabel = PRODUCT_FAMILY_OPTIONS.find(p => p.id === clientData.productFamily)?.label || clientData.productFamily;
+  
+  return (
+    <div className="space-y-6 animate-fade-in" data-testid="result-display">
+      {/* Résumé */}
+      <AIMessage>
+        <span className="text-[#CDCEBD] font-semibold block mb-3">📋 Si je résume notre échange :</span>
+        <div className="space-y-2 text-sm">
+          <p>• <strong>Vous</strong> : {clientData.prenom} de {clientData.enseigne}</p>
+          <p>• <strong>Activité</strong> : {clientData.activite}</p>
+          <p>• <strong>Produit</strong> : {productLabel}</p>
+          <p>• <strong>Volume annuel</strong> : {clientData.volume}</p>
+          {clientData.poignees && <p>• <strong>Poignées</strong> : {clientData.poignees}</p>}
+          {clientData.papier && <p>• <strong>Papier</strong> : {clientData.papier}</p>}
+          {clientData.couleurKraft && <p>• <strong>Couleur</strong> : {clientData.couleurKraft}</p>}
+          <p>• <strong>Identité visuelle</strong> : {clientData.branding || 'À créer ou développer'}</p>
+          <p>• <strong>Éléments à intégrer</strong> : {clientData.elements || 'À préciser'}</p>
         </div>
+      </AIMessage>
+
+      {/* Proposition de concept */}
+      <AIMessage>
+        <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Ma proposition</span>
+        {result.strategic_advice}
+      </AIMessage>
+
+      {/* Image générée */}
+      {result.image_url && (
+        <div className="ml-13" data-testid="generated-image">
+          <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md">
+            <p className="text-[#6B705C] text-xs font-bold uppercase tracking-wider mb-3">Aperçu du concept</p>
+            <img 
+              src={result.image_url.startsWith('/api') 
+                ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
+                : result.image_url
+              }
+              alt="Design généré"
+              className="w-full"
+            />
+            <a 
+              href={result.image_url.startsWith('/api') 
+                ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
+                : result.image_url
+              }
+              download="eonite-concept.png"
+              className="mt-3 inline-flex items-center gap-2 text-[#6B705C] hover:text-[#1A1A1A] font-medium text-sm"
+            >
+              <Download size={16} />
+              Télécharger l'aperçu
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Pitch pour la session design */}
+      <AIMessage>
+        <span className="text-[#CDCEBD] font-semibold block mb-2">🗓️ La suite ?</span>
+        On a fait un bon tour d'horizon. Pour passer à l'étape concrète — c'est-à-dire créer ensemble votre BAT (bon à tirer) avec les vraies dimensions, couleurs Pantone, et placement des éléments — le plus simple c'est qu'on se cale <strong>30 minutes en visio</strong>.
+
+        En général, on ressort de cette session avec un design quasi finalisé. Vous validez, et on lance la prod.
+
+        <span className="text-[#F9F8EF]/70 block mt-3 text-sm italic">
+          (Pas de panique, c'est sans engagement. On discute, vous voyez si ça vous convient.)
+        </span>
+      </AIMessage>
+
+      {/* CTA */}
+      <div className="ml-13 space-y-3" data-testid="cta-section">
+        <Link to={`/reservation?business=${encodeURIComponent(clientData.enseigne)}&contact=${encodeURIComponent(clientData.prenom)}`}>
+          <Button 
+            className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold w-full sm:w-auto"
+            data-testid="book-session-button"
+          >
+            <Calendar className="mr-2" size={20} />
+            Réserver ma session design
+            <ArrowRight className="ml-2" size={20} />
+          </Button>
+        </Link>
+        <p className="text-[#1A1A1A]/50 text-sm">
+          Des questions ? Vous pouvez continuer à discuter avec moi ici.
+        </p>
       </div>
-    )}
-
-    {/* Pitch pour la session design */}
-    <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-2">🗓️ La suite ?</span>
-      On a fait un bon tour d'horizon. Pour passer à l'étape concrète — c'est-à-dire créer ensemble votre BAT (bon à tirer) avec les vraies dimensions, couleurs Pantone, et placement des éléments — le plus simple c'est qu'on se cale <strong>30 minutes en visio</strong>.
-
-      En général, on ressort de cette session avec un design quasi finalisé. Vous validez, et on lance la prod.
-
-      <span className="text-[#F9F8EF]/70 block mt-3 text-sm italic">
-        (Pas de panique, c'est sans engagement. On discute, vous voyez si ça vous convient.)
-      </span>
-    </AIMessage>
-
-    {/* CTA */}
-    <div className="ml-13 space-y-3" data-testid="cta-section">
-      <Link to={`/reservation?business=${encodeURIComponent(clientData.enseigne)}&contact=${encodeURIComponent(clientData.prenom)}`}>
-        <Button 
-          className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold w-full sm:w-auto"
-          data-testid="book-session-button"
-        >
-          <Calendar className="mr-2" size={20} />
-          Réserver ma session design
-          <ArrowRight className="ml-2" size={20} />
-        </Button>
-      </Link>
-      <p className="text-[#1A1A1A]/50 text-sm">
-        Des questions ? Vous pouvez continuer à discuter avec moi ici.
-      </p>
     </div>
-  </div>
-);
+  );
+};
 
 // ============================================
 // MAIN ASSISTANT COMPONENT
