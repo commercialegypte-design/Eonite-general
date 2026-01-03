@@ -682,7 +682,11 @@ const AssistantPage = () => {
 
           {/* Result Display */}
           {currentStep === 'result' && aiResult && !showForm && (
-            <ResultDisplay result={aiResult} onContinue={handleContinue} />
+            <ResultDisplay 
+              result={aiResult} 
+              onContinue={handleContinue} 
+              businessName={formData.business_name}
+            />
           )}
 
           {/* Contact Form */}
