@@ -1,21 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles, Send, Download, CheckCircle2, Calendar, Mail, Loader2 } from 'lucide-react';
+import { ArrowRight, Sparkles, Send, Download, Calendar, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { assistantApi } from '../lib/api';
 
 // ============================================
-// VOLUME OPTIONS (granular)
+// CONVERSATION FLOW OPTIONS
 // ============================================
 
 const VOLUME_OPTIONS = [
   { id: '<5k', label: 'Moins de 5 000' },
-  { id: '5k', label: '5 000' },
-  { id: '10k', label: '10 000' },
-  { id: '15k', label: '15 000' },
-  { id: '20k', label: '20 000' },
-  { id: '30k', label: '30 000' },
+  { id: '5k', label: '5 000 à 10 000' },
+  { id: '10k', label: '10 000 à 20 000' },
+  { id: '20k', label: '20 000 à 30 000' },
   { id: '30k+', label: 'Plus de 30 000' },
 ];
 
@@ -23,20 +21,17 @@ const HANDLE_OPTIONS = [
   { id: 'plates', label: 'Poignées plates' },
   { id: 'torsadees', label: 'Poignées torsadées' },
   { id: 'sans', label: 'Sans poignées (sachet)' },
+  { id: 'indifferent', label: 'Je ne suis pas sûr' },
 ];
 
 const PAPER_OPTIONS = [
   { id: 'vierge', label: 'Papier vierge' },
   { id: 'recycle', label: 'Papier recyclé' },
-];
-
-const COLOR_OPTIONS = [
-  { id: 'kraft_marron', label: 'Kraft marron (artisanal)' },
-  { id: 'blanc', label: 'Blanc (net et moderne)' },
+  { id: 'indifferent', label: 'Pas de préférence' },
 ];
 
 // ============================================
-// MESSAGE COMPONENTS
+// UI COMPONENTS
 // ============================================
 
 const TypingIndicator = () => (
@@ -51,6 +46,7 @@ const AIMessage = ({ children, delay = 0 }) => (
   <div 
     className="flex items-start gap-3 animate-fade-in"
     style={{ animationDelay: `${delay}ms` }}
+    data-testid="ai-message"
   >
     <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
       <Sparkles size={20} className="text-[#F9F8EF]" />
@@ -62,20 +58,21 @@ const AIMessage = ({ children, delay = 0 }) => (
 );
 
 const UserMessage = ({ children }) => (
-  <div className="flex justify-end animate-fade-in">
+  <div className="flex justify-end animate-fade-in" data-testid="user-message">
     <div className="bg-[#CDCEBD] text-[#1A1A1A] px-5 py-4 rounded-2xl rounded-br-none max-w-[80%]">
       <p className="font-medium">{children}</p>
     </div>
   </div>
 );
 
-const QuickReplies = ({ options, onSelect, disabled, multiColumn = false }) => (
-  <div className={`flex flex-wrap gap-2 mt-4 animate-fade-in ${multiColumn ? 'max-w-md' : ''}`}>
+const QuickReplies = ({ options, onSelect, disabled }) => (
+  <div className="flex flex-wrap gap-2 mt-4 animate-fade-in" data-testid="quick-replies">
     {options.map((option) => (
       <button
         key={option.id}
         onClick={() => !disabled && onSelect(option)}
         disabled={disabled}
+        data-testid={`option-${option.id}`}
         className={`px-5 py-3 border-2 border-[#6B705C] text-[#1A1A1A] font-medium transition-all text-sm
           ${disabled 
             ? 'opacity-50 cursor-not-allowed' 
@@ -100,19 +97,21 @@ const TextInput = ({ placeholder, onSubmit, disabled, type = 'text' }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 mt-4 animate-fade-in">
+    <form onSubmit={handleSubmit} className="flex gap-2 mt-4 animate-fade-in" data-testid="text-input-form">
       <Input
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
         disabled={disabled}
         type={type}
+        data-testid="text-input"
         className="flex-1 h-12 bg-white border-2 border-[#6B705C]/30 focus:border-[#6B705C] text-lg"
         autoFocus
       />
       <Button 
         type="submit" 
         disabled={!value.trim() || disabled}
+        data-testid="send-button"
         className="h-12 px-6 bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF]"
       >
         <Send size={20} />
@@ -122,10 +121,11 @@ const TextInput = ({ placeholder, onSubmit, disabled, type = 'text' }) => {
 };
 
 const YesNoButtons = ({ onSelect, disabled }) => (
-  <div className="flex gap-3 mt-4 animate-fade-in">
+  <div className="flex gap-3 mt-4 animate-fade-in" data-testid="yes-no-buttons">
     <button
       onClick={() => !disabled && onSelect(true)}
       disabled={disabled}
+      data-testid="yes-button"
       className="px-8 py-3 bg-[#6B705C] text-[#F9F8EF] font-medium transition-all hover:bg-[#5A5F4D]"
     >
       Oui
@@ -133,6 +133,7 @@ const YesNoButtons = ({ onSelect, disabled }) => (
     <button
       onClick={() => !disabled && onSelect(false)}
       disabled={disabled}
+      data-testid="no-button"
       className="px-8 py-3 border-2 border-[#6B705C] text-[#1A1A1A] font-medium transition-all hover:bg-[#6B705C]/10"
     >
       Non
@@ -145,7 +146,7 @@ const YesNoButtons = ({ onSelect, disabled }) => (
 // ============================================
 
 const MagicLoadingScreen = ({ businessName }) => (
-  <div className="fixed inset-0 bg-[#1A1A1A] z-50 flex items-center justify-center animate-fade-in">
+  <div className="fixed inset-0 bg-[#1A1A1A] z-50 flex items-center justify-center animate-fade-in" data-testid="loading-screen">
     <div className="text-center max-w-lg px-8">
       <div className="mb-8">
         <div className="w-24 h-24 bg-[#6B705C] mx-auto flex items-center justify-center mb-6 animate-pulse">
@@ -156,7 +157,7 @@ const MagicLoadingScreen = ({ businessName }) => (
         </div>
       </div>
       <h2 className="text-3xl font-black text-[#F9F8EF] mb-4">
-        Préparation de votre synthèse...
+        Je prépare votre synthèse...
       </h2>
       <p className="text-[#F9F8EF]/60 text-lg mb-8">
         Analyse de votre projet pour <span className="text-[#CDCEBD] font-semibold">{businessName || 'votre enseigne'}</span>
@@ -169,31 +170,32 @@ const MagicLoadingScreen = ({ businessName }) => (
 // RESULT DISPLAY
 // ============================================
 
-const ResultDisplay = ({ result, clientData, onBookSession }) => (
-  <div className="space-y-6 animate-fade-in">
+const ResultDisplay = ({ result, clientData }) => (
+  <div className="space-y-6 animate-fade-in" data-testid="result-display">
     {/* Résumé */}
     <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-3">📋 Si je résume :</span>
+      <span className="text-[#CDCEBD] font-semibold block mb-3">📋 Si je résume notre échange :</span>
       <div className="space-y-2 text-sm">
-        <p>• <strong>Vous êtes</strong> : {clientData.activite} {clientData.specialite ? `(${clientData.specialite})` : ''}</p>
+        <p>• <strong>Vous</strong> : {clientData.prenom} de {clientData.enseigne}</p>
+        <p>• <strong>Activité</strong> : {clientData.activite}</p>
         <p>• <strong>Produit principal</strong> : {clientData.produit}</p>
-        <p>• <strong>Volumes</strong> : environ {clientData.volume} unités/an</p>
-        <p>• <strong>Poignées</strong> : {clientData.poignees || 'À définir'}</p>
-        <p>• <strong>Papier/couleur</strong> : {clientData.papier} {clientData.couleur}</p>
-        <p>• <strong>Branding</strong> : {clientData.branding || 'À définir'}</p>
-        <p>• <strong>Éléments obligatoires</strong> : {clientData.elements || 'À définir'}</p>
+        <p>• <strong>Volume annuel</strong> : environ {clientData.volume}</p>
+        <p>• <strong>Poignées</strong> : {clientData.poignees || 'À définir ensemble'}</p>
+        <p>• <strong>Papier</strong> : {clientData.papier}</p>
+        <p>• <strong>Identité visuelle</strong> : {clientData.branding || 'À créer ou développer'}</p>
+        <p>• <strong>Éléments à intégrer</strong> : {clientData.elements || 'À préciser'}</p>
       </div>
     </AIMessage>
 
     {/* Proposition de concept */}
     <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Proposition de concept</span>
+      <span className="text-[#CDCEBD] font-semibold block mb-2">✨ Ma proposition</span>
       {result.strategic_advice}
     </AIMessage>
 
     {/* Image générée */}
     {result.image_url && (
-      <div className="ml-13">
+      <div className="ml-13" data-testid="generated-image">
         <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md">
           <p className="text-[#6B705C] text-xs font-bold uppercase tracking-wider mb-3">Aperçu du concept</p>
           <img 
@@ -219,34 +221,39 @@ const ResultDisplay = ({ result, clientData, onBookSession }) => (
       </div>
     )}
 
-    {/* Invitation session design */}
+    {/* Pitch pour la session design */}
     <AIMessage>
-      <span className="text-[#CDCEBD] font-semibold block mb-2">🗓️ Prochaine étape</span>
-      Pour transformer ce concept en BAT concret (format précis, visuels, placement des éléments) et gagner du temps, le plus efficace est de réserver une <strong>session design de 30 minutes</strong> avec un expert EONITE.
-      
-      Pendant cette session, on reprend vos réponses, on valide ensemble les choix techniques et on prépare un BAT prêt à être validé.
-      
-      <span className="text-[#F9F8EF]/70 block mt-2 text-sm">Cela vous évite des allers-retours par email : en 30 minutes, on clarifie tout et vous repartez avec une proposition claire.</span>
+      <span className="text-[#CDCEBD] font-semibold block mb-2">🗓️ La suite ?</span>
+      On a fait un bon tour d'horizon. Pour passer à l'étape concrète — c'est-à-dire créer ensemble votre BAT (bon à tirer) avec les vraies dimensions, couleurs Pantone, et placement des éléments — le plus simple c'est qu'on se cale <strong>30 minutes en visio</strong>.
+
+      En général, on ressort de cette session avec un design quasi finalisé. Vous validez, et on lance la prod.
+
+      <span className="text-[#F9F8EF]/70 block mt-3 text-sm italic">
+        (Pas de panique, c'est sans engagement. On discute, vous voyez si ça vous convient.)
+      </span>
     </AIMessage>
 
     {/* CTA */}
-    <div className="ml-13 space-y-3">
-      <Link to={`/reservation?business=${encodeURIComponent(clientData.enseigne)}`}>
-        <Button className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold w-full sm:w-auto">
+    <div className="ml-13 space-y-3" data-testid="cta-section">
+      <Link to={`/reservation?business=${encodeURIComponent(clientData.enseigne)}&contact=${encodeURIComponent(clientData.prenom)}`}>
+        <Button 
+          className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold w-full sm:w-auto"
+          data-testid="book-session-button"
+        >
           <Calendar className="mr-2" size={20} />
           Réserver ma session design
           <ArrowRight className="ml-2" size={20} />
         </Button>
       </Link>
       <p className="text-[#1A1A1A]/50 text-sm">
-        Vous pouvez aussi continuer à discuter avec moi ici si vous avez des questions.
+        Des questions ? Vous pouvez continuer à discuter avec moi ici.
       </p>
     </div>
   </div>
 );
 
 // ============================================
-// MAIN CHAT COMPONENT
+// MAIN ASSISTANT COMPONENT
 // ============================================
 
 const AssistantPage = () => {
@@ -260,24 +267,17 @@ const AssistantPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState(null);
   
-  // Client data collection
+  // Client data collection - Nouvelle structure
   const [clientData, setClientData] = useState({
-    nom: '',
-    telephone: '',
+    prenom: '',
     enseigne: '',
     activite: '',
-    specialite: '',
     produit: '',
     volume: '',
-    poigneesImportant: null,
     poignees: '',
     papier: '',
-    couleur: '',
     hasLogo: null,
-    hasCharte: null,
-    hasVisuels: null,
     branding: '',
-    style: '',
     elements: ''
   });
 
@@ -310,17 +310,17 @@ const AssistantPage = () => {
   };
 
   // ============================================
-  // CONVERSATION FLOW
+  // CONVERSATION FLOW - NOUVELLE VERSION
   // ============================================
 
   const startConversation = async () => {
     await simulateTyping(1000);
-    addMessage('ai', "Bonjour, je suis EON, l'agent EONITE dédié à vos packagings. Je vais vous poser quelques questions pour comprendre votre projet et vous proposer un design adapté.");
-    await simulateTyping(1000);
-    addMessage('ai', "Pour commencer, comment vous appelez-vous ?");
+    addMessage('ai', "Salut ! Moi c'est EON, je suis là pour vous aider à imaginer votre prochain emballage.\n\nOn va faire ça de façon simple : quelques questions pour bien comprendre votre projet, et à la fin je vous propose une direction.");
+    await simulateTyping(1200);
+    addMessage('ai', "Pour commencer, c'est quoi votre prénom ?");
     setShowInput(true);
-    setInputConfig({ type: 'text', placeholder: 'Votre prénom', key: 'nom' });
-    setCurrentStep('nom');
+    setInputConfig({ type: 'text', placeholder: 'Votre prénom', key: 'prenom' });
+    setCurrentStep('prenom');
   };
 
   const handleTextSubmit = async (value) => {
@@ -328,19 +328,10 @@ const AssistantPage = () => {
     addMessage('user', value);
     
     switch (currentStep) {
-      case 'nom':
-        updateClientData('nom', value);
+      case 'prenom':
+        updateClientData('prenom', value);
         await simulateTyping(800);
-        addMessage('ai', `Enchanté ${value} ! Quel est le numéro pour vous joindre ?`);
-        setShowInput(true);
-        setInputConfig({ type: 'tel', placeholder: '06 XX XX XX XX', key: 'telephone' });
-        setCurrentStep('telephone');
-        break;
-        
-      case 'telephone':
-        updateClientData('telephone', value);
-        await simulateTyping(800);
-        addMessage('ai', "Et pour finir, quel est le nom de votre enseigne ?");
+        addMessage('ai', `Enchanté ${value} ! Et vous travaillez pour quelle enseigne ou établissement ?`);
         setShowInput(true);
         setInputConfig({ type: 'text', placeholder: 'Nom de votre établissement', key: 'enseigne' });
         setCurrentStep('enseigne');
@@ -349,51 +340,41 @@ const AssistantPage = () => {
       case 'enseigne':
         updateClientData('enseigne', value);
         await simulateTyping(1000);
-        addMessage('ai', `Parfait, merci pour ces informations ! Maintenant parlons de votre projet.\n\nQuelle est votre activité principale ? (ex. restaurant, boulangerie, coffee shop, épicerie fine, dark kitchen…)`);
+        addMessage('ai', `Ok, ${value}. Et vous êtes dans quel secteur d'activité ?\n\nRestaurant, boulangerie, coffee shop, épicerie fine, dark kitchen... Dites-moi juste avec vos mots.`);
         setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Ex: Restaurant, Boulangerie...', key: 'activite' });
+        setInputConfig({ type: 'text', placeholder: 'Ex: Restaurant italien, Boulangerie artisanale...', key: 'activite' });
         setCurrentStep('activite');
         break;
         
       case 'activite':
         updateClientData('activite', value);
         await simulateTyping(1000);
-        addMessage('ai', "Et quelle est votre spécialité ou votre positionnement ? (ex. burgers gourmets, pâtisserie haut de gamme, café de spécialité, traiteur oriental…)");
+        addMessage('ai', `D'accord, ${value.toLowerCase().includes('restaurant') ? 'belle activité' : 'intéressant'} !\n\nEt concrètement, c'est quoi le produit principal que vous voulez emballer ? Un sandwich, des plats à emporter, des gâteaux, du café...?`);
         setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Votre spécialité...', key: 'specialite' });
-        setCurrentStep('specialite');
-        break;
-        
-      case 'specialite':
-        updateClientData('specialite', value);
-        await simulateTyping(1000);
-        addMessage('ai', "Racontez-moi simplement quel produit ou quels produits vous voulez surtout emballer ou mettre en avant (ex. sandwichs, menus à emporter, gâteaux, boissons, paniers traiteur…)");
-        setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Vos produits principaux...', key: 'produit' });
+        setInputConfig({ type: 'text', placeholder: 'Ex: Sandwichs, menus à emporter, pâtisseries...', key: 'produit' });
         setCurrentStep('produit');
         break;
         
       case 'produit':
         updateClientData('produit', value);
-        await simulateTyping(800);
-        addMessage('ai', `Parfait, vous voulez donc surtout un packaging adapté pour : ${value}.\n\nQuelle quantité annuelle estimez-vous avoir besoin ?`);
+        await simulateTyping(1000);
+        addMessage('ai', `Parfait, donc on parle surtout d'emballer : ${value}.\n\nEn termes de volume, vous estimez avoir besoin de combien d'unités par an à peu près ?`);
         setShowInput(true);
         setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
         setCurrentStep('volume');
         break;
         
-      case 'style':
-        updateClientData('style', value);
+      case 'branding_description':
+        updateClientData('branding', value);
         await simulateTyping(1000);
-        addMessage('ai', "Dernier point : y a-t-il des éléments qui doivent absolument apparaître sur votre design ?\n\n(ex. logo, slogan, mentions légales, labels, coordonnées, réseaux sociaux…)\n\nVous pouvez me lister librement ce qui est obligatoire pour vous.");
+        addMessage('ai', `Super, je visualise bien.\n\nDernière chose : est-ce qu'il y a des éléments qui doivent absolument apparaître sur le packaging ?\n\nJe pense au logo évidemment, mais aussi un slogan, des mentions légales, des labels, vos réseaux sociaux... Listez-moi tout ce qui est non-négociable.`);
         setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Éléments obligatoires...', key: 'elements' });
+        setInputConfig({ type: 'text', placeholder: 'Ex: Logo, slogan, QR code menu, @instagram...', key: 'elements' });
         setCurrentStep('elements');
         break;
         
       case 'elements':
         updateClientData('elements', value);
-        // Generate synthesis
         await handleGenerateSynthesis({ ...clientData, elements: value });
         break;
         
@@ -410,16 +391,19 @@ const AssistantPage = () => {
       case 'volume':
         updateClientData('volume', option.label);
         await simulateTyping(1000);
-        addMessage('ai', "Pour vos sacs, est-ce que le type de poignée est déterminant pour vous, ou ce n'est pas un point sensible ?");
+        addMessage('ai', `Noté. On est sur du ${option.label} unités/an.\n\nMaintenant un truc plus technique : le type de poignée, c'est quelque chose d'important pour vous, ou vous préférez qu'on en discute plus tard ?`);
         setShowInput(true);
-        setInputConfig({ type: 'yesno', key: 'poigneesImportant' });
-        setCurrentStep('poignees_question');
+        setInputConfig({ type: 'options', options: HANDLE_OPTIONS, key: 'poignees' });
+        setCurrentStep('poignees');
         break;
         
-      case 'poignees_choice':
+      case 'poignees':
         updateClientData('poignees', option.label);
         await simulateTyping(800);
-        addMessage('ai', `Je note pour les poignées : ${option.label}.\n\nVous préférez plutôt un papier vierge ou recyclé ?`);
+        const poigneesComment = option.id === 'indifferent' 
+          ? "Pas de souci, on verra ça ensemble en détail."
+          : `Ok, ${option.label.toLowerCase()}.`;
+        addMessage('ai', `${poigneesComment}\n\nEt côté papier, vous avez une préférence entre papier vierge classique ou papier recyclé ?`);
         setShowInput(true);
         setInputConfig({ type: 'options', options: PAPER_OPTIONS, key: 'papier' });
         setCurrentStep('papier');
@@ -427,20 +411,11 @@ const AssistantPage = () => {
         
       case 'papier':
         updateClientData('papier', option.label);
-        await simulateTyping(800);
-        addMessage('ai', "Et plutôt un rendu kraft marron (plus artisanal) ou blanc (plus net et moderne) pour votre image de marque ?");
-        setShowInput(true);
-        setInputConfig({ type: 'options', options: COLOR_OPTIONS, key: 'couleur' });
-        setCurrentStep('couleur');
-        break;
-        
-      case 'couleur':
-        updateClientData('couleur', option.label);
         await simulateTyping(1000);
-        addMessage('ai', "Parlons maintenant de votre identité visuelle.\n\nEst-ce que vous avez déjà un logo ou une identité visuelle en place ?");
+        addMessage('ai', `Parfait.\n\nMaintenant parlons de votre identité visuelle. Est-ce que vous avez déjà un logo et une charte graphique en place ?`);
         setShowInput(true);
         setInputConfig({ type: 'yesno', key: 'hasLogo' });
-        setCurrentStep('branding_logo');
+        setCurrentStep('branding_question');
         break;
         
       default:
@@ -453,64 +428,19 @@ const AssistantPage = () => {
     addMessage('user', value ? 'Oui' : 'Non');
     
     switch (currentStep) {
-      case 'poignees_question':
-        updateClientData('poigneesImportant', value);
-        if (value) {
-          await simulateTyping(800);
-          addMessage('ai', "Très bien. Vous imaginez plutôt des poignées plates, des poignées torsadées, ou des sacs sans poignées (type sachet) ?");
-          setShowInput(true);
-          setInputConfig({ type: 'options', options: HANDLE_OPTIONS, key: 'poignees' });
-          setCurrentStep('poignees_choice');
-        } else {
-          updateClientData('poignees', 'Solution standard (à ajuster)');
-          await simulateTyping(800);
-          addMessage('ai', "Parfait, je noterai une solution standard et robuste, et on ajustera les poignées si besoin plus tard.\n\nVous préférez plutôt un papier vierge ou recyclé ?");
-          setShowInput(true);
-          setInputConfig({ type: 'options', options: PAPER_OPTIONS, key: 'papier' });
-          setCurrentStep('papier');
-        }
-        break;
-        
-      case 'branding_logo':
+      case 'branding_question':
         updateClientData('hasLogo', value);
-        await simulateTyping(800);
-        if (value) {
-          addMessage('ai', "Disposez-vous d'une charte graphique (couleurs, typo, règles) ou plutôt d'un logo simple sans règles formalisées ?");
-          setShowInput(true);
-          setInputConfig({ type: 'yesno', key: 'hasCharte' });
-          setCurrentStep('branding_charte');
-        } else {
-          updateClientData('branding', 'Pas de logo existant');
-          await simulateTyping(800);
-          addMessage('ai', "Pas de souci, on pourra travailler sur une identité visuelle simple.\n\nSi on parle de ressenti, quel style correspond le mieux à votre marque ? Vous pouvez me décrire librement (ex. minimaliste, très coloré, premium, éco, traditionnel…)");
-          setShowInput(true);
-          setInputConfig({ type: 'text', placeholder: 'Décrivez votre style...', key: 'style' });
-          setCurrentStep('style');
-        }
-        break;
-        
-      case 'branding_charte':
-        updateClientData('hasCharte', value);
-        await simulateTyping(800);
-        addMessage('ai', "Avez-vous des photos ou visuels (devanture, produits, Instagram, site web) dont on peut s'inspirer pour le design du packaging ?");
-        setShowInput(true);
-        setInputConfig({ type: 'yesno', key: 'hasVisuels' });
-        setCurrentStep('branding_visuels');
-        break;
-        
-      case 'branding_visuels':
-        updateClientData('hasVisuels', value);
-        const brandingLevel = clientData.hasCharte 
-          ? 'Logo + Charte graphique' 
-          : 'Logo simple';
-        const visuelsText = value ? ' + visuels disponibles' : '';
-        updateClientData('branding', brandingLevel + visuelsText);
-        
         await simulateTyping(1000);
-        addMessage('ai', `Parfait, merci pour ces précisions. Avec ce niveau de branding (${brandingLevel}${visuelsText}), je peux mieux adapter la proposition de design.\n\nSi on parle de ressenti, quel style correspond le mieux à votre marque ? Vous pouvez me décrire librement (ex. minimaliste, très coloré, premium, éco, traditionnel…)`);
+        if (value) {
+          updateClientData('branding', 'Logo et charte existants');
+          addMessage('ai', `Super, ça va nous faire gagner du temps.\n\nPour que je puisse imaginer une direction cohérente avec votre univers, comment décririez-vous le style de votre marque en quelques mots ?\n\n(Ex: "minimaliste et épuré", "coloré et fun", "haut de gamme", "artisanal et authentique"...)`);
+        } else {
+          updateClientData('branding', 'À créer');
+          addMessage('ai', `Pas de problème, on peut partir de zéro.\n\nDans ce cas, quel style ou quelle ambiance aimeriez-vous donner à votre marque à travers le packaging ?\n\n(Ex: "moderne et sobre", "chaleureux et artisanal", "premium", "éco-responsable"...)`);
+        }
         setShowInput(true);
-        setInputConfig({ type: 'text', placeholder: 'Décrivez votre style...', key: 'style' });
-        setCurrentStep('style');
+        setInputConfig({ type: 'text', placeholder: 'Décrivez l\'ambiance souhaitée...', key: 'branding_description' });
+        setCurrentStep('branding_description');
         break;
         
       default:
@@ -535,11 +465,11 @@ const AssistantPage = () => {
                       finalData.produit.toLowerCase().includes('boîte') || finalData.produit.toLowerCase().includes('box') ? 'boite' :
                       finalData.produit.toLowerCase().includes('luxe') ? 'sac_luxe' : 'sac_kraft',
         volume_estimate: finalData.volume.includes('30 000') && finalData.volume.includes('Plus') ? '50k+' :
-                        finalData.volume.includes('30 000') || finalData.volume.includes('20 000') ? '10k-50k' :
-                        finalData.volume.includes('10 000') || finalData.volume.includes('15 000') ? '5k-10k' : '<5k',
-        brand_style: finalData.style.toLowerCase().includes('luxe') || finalData.style.toLowerCase().includes('premium') ? 'luxe' :
-                     finalData.style.toLowerCase().includes('éco') || finalData.style.toLowerCase().includes('nature') ? 'eco' :
-                     finalData.style.toLowerCase().includes('fun') || finalData.style.toLowerCase().includes('color') ? 'fun' : 'minimaliste',
+                        finalData.volume.includes('20 000') || finalData.volume.includes('30 000') ? '10k-50k' :
+                        finalData.volume.includes('10 000') ? '5k-10k' : '<5k',
+        brand_style: finalData.branding.toLowerCase().includes('luxe') || finalData.branding.toLowerCase().includes('premium') || finalData.branding.toLowerCase().includes('haut de gamme') ? 'luxe' :
+                     finalData.branding.toLowerCase().includes('éco') || finalData.branding.toLowerCase().includes('nature') || finalData.branding.toLowerCase().includes('recyclé') ? 'eco' :
+                     finalData.branding.toLowerCase().includes('fun') || finalData.branding.toLowerCase().includes('color') || finalData.branding.toLowerCase().includes('coloré') ? 'fun' : 'minimaliste',
         text_on_bag: finalData.elements || finalData.enseigne,
         business_name: finalData.enseigne
       };
@@ -552,7 +482,11 @@ const AssistantPage = () => {
       console.error('Error:', error);
       // Fallback
       setAiResult({
-        strategic_advice: `Je vous propose un concept de packaging aligné avec ce que vous décrivez : un design qui met en avant votre identité "${finalData.enseigne}", avec un style ${finalData.style || 'adapté à votre activité'}, en respectant vos contraintes de poignées (${finalData.poignees}), de papier (${finalData.papier} ${finalData.couleur}) et vos éléments obligatoires.`,
+        strategic_advice: `Avec ce que vous m'avez partagé sur ${finalData.enseigne}, je vois un packaging qui reflète vraiment votre identité "${finalData.branding || 'unique'}". 
+
+Pour vos ${finalData.produit}, je recommanderais un sac en ${finalData.papier.toLowerCase().includes('recyclé') ? 'kraft recyclé authentique' : 'papier premium'}, avec vos éléments clés (${finalData.elements || 'logo'}) mis en valeur de façon élégante.
+
+Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une personnalisation complète à un prix très compétitif.`,
         image_url: null
       });
       setClientData(finalData);
@@ -601,7 +535,7 @@ const AssistantPage = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#F9F8EF] flex flex-col">
+    <main className="min-h-screen bg-[#F9F8EF] flex flex-col" data-testid="assistant-page">
       {/* Magic Loading Screen */}
       {isGenerating && <MagicLoadingScreen businessName={clientData.enseigne} />}
 
@@ -612,8 +546,8 @@ const AssistantPage = () => {
             <Sparkles size={20} className="text-[#F9F8EF]" />
           </div>
           <div>
-            <h1 className="text-[#F9F8EF] font-bold">EON <span className="font-normal opacity-70">• Conseiller Packaging Expert</span></h1>
-            <p className="text-[#F9F8EF]/60 text-sm">Conversation en cours...</p>
+            <h1 className="text-[#F9F8EF] font-bold">EON <span className="font-normal opacity-70">• Conseiller Packaging</span></h1>
+            <p className="text-[#F9F8EF]/60 text-sm">En ligne</p>
           </div>
         </div>
       </div>
@@ -623,6 +557,7 @@ const AssistantPage = () => {
         ref={chatRef}
         className="flex-1 overflow-y-auto py-8 px-4"
         style={{ maxHeight: 'calc(100vh - 180px)' }}
+        data-testid="chat-area"
       >
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Messages */}
@@ -654,7 +589,7 @@ const AssistantPage = () => {
 
       {/* Input Area */}
       {showInput && !isGenerating && currentStep !== 'result' && (
-        <div className="border-t-2 border-[#6B705C]/20 bg-white py-4 px-4">
+        <div className="border-t-2 border-[#6B705C]/20 bg-white py-4 px-4" data-testid="input-area">
           <div className="max-w-3xl mx-auto">
             {renderInput()}
           </div>
