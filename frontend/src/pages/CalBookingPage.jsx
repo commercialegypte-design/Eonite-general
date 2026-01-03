@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Calendar, Clock, Video, CheckCircle2 } from 'lucide-react';
 import { Button } from '../components/ui/button';
@@ -7,65 +7,17 @@ const CalBookingPage = () => {
   const [searchParams] = useSearchParams();
   const designId = searchParams.get('design_id');
   const businessName = searchParams.get('business') || '';
-  const calInitialized = React.useRef(false);
-
-  useEffect(() => {
-    // Prevent double initialization
-    if (calInitialized.current) return;
-    calInitialized.current = true;
-
-    // Check if Cal is already loaded
-    if (window.Cal) {
-      initializeCal();
-      return;
-    }
-
-    // Load Cal.com script
-    const existingScript = document.querySelector('script[src*="cal.com/embed"]');
-    if (existingScript) {
-      initializeCal();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = 'https://app.cal.com/embed/embed.js';
-    script.async = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      initializeCal();
-    };
-
-    function initializeCal() {
-      if (!window.Cal) return;
-      
-      try {
-        window.Cal('init', '30min', { origin: 'https://app.cal.com' });
-        
-        window.Cal.ns['30min']('inline', {
-          elementOrSelector: '#cal-inline-30min',
-          config: { layout: 'month_view' },
-          calLink: 'eonite/30min',
-        });
-
-        window.Cal.ns['30min']('ui', {
-          hideEventTypeDetails: false,
-          layout: 'month_view',
-          styles: {
-            branding: { brandColor: '#6B705C' }
-          }
-        });
-      } catch (e) {
-        console.log('Cal.com initialization:', e.message);
-      }
-    }
-  }, []);
 
   const benefits = [
     { icon: Clock, text: '30 minutes chrono' },
     { icon: Video, text: 'Visio en ligne (Google Meet)' },
     { icon: CheckCircle2, text: 'BAT industriel validé ensemble' },
   ];
+
+  // Cal.com URL with prefilled business name if available
+  const calUrl = businessName 
+    ? `https://cal.com/eonite/30min?name=${encodeURIComponent(businessName)}`
+    : 'https://cal.com/eonite/30min';
 
   return (
     <main className="min-h-screen bg-[#F9F8EF]">
@@ -125,14 +77,16 @@ const CalBookingPage = () => {
               </p>
             </div>
             
-            {/* Cal.com Inline Widget */}
-            <div 
-              id="cal-inline-30min" 
+            {/* Cal.com Iframe Embed */}
+            <iframe
+              src={calUrl}
               style={{ 
                 width: '100%', 
-                minHeight: '600px',
-                overflow: 'auto'
+                height: '700px',
+                border: 'none'
               }}
+              title="Réserver un rendez-vous EONITE"
+              allow="camera; microphone; fullscreen; payment"
             />
           </div>
 
