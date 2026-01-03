@@ -34,11 +34,13 @@ Plateforme B2B de vente d'emballages personnalisés (sacs kraft, boîtes, gobele
 - [x] Lead Scoring automatique (`lead_scoring.py`)
 
 ### Frontend (React)
-- [x] Page `/assistant` - Interface conversationnelle 5 étapes
+- [x] Page `/assistant` - Interface conversationnelle **10 étapes** (refactorisée)
+- [x] Flux naturel et consultative : Prénom → Enseigne → Activité → Produit → Volume → Poignées → Papier → Branding → Style → Éléments
+- [x] Questions ouvertes (text) pour activité, produit, style, éléments
+- [x] Boutons de choix rapides pour volume, poignées, papier
 - [x] Transitions fluides fade-in entre questions
-- [x] Affichage conseil stratégique + aperçu image
-- [x] Formulaire Visio (Gros profil: Volume ≥5k OU Franchise)
-- [x] Formulaire Devis (Petit profil: Volume <5k)
+- [x] Affichage conseil stratégique + aperçu image généré
+- [x] CTA "Réserver ma session design" → /reservation avec Cal.com
 
 ### Intégrations
 - [x] **Emergent LLM Key** (GPT-5.2) → Conseils stratégiques ✅
