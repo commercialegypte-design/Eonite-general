@@ -289,15 +289,17 @@ const AssistantPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState(null);
   
-  // Client data collection - Nouvelle structure
+  // Client data collection - Structure complète
   const [clientData, setClientData] = useState({
     prenom: '',
     enseigne: '',
     activite: '',
-    produit: '',
+    productFamily: '',  // sac_kraft, sac_sos, boite, gobelet, etc.
+    produitDetail: '',  // détails supplémentaires si "autre"
     volume: '',
     poignees: '',
     papier: '',
+    couleurKraft: '',   // marron ou blanc
     hasLogo: null,
     branding: '',
     elements: ''
