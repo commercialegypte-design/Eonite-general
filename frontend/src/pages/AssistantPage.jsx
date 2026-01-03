@@ -204,7 +204,7 @@ const MagicLoadingScreen = ({ businessName }) => (
 // RESULT DISPLAY
 // ============================================
 
-const ResultDisplay = ({ result, onContinue }) => {
+const ResultDisplay = ({ result, onContinue, businessName }) => {
   const isGrosProfile = result.lead_score === 'gros_profil';
   
   return (
@@ -274,13 +274,23 @@ const ResultDisplay = ({ result, onContinue }) => {
       </AIMessage>
 
       <div className="ml-13 animate-fade-in" style={{ animationDelay: '700ms' }}>
-        <Button 
-          onClick={onContinue}
-          className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold"
-        >
-          {result.lead_info.cta_text}
-          <ArrowRight className="ml-2" size={20} />
-        </Button>
+        {isGrosProfile ? (
+          <Link to={`/reservation?design_id=${result.design_id}&business=${encodeURIComponent(businessName)}`}>
+            <Button className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold">
+              <Calendar className="mr-2" size={20} />
+              Réserver ma session design
+              <ArrowRight className="ml-2" size={20} />
+            </Button>
+          </Link>
+        ) : (
+          <Button 
+            onClick={onContinue}
+            className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold"
+          >
+            {result.lead_info.cta_text}
+            <ArrowRight className="ml-2" size={20} />
+          </Button>
+        )}
       </div>
     </div>
   );
