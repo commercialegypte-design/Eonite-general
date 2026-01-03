@@ -13,6 +13,7 @@ import ContactPage from './pages/ContactPage';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import AssistantPage from './pages/AssistantPage';
+import CalBookingPage from './pages/CalBookingPage';
 import './App.css';
 
 function App() {
