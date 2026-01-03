@@ -123,6 +123,19 @@ quote_requests_v2: {
 
 ## Changelog
 
+### 2025-01-03 - V3 Refonte Homepage & Copywriting ✅
+- Nouveau concept "Emballage Personnalisé au Prix du Neutre"
+- Style : Industriel haut de gamme, contrastes Noir/Blanc, accent Vert (#22C55E)
+- Nouveau H1 : "Votre emballage personnalisé au prix du neutre."
+- CTAs : "Créer mon design gratuitement" + "Prendre RDV en visio"
+- Bandeau réassurance : Conception offerte | Validation 30 min | Transport prix coûtant | Stockage France
+- Section Univers Produits : 4 blocs (Retail, Pizza, Pâtisserie, Alimentation)
+- Section "Pourquoi Éonite" : Transparence sur le modèle économique
+- Tunnel conversion : 3 étapes (Produit → Visio → BAT+Devis)
+- Widget WhatsApp flottant intégré
+- Header avec menu "Solutions Métiers" dropdown
+- Footer recolorisé en noir avec accent vert
+
 ### 2025-01-03 - V2.3 Corrections Flux Produits & Quantités ✅
 - Ajout sélection famille de produits : Sacs kraft, Sacs SOS, Sacs fruits/primeurs, Boîtes, Gobelets, Autre
 - Question couleur kraft : marron (naturel, artisanal) ou blanc (moderne, épuré)
