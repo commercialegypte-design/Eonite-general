@@ -118,11 +118,18 @@ quote_requests_v2: {
 
 ## Services Mockés
 - **Email**: `backend/email_service.py` - Emails loggés mais non envoyés
-- **Images FLUX**: Placeholder affiché tant que HF_API_TOKEN non configuré
 
 ---
 
 ## Changelog
+
+### 2025-01-03 - V2.2 Flux Conversationnel Naturel ✅
+- Refonte complète du flux EON : 10 étapes avec persona consultative
+- Questions ouvertes pour activité, produit, style, éléments (au lieu de boutons)
+- Ton plus naturel : "Salut ! Moi c'est EON..." au lieu de "Bonjour, je suis EON..."
+- Séquence optimisée : Prénom → Enseigne → Activité → Produit → Volume → Poignées → Papier → Branding → Style → Éléments
+- Résumé final personnalisé avec pitch session design
+- Tests E2E validés : 100% de réussite (16 features testées)
 
 ### 2026-01-02 - V2.1 Conseiller Technique Expert
 - EON transformé en conseiller technique & marketing expert
