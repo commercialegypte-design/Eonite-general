@@ -524,8 +524,27 @@ const AssistantPage = () => {
     setShowInput(false);
     setIsGenerating(true);
     
+    // Déterminer le type de produit pour l'API
+    const getProductType = () => {
+      switch (finalData.productFamily) {
+        case 'sac_kraft': return 'sac_kraft';
+        case 'sac_sos': return 'sac_kraft';
+        case 'sac_fruits': return 'sac_kraft';
+        case 'boite': return 'boite';
+        case 'gobelet': return 'gobelet';
+        default: return 'sac_kraft';
+      }
+    };
+    
+    // Déterminer le volume pour l'API
+    const getVolumeEstimate = () => {
+      if (finalData.volume.includes('30 000') && finalData.volume.includes('Plus')) return '50k+';
+      if (finalData.volume.includes('30 000') || finalData.volume.includes('20 000')) return '10k-50k';
+      if (finalData.volume.includes('15 000') || finalData.volume.includes('10 000')) return '5k-10k';
+      return '<5k';
+    };
+    
     try {
-      // Map to API format
       const apiData = {
         business_type: finalData.activite.toLowerCase().includes('franchise') ? 'franchise' : 
                        finalData.activite.toLowerCase().includes('restaurant') ? 'restaurant' :
@@ -533,12 +552,8 @@ const AssistantPage = () => {
                        finalData.activite.toLowerCase().includes('café') || finalData.activite.toLowerCase().includes('coffee') ? 'cafe' :
                        finalData.activite.toLowerCase().includes('dark kitchen') ? 'dark_kitchen' :
                        'autre',
-        product_type: finalData.produit.toLowerCase().includes('gobelet') ? 'gobelet' :
-                      finalData.produit.toLowerCase().includes('boîte') || finalData.produit.toLowerCase().includes('box') ? 'boite' :
-                      finalData.produit.toLowerCase().includes('luxe') ? 'sac_luxe' : 'sac_kraft',
-        volume_estimate: finalData.volume.includes('30 000') && finalData.volume.includes('Plus') ? '50k+' :
-                        finalData.volume.includes('20 000') || finalData.volume.includes('30 000') ? '10k-50k' :
-                        finalData.volume.includes('10 000') ? '5k-10k' : '<5k',
+        product_type: getProductType(),
+        volume_estimate: getVolumeEstimate(),
         brand_style: finalData.branding.toLowerCase().includes('luxe') || finalData.branding.toLowerCase().includes('premium') || finalData.branding.toLowerCase().includes('haut de gamme') ? 'luxe' :
                      finalData.branding.toLowerCase().includes('éco') || finalData.branding.toLowerCase().includes('nature') || finalData.branding.toLowerCase().includes('recyclé') ? 'eco' :
                      finalData.branding.toLowerCase().includes('fun') || finalData.branding.toLowerCase().includes('color') || finalData.branding.toLowerCase().includes('coloré') ? 'fun' : 'minimaliste',
@@ -553,10 +568,11 @@ const AssistantPage = () => {
     } catch (error) {
       console.error('Error:', error);
       // Fallback
+      const productLabel = PRODUCT_FAMILY_OPTIONS.find(p => p.id === finalData.productFamily)?.label || 'packaging';
       setAiResult({
-        strategic_advice: `Avec ce que vous m'avez partagé sur ${finalData.enseigne}, je vois un packaging qui reflète vraiment votre identité "${finalData.branding || 'unique'}". 
+        strategic_advice: `Avec ce que vous m'avez partagé sur ${finalData.enseigne}, je vois un ${productLabel.toLowerCase()} qui reflète vraiment votre identité "${finalData.branding || 'unique'}". 
 
-Pour vos ${finalData.produit}, je recommanderais un sac en ${finalData.papier.toLowerCase().includes('recyclé') ? 'kraft recyclé authentique' : 'papier premium'}, avec vos éléments clés (${finalData.elements || 'logo'}) mis en valeur de façon élégante.
+Pour votre activité de ${finalData.activite}, je recommanderais un ${finalData.couleurKraft ? finalData.couleurKraft.toLowerCase() : 'kraft'} en ${finalData.papier ? finalData.papier.toLowerCase() : 'papier premium'}, avec vos éléments clés (${finalData.elements || 'logo'}) mis en valeur de façon élégante.
 
 Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une personnalisation complète à un prix très compétitif.`,
         image_url: null
