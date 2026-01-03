@@ -9,24 +9,46 @@ import { assistantApi } from '../lib/api';
 // CONVERSATION FLOW OPTIONS
 // ============================================
 
+// Familles de produits
+const PRODUCT_FAMILY_OPTIONS = [
+  { id: 'sac_kraft', label: 'Sacs kraft' },
+  { id: 'sac_sos', label: 'Sacs SOS (sans poignée)' },
+  { id: 'sac_fruits', label: 'Sacs fruits & primeurs' },
+  { id: 'boite', label: 'Boîtes / Packaging alimentaire' },
+  { id: 'gobelet', label: 'Gobelets' },
+  { id: 'autre', label: 'Autre (préciser ensuite)' },
+];
+
+// Quantités - Tranches réelles
 const VOLUME_OPTIONS = [
   { id: '<5k', label: 'Moins de 5 000' },
-  { id: '5k', label: '5 000 à 10 000' },
-  { id: '10k', label: '10 000 à 20 000' },
-  { id: '20k', label: '20 000 à 30 000' },
+  { id: '5k', label: '5 000' },
+  { id: '10k', label: '10 000' },
+  { id: '15k', label: '15 000' },
+  { id: '20k', label: '20 000' },
+  { id: '30k', label: '30 000' },
   { id: '30k+', label: 'Plus de 30 000' },
 ];
 
+// Poignées (uniquement pour les sacs kraft)
 const HANDLE_OPTIONS = [
   { id: 'plates', label: 'Poignées plates' },
   { id: 'torsadees', label: 'Poignées torsadées' },
-  { id: 'sans', label: 'Sans poignées (sachet)' },
+  { id: 'sans', label: 'Sans poignées' },
   { id: 'indifferent', label: 'Je ne suis pas sûr' },
 ];
 
+// Type de papier
 const PAPER_OPTIONS = [
   { id: 'vierge', label: 'Papier vierge' },
   { id: 'recycle', label: 'Papier recyclé' },
+  { id: 'indifferent', label: 'Pas de préférence' },
+];
+
+// Couleur du kraft
+const KRAFT_COLOR_OPTIONS = [
+  { id: 'marron', label: 'Kraft marron (naturel, artisanal)' },
+  { id: 'blanc', label: 'Kraft blanc (moderne, épuré)' },
   { id: 'indifferent', label: 'Pas de préférence' },
 ];
 
