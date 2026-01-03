@@ -7,17 +7,39 @@ const CalBookingPage = () => {
   const [searchParams] = useSearchParams();
   const designId = searchParams.get('design_id');
   const businessName = searchParams.get('business') || '';
+  const calInitialized = React.useRef(false);
 
   useEffect(() => {
+    // Prevent double initialization
+    if (calInitialized.current) return;
+    calInitialized.current = true;
+
+    // Check if Cal is already loaded
+    if (window.Cal) {
+      initializeCal();
+      return;
+    }
+
     // Load Cal.com script
+    const existingScript = document.querySelector('script[src*="cal.com/embed"]');
+    if (existingScript) {
+      initializeCal();
+      return;
+    }
+
     const script = document.createElement('script');
     script.src = 'https://app.cal.com/embed/embed.js';
     script.async = true;
     document.head.appendChild(script);
 
     script.onload = () => {
-      // Initialize Cal.com
-      if (window.Cal) {
+      initializeCal();
+    };
+
+    function initializeCal() {
+      if (!window.Cal) return;
+      
+      try {
         window.Cal('init', '30min', { origin: 'https://app.cal.com' });
         
         window.Cal.ns['30min']('inline', {
@@ -33,15 +55,10 @@ const CalBookingPage = () => {
             branding: { brandColor: '#6B705C' }
           }
         });
+      } catch (e) {
+        console.log('Cal.com initialization:', e.message);
       }
-    };
-
-    return () => {
-      // Cleanup
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
-      }
-    };
+    }
   }, []);
 
   const benefits = [
