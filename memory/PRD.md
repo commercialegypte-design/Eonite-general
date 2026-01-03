@@ -101,17 +101,18 @@ quote_requests_v2: {
 ## Prochaines Étapes
 
 ### P0 - Immédiat
-- [ ] **Ajouter HF_API_TOKEN** dans `/app/backend/.env` pour activer génération images
+- [x] ~~Ajouter HF_API_TOKEN~~ → Remplacé par Emergent LLM (gpt-image-1)
+- [x] ~~Refonte flux conversationnel EON~~ → Complété avec persona naturelle
 
 ### P1 - Cette semaine
-- [ ] Tester flux complet Assistant → Visio/Devis → Confirmation email
-- [ ] Ajouter animation "pulse" sur les éléments sélectionnés
-- [ ] Optimiser le prompt FLUX pour meilleur rendu texte sur sacs
+- [ ] **Dashboard Client** : Afficher historique commandes avec barre de progression 4 étapes
+- [ ] **Upload fichiers logos** : Permettre envoi .ai, .pdf, .svg, .png pour les devis
+- [ ] Connecter formulaire devis → `/api/quote-request`
 
 ### P2 - Backlog
 - [ ] Intégration email réel (Resend/SendGrid)
-- [ ] Calendly pour réservation automatique visio
-- [ ] Historique des designs générés dans Dashboard client
+- [ ] Webhooks Cal.com pour sauvegarder les réservations automatiquement
+- [ ] Stockage cloud fichiers (Cloudinary/S3)
 
 ---
 
