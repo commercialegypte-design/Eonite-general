@@ -123,6 +123,18 @@ quote_requests_v2: {
 
 ## Changelog
 
+### 2025-01-04 - V3.1 Mise à jour Images Catalogue ✅
+- Remplacement de toutes les images Unsplash par des images Pexels professionnelles
+- Images adaptées à chaque catégorie de produits :
+  - Sacs Kraft : sacs kraft marron avec poignées torsadées
+  - Sacs SOS : sacs kraft sans poignée pour take-away
+  - Sacs Shopping : sacs shopping élégants
+  - Boîtes Pizza : boîtes en carton kraft
+  - Gobelets : gobelets café double/simple paroi kraft
+  - Bols Kraft : bols alimentaires kraft
+  - Serviettes : serviettes papier blanches
+- Format images optimisé (400x400, compression tinysrgb)
+
 ### 2025-01-03 - V3 Refonte Homepage & Catalogue ✅
 - Retour au branding Olive (#6B705C) - suppression du vert clair
 - Nouveau copywriting "Emballage Personnalisé au Prix du Neutre"
