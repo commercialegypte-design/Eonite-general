@@ -94,7 +94,7 @@ const VisionPage = () => {
               </div>
             </div>
 
-            {/* Visuel ION - Mockup Interface */}
+            {/* Visuel ION - Mockup Interface Animé */}
             <div className="bg-[#1A1A1A] rounded-xl overflow-hidden shadow-2xl border border-[#333]">
               {/* Window Header */}
               <div className="bg-[#2A2A2A] px-4 py-3 flex items-center gap-2 border-b border-[#333]">
@@ -106,27 +106,30 @@ const VisionPage = () => {
               
               {/* Interface Content */}
               <div className="p-6">
-                {/* Prompt Input */}
+                {/* Prompt Input with typing animation */}
                 <div className="bg-[#2A2A2A] rounded-lg p-4 mb-6 border border-[#444]">
                   <p className="text-[#888] text-sm mb-2 font-mono">Prompt</p>
-                  <p className="text-[#FAF9F6] font-medium">
-                    Sac kraft brun, logo "La Bonne Baguette", style artisanal, poignées torsadées
+                  <p className="text-[#FAF9F6] font-medium typing-text">
+                    Sac kraft brun, logo &quot;La Bonne Baguette&quot;, style artisanal...
                   </p>
                 </div>
                 
-                {/* Generated Preview */}
+                {/* Generated Preview with Animation */}
                 <div className="relative">
                   <div className="aspect-[4/3] bg-gradient-to-br from-[#8B7355] to-[#6B5344] rounded-lg flex items-center justify-center overflow-hidden">
+                    {/* Animated Generation Effect */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent animate-scan" />
+                    
                     {/* Animated Kraft Bag */}
-                    <div className="relative animate-fade-in-up">
+                    <div className="relative bag-generate">
                       {/* Bag Shape */}
-                      <div className="w-40 h-52 bg-[#C4A574] rounded-t-lg relative shadow-lg">
+                      <div className="w-40 h-52 bg-[#C4A574] rounded-t-lg relative shadow-lg bag-shape">
                         {/* Bag Fold Top */}
                         <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#D4B584] rounded-t-lg" />
-                        {/* Handle */}
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-8 border-4 border-[#8B7355] rounded-t-full" />
-                        {/* Logo Area */}
-                        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center">
+                        {/* Handle - animated draw */}
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-8 border-4 border-[#8B7355] rounded-t-full handle-draw" />
+                        {/* Logo Area - fade in */}
+                        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center logo-fade">
                           <div className="w-24 h-24 border-2 border-[#6B5344]/50 rounded-lg flex items-center justify-center bg-[#D4B584]/30">
                             <span className="text-[#5C4934] font-black text-xs text-center leading-tight">
                               LA BONNE<br/>BAGUETTE
@@ -135,16 +138,28 @@ const VisionPage = () => {
                         </div>
                       </div>
                     </div>
+                    
+                    {/* Floating particles effect */}
+                    <div className="absolute inset-0 pointer-events-none">
+                      <div className="particle particle-1" />
+                      <div className="particle particle-2" />
+                      <div className="particle particle-3" />
+                    </div>
                   </div>
                   
-                  {/* Generation Progress */}
+                  {/* Generation Progress - animated */}
                   <div className="absolute bottom-4 left-4 right-4">
-                    <div className="bg-[#1A1A1A]/90 backdrop-blur rounded-lg px-4 py-3 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-[#27CA40] rounded-full animate-pulse" />
-                        <span className="text-[#FAF9F6] text-sm font-medium">Généré en 8 secondes</span>
+                    <div className="bg-[#1A1A1A]/90 backdrop-blur rounded-lg px-4 py-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 bg-[#27CA40] rounded-full animate-pulse" />
+                          <span className="text-[#FAF9F6] text-sm font-medium">Génération en cours...</span>
+                        </div>
+                        <span className="text-[#6B705C] text-sm font-bold progress-counter">87%</span>
                       </div>
-                      <span className="text-[#6B705C] text-sm font-bold">✓ Prêt</span>
+                      <div className="h-1 bg-[#333] rounded-full overflow-hidden">
+                        <div className="h-full bg-[#6B705C] rounded-full progress-bar" />
+                      </div>
                     </div>
                   </div>
                 </div>
