@@ -1,21 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, User, LogOut, ChevronDown, Video } from 'lucide-react';
+import { Menu, X, ChevronDown, Video, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
-import { useAuth } from '../../context/AuthContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
-  const { user, logout, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
