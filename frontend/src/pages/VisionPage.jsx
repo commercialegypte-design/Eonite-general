@@ -455,21 +455,95 @@ const VisionPage = () => {
         </div>
       </section>
 
-      {/* CSS Animation */}
+      {/* CSS Animations */}
       <style>{`
         @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in-up {
           animation: fade-in-up 1s ease-out forwards;
         }
+        
+        /* Scan line effect */
+        @keyframes scan {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(200%); }
+        }
+        .animate-scan {
+          animation: scan 2s linear infinite;
+        }
+        
+        /* Bag generation animation */
+        @keyframes bag-appear {
+          0% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 0.5; transform: scale(1.02); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .bag-generate {
+          animation: bag-appear 2s ease-out infinite;
+        }
+        
+        /* Handle draw animation */
+        @keyframes draw-handle {
+          0% { opacity: 0; clip-path: inset(0 100% 0 0); }
+          100% { opacity: 1; clip-path: inset(0 0 0 0); }
+        }
+        .handle-draw {
+          animation: draw-handle 1s ease-out 0.5s both infinite;
+        }
+        
+        /* Logo fade in */
+        @keyframes logo-appear {
+          0% { opacity: 0; transform: scale(0.5); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        .logo-fade {
+          animation: logo-appear 1s ease-out 1s both infinite;
+        }
+        
+        /* Progress bar animation */
+        @keyframes progress {
+          0% { width: 0%; }
+          100% { width: 100%; }
+        }
+        .progress-bar {
+          animation: progress 3s ease-in-out infinite;
+        }
+        
+        /* Typing effect */
+        .typing-text {
+          overflow: hidden;
+          border-right: 2px solid #6B705C;
+          animation: blink 0.7s step-end infinite;
+        }
+        @keyframes blink {
+          50% { border-color: transparent; }
+        }
+        
+        /* Floating particles */
+        .particle {
+          position: absolute;
+          width: 4px;
+          height: 4px;
+          background: rgba(107, 112, 92, 0.6);
+          border-radius: 50%;
+        }
+        @keyframes float-1 {
+          0%, 100% { transform: translate(50px, 100px) scale(0); opacity: 0; }
+          50% { transform: translate(80px, 30px) scale(1); opacity: 1; }
+        }
+        @keyframes float-2 {
+          0%, 100% { transform: translate(150px, 120px) scale(0); opacity: 0; }
+          50% { transform: translate(120px, 50px) scale(1); opacity: 1; }
+        }
+        @keyframes float-3 {
+          0%, 100% { transform: translate(200px, 80px) scale(0); opacity: 0; }
+          50% { transform: translate(180px, 20px) scale(1); opacity: 1; }
+        }
+        .particle-1 { animation: float-1 3s ease-in-out infinite; }
+        .particle-2 { animation: float-2 3s ease-in-out 0.5s infinite; }
+        .particle-3 { animation: float-3 3s ease-in-out 1s infinite; }
       `}</style>
     </main>
   );
