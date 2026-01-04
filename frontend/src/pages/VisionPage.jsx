@@ -426,6 +426,47 @@ const VisionPage = () => {
       </section>
 
       {/* ============================================ */}
+      {/* SECTION - QUI EST DERRIÈRE ÉONITE ? */}
+      {/* ============================================ */}
+      <section className="py-24 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-3 gap-12 items-center">
+            {/* Photo placeholder */}
+            <div className="lg:col-span-1">
+              <div className="aspect-square bg-[#CDCEBD] rounded-lg flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="w-24 h-24 bg-[#6B705C] rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <span className="text-4xl text-[#FAF9F6]">👤</span>
+                  </div>
+                  <p className="text-[#6B705C] font-bold">Fondateur</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Texte */}
+            <div className="lg:col-span-2">
+              <span className="text-[#6B705C] font-bold text-sm uppercase tracking-widest">
+                Notre histoire
+              </span>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mt-4 mb-6">
+                Qui est derrière ÉONITE ?
+              </h2>
+              <p className="text-lg text-[#1A1A1A]/70 leading-relaxed">
+                J&apos;ai créé ÉONITE pour répondre à mes propres attentes d&apos;ancien restaurateur : 
+                un emballage personnalisé, simple à gérer et sans surcoût. Après 15 ans en restauration 
+                et 7 ans dans le packaging, j&apos;ai passé un an à repenser le processus avec nos 
+                partenaires pour rendre le sur-mesure possible au prix du neutre.
+              </p>
+              <p className="text-lg text-[#1A1A1A] font-semibold mt-4">
+                Aujourd&apos;hui, l&apos;objectif est simple : vous aider à valoriser votre marque 
+                sans sacrifier ni vos marges, ni votre temps.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================ */}
       {/* SECTION 6 - CONCLUSION / MANIFESTE */}
       {/* ============================================ */}
       <section className="py-24 bg-[#1A1A1A]">
