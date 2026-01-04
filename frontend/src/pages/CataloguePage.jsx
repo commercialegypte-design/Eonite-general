@@ -31,7 +31,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '70-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -42,7 +42,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '70-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -53,7 +53,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '70-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -64,7 +64,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '90-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -75,7 +75,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '90-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -86,7 +86,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '90-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1591085686350-798c0f9faa7f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7564204/pexels-photo-7564204.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -101,7 +101,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '50-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -112,7 +112,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '50-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -123,7 +123,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '50-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -134,7 +134,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '50-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -145,7 +145,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '50-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -156,7 +156,7 @@ const PRODUCTS = [
     material: 'Kraft Brun Recyclé / Blanc Vierge',
     grammage: '90-110 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8490370/pexels-photo-8490370.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -171,7 +171,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '70-100 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6969962/pexels-photo-6969962.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -182,7 +182,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '70-100 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6969962/pexels-photo-6969962.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -193,7 +193,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '70-100 GSM',
     quantity: '250 par carton',
-    image: 'https://images.unsplash.com/photo-1544816155-12df9643f363?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6969962/pexels-photo-6969962.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -208,7 +208,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '50-90 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -219,7 +219,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '50-90 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -230,7 +230,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '40-60 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -241,7 +241,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '40-60 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -252,7 +252,7 @@ const PRODUCTS = [
     material: 'Kraft + Film Transparent',
     grammage: '50-80 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1606914501449-5a96b6ce24ca?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7258491/pexels-photo-7258491.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -267,7 +267,7 @@ const PRODUCTS = [
     material: 'Kraft Brun/Blanc',
     grammage: 'Carton ondulé',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8015700/pexels-photo-8015700.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -278,7 +278,7 @@ const PRODUCTS = [
     material: 'Kraft Brun/Blanc',
     grammage: 'Carton ondulé',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8015700/pexels-photo-8015700.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -289,7 +289,7 @@ const PRODUCTS = [
     material: 'Kraft Brun/Blanc',
     grammage: 'Carton ondulé',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8015467/pexels-photo-8015467.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -300,7 +300,7 @@ const PRODUCTS = [
     material: 'Kraft Brun/Blanc',
     grammage: 'Carton ondulé',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8015700/pexels-photo-8015700.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -311,7 +311,7 @@ const PRODUCTS = [
     material: 'Kraft Brun/Blanc',
     grammage: 'Carton ondulé',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/8015467/pexels-photo-8015467.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -326,7 +326,7 @@ const PRODUCTS = [
     material: 'Carton PE',
     grammage: 'Simple Paroi HD',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/16172362/pexels-photo-16172362.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -337,7 +337,7 @@ const PRODUCTS = [
     material: 'Carton PE',
     grammage: 'Simple Paroi HD',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/16172362/pexels-photo-16172362.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -348,7 +348,7 @@ const PRODUCTS = [
     material: 'Carton PE',
     grammage: 'Simple Paroi HD',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/16172362/pexels-photo-16172362.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -359,7 +359,7 @@ const PRODUCTS = [
     material: 'Carton Double Couche',
     grammage: 'Double Paroi Isolant',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7319106/pexels-photo-7319106.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -370,7 +370,7 @@ const PRODUCTS = [
     material: 'Carton Double Couche',
     grammage: 'Double Paroi Isolant',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7319106/pexels-photo-7319106.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -381,7 +381,7 @@ const PRODUCTS = [
     material: 'Carton Ondulé',
     grammage: 'Ripple Wall Premium',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/7319106/pexels-photo-7319106.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   
@@ -396,7 +396,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6613953/pexels-photo-6613953.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -407,7 +407,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6613953/pexels-photo-6613953.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -418,7 +418,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6613052/pexels-photo-6613052.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -429,7 +429,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.unsplash.com/photo-1547592180-85f173990554?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/6613052/pexels-photo-6613052.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
   
@@ -444,7 +444,7 @@ const PRODUCTS = [
     material: 'Papier',
     grammage: '1 pli / 2 plis',
     quantity: '40 paquets x 100 pcs',
-    image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/13789907/pexels-photo-13789907.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -455,7 +455,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '30-40 GSM',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=400&h=400&fit=crop',
+    image: 'https://images.pexels.com/photos/35346176/pexels-photo-35346176.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
     featured: false,
   },
 ];
