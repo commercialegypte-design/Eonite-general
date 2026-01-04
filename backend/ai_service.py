@@ -40,8 +40,8 @@ except ImportError:
 
 EMERGENT_LLM_KEY = os.environ.get("EMERGENT_LLM_KEY")
 
-# Image prompt prefix (forced for consistency)
-IMAGE_PROMPT_PREFIX = "A premium paper shopping bag, olive green color #6B705C, studio lighting, high resolution, professional product photography"
+# Image prompt prefix (base for consistency)
+IMAGE_PROMPT_PREFIX = "A premium paper shopping bag, studio lighting, high resolution, professional product photography"
 
 
 # ============================================
