@@ -93,15 +93,69 @@ const VisionPage = () => {
               </div>
             </div>
 
-            {/* Visuel ION - Mockup */}
-            <div className="bg-[#FAF9F6] border-2 border-[#6B705C]/20 p-8 rounded-lg">
-              <div className="aspect-square bg-gradient-to-br from-[#6B705C]/10 to-[#CDCEBD]/30 flex items-center justify-center rounded-lg">
-                <div className="text-center">
-                  <div className="w-24 h-24 bg-[#6B705C] mx-auto mb-6 flex items-center justify-center rounded-lg">
-                    <Zap size={48} className="text-[#FAF9F6]" />
+            {/* Visuel ION - Mockup Interface */}
+            <div className="bg-[#1A1A1A] rounded-xl overflow-hidden shadow-2xl border border-[#333]">
+              {/* Window Header */}
+              <div className="bg-[#2A2A2A] px-4 py-3 flex items-center gap-2 border-b border-[#333]">
+                <div className="w-3 h-3 rounded-full bg-[#FF5F56]" />
+                <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                <div className="w-3 h-3 rounded-full bg-[#27CA40]" />
+                <span className="ml-4 text-[#888] text-sm font-mono">Agent ION — Générateur</span>
+              </div>
+              
+              {/* Interface Content */}
+              <div className="p-6">
+                {/* Prompt Input */}
+                <div className="bg-[#2A2A2A] rounded-lg p-4 mb-6 border border-[#444]">
+                  <p className="text-[#888] text-sm mb-2 font-mono">Prompt</p>
+                  <p className="text-[#FAF9F6] font-medium">
+                    Sac kraft brun, logo "La Bonne Baguette", style artisanal, poignées torsadées
+                  </p>
+                </div>
+                
+                {/* Generated Preview */}
+                <div className="relative">
+                  <div className="aspect-[4/3] bg-gradient-to-br from-[#8B7355] to-[#6B5344] rounded-lg flex items-center justify-center overflow-hidden">
+                    {/* Animated Kraft Bag */}
+                    <div className="relative animate-fade-in-up">
+                      {/* Bag Shape */}
+                      <div className="w-40 h-52 bg-[#C4A574] rounded-t-lg relative shadow-lg">
+                        {/* Bag Fold Top */}
+                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-32 h-6 bg-[#D4B584] rounded-t-lg" />
+                        {/* Handle */}
+                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-16 h-8 border-4 border-[#8B7355] rounded-t-full" />
+                        {/* Logo Area */}
+                        <div className="absolute top-12 left-1/2 -translate-x-1/2 text-center">
+                          <div className="w-24 h-24 border-2 border-[#6B5344]/50 rounded-lg flex items-center justify-center bg-[#D4B584]/30">
+                            <span className="text-[#5C4934] font-black text-xs text-center leading-tight">
+                              LA BONNE<br/>BAGUETTE
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-2xl font-black text-[#1A1A1A]">Agent ION</p>
-                  <p className="text-[#1A1A1A]/60 mt-2">Génération de visuels en direct</p>
+                  
+                  {/* Generation Progress */}
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <div className="bg-[#1A1A1A]/90 backdrop-blur rounded-lg px-4 py-3 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-[#27CA40] rounded-full animate-pulse" />
+                        <span className="text-[#FAF9F6] text-sm font-medium">Généré en 8 secondes</span>
+                      </div>
+                      <span className="text-[#6B705C] text-sm font-bold">✓ Prêt</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex gap-3 mt-4">
+                  <button className="flex-1 bg-[#6B705C] text-[#FAF9F6] py-3 rounded-lg font-bold text-sm hover:bg-[#5A5F4D] transition-colors">
+                    Valider ce design
+                  </button>
+                  <button className="flex-1 bg-[#2A2A2A] text-[#FAF9F6] py-3 rounded-lg font-bold text-sm border border-[#444] hover:bg-[#333] transition-colors">
+                    Régénérer
+                  </button>
                 </div>
               </div>
             </div>
