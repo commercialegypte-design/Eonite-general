@@ -33,7 +33,7 @@ const VisionPage = () => {
           <div className="flex flex-col md:flex-row justify-center gap-6 md:gap-12">
             {[
               'Personnalisé au prix du neutre.',
-              'Petites séries adaptées à la vraie vie des restos.',
+              'Petites séries, grandes ambitions.',
               'Logistique prise en charge de A à Z.'
             ].map((bullet, i) => (
               <div key={i} className="flex items-center gap-3">
@@ -62,14 +62,15 @@ const VisionPage = () => {
               
               <div className="space-y-6 text-lg text-[#1A1A1A]/70 leading-relaxed">
                 <p>
-                  <span className="font-semibold text-[#1A1A1A]">Agent ION</span> brise la page blanche en générant vos visuels en 10 secondes.
+                  Besoin de tester une idée ? <span className="font-semibold text-[#1A1A1A]">Agent ION</span> génère vos visuels en quelques secondes.
                   Vous voyez vos sacs, boîtes et gobelets prendre forme en direct.
                 </p>
                 <p>
-                  En 30 minutes de visio, le BAT est validé et le devis est ferme.
+                  Prêt à passer à l&apos;action ? <span className="font-semibold text-[#1A1A1A]">Nos experts vous accompagnent en visio.</span>
+                  En 30 minutes, le BAT est validé et le devis est ferme.
                 </p>
                 <p>
-                  Zéro aller-retour mail. Zéro fichier qui se perd.
+                  Zéro aller-retour courrier. Zéro fichier qui se perd.
                 </p>
               </div>
 
