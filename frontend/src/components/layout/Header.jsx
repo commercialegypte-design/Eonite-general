@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ChevronDown, Video, Building2 } from 'lucide-react';
+import { Menu, X, Video, Building2 } from 'lucide-react';
 import { Button } from '../ui/button';
 
 const Header = () => {
@@ -62,42 +62,21 @@ const Header = () => {
             ))}
           </div>
 
-          {/* Right Side */}
+          {/* Right Side - Grands Comptes + Prendre RDV */}
           <div className="hidden lg:flex items-center gap-4">
-            {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="text-[#1A1A1A] hover:text-[#6B705C] gap-2">
-                    <User size={18} />
-                    <span className="font-medium">{user?.company_name || 'Mon compte'}</span>
-                    <ChevronDown size={14} />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-[#F9F8EF] border-[#6B705C]/20">
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer hover:text-[#6B705C]">
-                      Tableau de bord
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard/orders" className="cursor-pointer hover:text-[#6B705C]">
-                      Mes commandes
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-[#6B705C]/10" />
-                  <DropdownMenuItem onClick={logout} className="cursor-pointer text-red-600">
-                    <LogOut size={16} className="mr-2" />
-                    Déconnexion
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <Link to="/login">
-                <Button variant="ghost" className="text-[#1A1A1A] hover:text-[#6B705C] font-medium uppercase tracking-wider text-sm">
-                  Connexion
-                </Button>
-              </Link>
-            )}
+            <Link to="/grands-comptes">
+              <Button 
+                variant="ghost" 
+                className={`text-sm uppercase tracking-wider flex items-center gap-2 ${
+                  isActive('/grands-comptes')
+                    ? 'text-[#6B705C] font-semibold'
+                    : 'text-[#1A1A1A]/70 hover:text-[#6B705C]'
+                }`}
+              >
+                <Building2 size={16} />
+                Grands Comptes
+              </Button>
+            </Link>
             
             <Link to="/reservation">
               <Button 
@@ -142,13 +121,12 @@ const Header = () => {
             ))}
 
             <div className="border-t border-[#6B705C]/10 mt-4 pt-4 flex flex-col gap-2 px-4">
-              {!isAuthenticated && (
-                <Link to="/login" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start text-[#1A1A1A]">
-                    Connexion
-                  </Button>
-                </Link>
-              )}
+              <Link to="/grands-comptes" onClick={() => setIsMenuOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start text-[#1A1A1A] gap-2">
+                  <Building2 size={16} />
+                  Grands Comptes
+                </Button>
+              </Link>
               <Link to="/reservation" onClick={() => setIsMenuOpen(false)}>
                 <Button className="w-full bg-[#1A1A1A] hover:bg-black text-[#F9F8EF] font-bold">
                   <Video size={16} className="mr-2" />
