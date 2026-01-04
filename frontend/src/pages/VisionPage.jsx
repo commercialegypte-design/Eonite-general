@@ -431,9 +431,9 @@ const VisionPage = () => {
             </p>
           </div>
 
-          <Link to="/assistant">
+          <Link to="/reservation">
             <Button className="bg-[#6B705C] hover:bg-[#5A5F4D] text-white px-12 py-6 text-lg font-bold uppercase tracking-wider">
-              Commencer maintenant
+              Prendre rendez-vous
               <ArrowRight className="ml-2" size={20} />
             </Button>
           </Link>
