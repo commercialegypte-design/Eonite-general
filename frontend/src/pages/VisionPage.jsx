@@ -213,7 +213,7 @@ const VisionPage = () => {
                   Zéro appel perdu. Zéro "où en est ma commande ?".
                 </p>
                 <p className="font-semibold text-[#FAF9F6]">
-                  Un gestionnaire dédié configure votre espace dans votre langue dès le jour 1.
+                  Un gestionnaire dédié configure votre espace selon vos besoins réels — même la langue peut être adaptée.
                 </p>
               </div>
 
