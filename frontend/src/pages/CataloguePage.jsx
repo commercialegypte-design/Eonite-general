@@ -396,7 +396,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.pexels.com/photos/10432461/pexels-photo-10432461.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1655689712221-59a7dd6a01f1?w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -407,7 +407,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.pexels.com/photos/10432461/pexels-photo-10432461.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1655689712221-59a7dd6a01f1?w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -418,7 +418,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.pexels.com/photos/6613959/pexels-photo-6613959.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1722239310662-84a950cfa62d?w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -429,7 +429,7 @@ const PRODUCTS = [
     material: 'Kraft Laminé',
     grammage: 'Étanche, Anti-fuite',
     quantity: '300 par carton',
-    image: 'https://images.pexels.com/photos/6613959/pexels-photo-6613959.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1722239312633-e0e82c8c60a9?w=400&h=400&fit=crop',
     featured: false,
   },
   
