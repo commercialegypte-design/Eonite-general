@@ -53,7 +53,7 @@ const HomePage = () => {
   // WhatsApp handler
   const openWhatsApp = () => {
     const message = encodeURIComponent("👋 Bonjour ! J'aimerais un devis rapide pour mes emballages personnalisés. Pouvez-vous m'aider ?");
-    window.open(`https://wa.me/33600000000?text=${message}`, '_blank');
+    window.open(`https://wa.me/33757598643?text=${message}`, '_blank');
   };
 
   return (
