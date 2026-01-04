@@ -77,9 +77,9 @@ const VisionPage = () => {
               {/* Outils */}
               <div className="mt-10 space-y-4">
                 {[
-                  { icon: Package, title: 'Catalogue EONITE', desc: 'Formats et grammages qui couvrent l\'essentiel des besoins de la restauration.' },
-                  { icon: Zap, title: 'Sélecteur de Force', desc: 'Choix du bon sac selon le poids réel des produits.' },
-                  { icon: BarChart3, title: 'Configurateur', desc: 'Quantités, prix et contraintes techniques cadrés en quelques minutes.' },
+                  { icon: Package, title: 'Catalogue EONITE', desc: 'Formats et grammages pour tous vos besoins d\'emballage.' },
+                  { icon: Zap, title: 'Sélecteur de Force', desc: 'Choix du bon sac selon l\'utilisation réelle.' },
+                  { icon: BarChart3, title: 'Accompagnement personnalisé', desc: 'Toutes les infos et le design validés avant de vous engager.' },
                 ].map((tool, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 bg-[#FAF9F6] border border-[#6B705C]/10">
                     <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
