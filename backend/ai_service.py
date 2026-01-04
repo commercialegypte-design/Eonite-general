@@ -167,25 +167,35 @@ def generate_image_prompt(
 ) -> str:
     """
     Génère le prompt pour la génération d'image.
+    Utilise les couleurs et styles variés selon les choix du client.
     """
+    # Couleurs variées selon le style
+    style_colors = {
+        "minimaliste": "white and black color scheme, clean monochrome",
+        "luxe": "elegant black with gold foil accents, premium dark finish",
+        "fun": "bright colorful design, vibrant orange and teal accents",
+        "eco": "natural brown kraft paper, recycled texture, earth tone colors"
+    }
+    
     style_descriptors = {
-        "minimaliste": "minimalist design, clean typography, white space, modern",
+        "minimaliste": "minimalist design, clean typography, white space, modern sans-serif font",
         "luxe": "luxury premium finish, embossed effect, gold accents, elegant, sophisticated",
-        "fun": "playful colorful design, bold graphics, vibrant colors, dynamic",
-        "eco": "eco-friendly natural kraft, recycled texture, sustainable look, earth tones, organic"
+        "fun": "playful colorful design, bold graphics, vibrant colors, dynamic patterns",
+        "eco": "eco-friendly natural kraft, recycled texture, sustainable look, organic feel"
     }
     
     product_descriptors = {
-        "sac_kraft": "kraft paper shopping bag with twisted handles",
-        "sac_luxe": "luxury gift bag with ribbon handles, glossy premium finish",
-        "boite": "cardboard food box packaging",
-        "gobelet": "paper coffee cup with lid"
+        "sac_kraft": "kraft paper shopping bag with twisted paper handles",
+        "sac_luxe": "luxury gift bag with satin ribbon handles, glossy premium finish",
+        "boite": "cardboard food box packaging, takeaway container",
+        "gobelet": "paper coffee cup with lid, hot drink container"
     }
     
+    style_color = style_colors.get(brand_style, "natural brown kraft")
     style_desc = style_descriptors.get(brand_style, "professional design")
     product_desc = product_descriptors.get(product_type, "paper bag")
     
-    prompt = f"{IMAGE_PROMPT_PREFIX}, {product_desc}, {style_desc}, with elegant text '{text_on_bag}' printed on front, product mockup, white studio background, 4K quality"
+    prompt = f"{IMAGE_PROMPT_PREFIX}, {product_desc}, {style_color}, {style_desc}, with elegant text '{text_on_bag}' printed on front, product mockup, white studio background, 4K quality, photorealistic"
     
     return prompt
 
