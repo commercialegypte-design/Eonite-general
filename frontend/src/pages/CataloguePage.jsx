@@ -208,7 +208,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '50-90 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.pexels.com/photos/11646621/pexels-photo-11646621.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1590820077566-af4e557c1548?w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -219,7 +219,7 @@ const PRODUCTS = [
     material: 'Kraft Brun / Blanc',
     grammage: '50-90 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.pexels.com/photos/11646621/pexels-photo-11646621.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1590820077566-af4e557c1548?w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -230,7 +230,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '40-60 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1727274970610-6cbf59d7512c?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1637771622292-74a6c8064bf1?w=400&h=400&fit=crop',
     featured: false,
   },
   {
@@ -241,7 +241,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '40-60 GSM',
     quantity: '1000 par carton',
-    image: 'https://images.unsplash.com/photo-1727274970610-6cbf59d7512c?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1637771622292-74a6c8064bf1?w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -444,7 +444,7 @@ const PRODUCTS = [
     material: 'Papier',
     grammage: '1 pli / 2 plis',
     quantity: '40 paquets x 100 pcs',
-    image: 'https://images.pexels.com/photos/4998112/pexels-photo-4998112.jpeg?auto=compress&cs=tinysrgb&w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1663789049943-138e53774e2d?w=400&h=400&fit=crop',
     featured: true,
   },
   {
@@ -455,7 +455,7 @@ const PRODUCTS = [
     material: 'Papier Ingraissable',
     grammage: '30-40 GSM',
     quantity: '500 par carton',
-    image: 'https://images.unsplash.com/photo-1600104794697-a755e4e2264f?w=400&h=400&fit=crop',
+    image: 'https://images.unsplash.com/photo-1727195077380-1c0f7e7a3456?w=400&h=400&fit=crop',
     featured: false,
   },
 ];
