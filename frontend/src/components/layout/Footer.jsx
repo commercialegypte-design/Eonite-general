@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, ArrowRight, Linkedin, Instagram } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, ArrowRight } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -21,7 +21,8 @@ const Footer = () => {
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          {/* Company Info */}
+          
+          {/* Colonne 1 - Marque */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
               <img 
@@ -30,20 +31,13 @@ const Footer = () => {
                 className="h-14 w-auto object-contain brightness-0 invert"
               />
             </Link>
-            <p className="text-[#F9F8EF]/70 leading-relaxed mb-6">
-              Emballage personnalisé au prix du neutre. Direct usine, zéro intermédiaire.
+            <p className="text-[#F9F8EF]/70 leading-relaxed">
+              Emballage personnalisé au prix du neutre.<br />
+              Direct usine, zéro intermédiaire.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 border border-[#F9F8EF]/30 hover:bg-[#F9F8EF] hover:text-[#6B705C] flex items-center justify-center transition-all">
-                <Linkedin size={18} />
-              </a>
-              <a href="#" className="w-10 h-10 border border-[#F9F8EF]/30 hover:bg-[#F9F8EF] hover:text-[#6B705C] flex items-center justify-center transition-all">
-                <Instagram size={18} />
-              </a>
-            </div>
           </div>
 
-          {/* Navigation */}
+          {/* Colonne 2 - Navigation */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#F9F8EF] mb-6">Navigation</h3>
             <ul className="space-y-3">
@@ -51,6 +45,7 @@ const Footer = () => {
                 { label: 'Accueil', path: '/' },
                 { label: 'Catalogue', path: '/catalogue' },
                 { label: 'Vision', path: '/vision' },
+                { label: 'Grands Comptes', path: '/grands-comptes' },
                 { label: 'Contact', path: '/contact' }
               ].map((link) => (
                 <li key={link.path}>
@@ -66,16 +61,16 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Produits */}
+          {/* Colonne 2bis - Produits */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#F9F8EF] mb-6">Produits</h3>
             <ul className="space-y-3">
               {[
-                'Sacs Kraft',
+                'Sacs kraft',
                 'Sacs SOS',
-                'Boîtes Pizza',
+                'Boîtes pizza',
                 'Gobelets',
-                'Bols Kraft'
+                'Bols kraft'
               ].map((item) => (
                 <li key={item}>
                   <Link 
@@ -90,31 +85,42 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Colonne 3 - Contact */}
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-[#F9F8EF] mb-6">Contact</h3>
             <ul className="space-y-4">
               <li>
                 <a 
-                  href="mailto:contact@eonite.fr"
+                  href="tel:+33972214885"
                   className="flex items-start gap-3 text-[#F9F8EF]/70 hover:text-[#F9F8EF] transition-colors"
                 >
-                  <Mail size={18} className="mt-0.5 flex-shrink-0" />
-                  <span>contact@eonite.fr</span>
+                  <Phone size={18} className="mt-0.5 flex-shrink-0" />
+                  <span>09 72 21 48 85</span>
                 </a>
               </li>
               <li>
                 <a 
-                  href="tel:+33100000000"
+                  href="mailto:client@eonite.fr"
                   className="flex items-start gap-3 text-[#F9F8EF]/70 hover:text-[#F9F8EF] transition-colors"
                 >
-                  <Phone size={18} className="mt-0.5 flex-shrink-0" />
-                  <span>+33 (0)1 XX XX XX XX</span>
+                  <Mail size={18} className="mt-0.5 flex-shrink-0" />
+                  <span>client@eonite.fr</span>
+                </a>
+              </li>
+              <li>
+                <a 
+                  href="https://www.eonite.fr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start gap-3 text-[#F9F8EF]/70 hover:text-[#F9F8EF] transition-colors"
+                >
+                  <Globe size={18} className="mt-0.5 flex-shrink-0" />
+                  <span>www.eonite.fr</span>
                 </a>
               </li>
               <li className="flex items-start gap-3 text-[#F9F8EF]/70">
                 <MapPin size={18} className="mt-0.5 flex-shrink-0" />
-                <span>Stockage France<br />Production Europe</span>
+                <span>200 Rue de la Croix Nivert<br />75015 Paris</span>
               </li>
             </ul>
           </div>
