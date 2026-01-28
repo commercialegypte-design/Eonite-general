@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '../lib/supabaseClient';
 import { auth } from '../lib/api';
 
 const AuthContext = createContext(null);
@@ -8,31 +9,57 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const storedUser = auth.getUser();
-    if (storedUser) {
-      setUser(storedUser);
-    }
-    setLoading(false);
+    // 1. Get initial session
+    const getInitialSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.user) {
+          // Fetch full profile
+          const userWithProfile = await auth.getMe();
+          setUser(userWithProfile);
+        }
+      } catch (error) {
+        console.error("Error fetching session:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getInitialSession();
+
+    // 2. Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          try {
+            const userWithProfile = await auth.getMe();
+            setUser(userWithProfile);
+          } catch (e) {
+            console.error("Error refreshing profile in auth change", e);
+            setUser(session.user);
+          }
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const login = async (email, password) => {
-    const response = await auth.login(email, password);
-    auth.setAuth(response.access_token, response.user);
-    setUser(response.user);
-    return response;
+    // api.auth.login returns the auth data, but the subscription will update the state
+    return auth.login(email, password);
   };
 
   const register = async (data) => {
-    const response = await auth.register(data);
-    auth.setAuth(response.access_token, response.user);
-    setUser(response.user);
-    return response;
+    return auth.register(data);
   };
 
   const logout = () => {
-    auth.logout();
-    setUser(null);
+    return auth.logout(); // Will trigger SIGNED_OUT event
   };
 
   const value = {
@@ -46,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 };
