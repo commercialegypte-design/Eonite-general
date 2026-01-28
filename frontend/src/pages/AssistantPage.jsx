@@ -65,7 +65,7 @@ const TypingIndicator = () => (
 );
 
 const AIMessage = ({ children, delay = 0 }) => (
-  <div 
+  <div
     className="flex items-start gap-3 animate-fade-in"
     style={{ animationDelay: `${delay}ms` }}
     data-testid="ai-message"
@@ -96,8 +96,8 @@ const QuickReplies = ({ options, onSelect, disabled }) => (
         disabled={disabled}
         data-testid={`option-${option.id}`}
         className={`px-5 py-3 border-2 border-[#6B705C] text-[#1A1A1A] font-medium transition-all text-sm
-          ${disabled 
-            ? 'opacity-50 cursor-not-allowed' 
+          ${disabled
+            ? 'opacity-50 cursor-not-allowed'
             : 'hover:bg-[#6B705C] hover:text-[#F9F8EF] hover:scale-105'
           }`}
       >
@@ -109,7 +109,7 @@ const QuickReplies = ({ options, onSelect, disabled }) => (
 
 const TextInput = ({ placeholder, onSubmit, disabled, type = 'text' }) => {
   const [value, setValue] = useState('');
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (value.trim() && !disabled) {
@@ -130,8 +130,8 @@ const TextInput = ({ placeholder, onSubmit, disabled, type = 'text' }) => {
         className="flex-1 h-12 bg-white border-2 border-[#6B705C]/30 focus:border-[#6B705C] text-lg"
         autoFocus
       />
-      <Button 
-        type="submit" 
+      <Button
+        type="submit"
         disabled={!value.trim() || disabled}
         data-testid="send-button"
         className="h-12 px-6 bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF]"
@@ -195,7 +195,7 @@ const MagicLoadingScreen = ({ businessName }) => (
 const ResultDisplay = ({ result, clientData }) => {
   // Obtenir le label du type de produit
   const productLabel = PRODUCT_FAMILY_OPTIONS.find(p => p.id === clientData.productFamily)?.label || clientData.productFamily;
-  
+
   return (
     <div className="space-y-6 animate-fade-in" data-testid="result-display">
       {/* Résumé */}
@@ -225,16 +225,16 @@ const ResultDisplay = ({ result, clientData }) => {
         <div className="ml-13" data-testid="generated-image">
           <div className="bg-white border-2 border-[#6B705C] p-4 max-w-md">
             <p className="text-[#6B705C] text-xs font-bold uppercase tracking-wider mb-3">Aperçu du concept</p>
-            <img 
-              src={result.image_url.startsWith('/api') 
+            <img
+              src={result.image_url.startsWith('/api')
                 ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
                 : result.image_url
               }
               alt="Design généré"
               className="w-full"
             />
-            <a 
-              href={result.image_url.startsWith('/api') 
+            <a
+              href={result.image_url.startsWith('/api')
                 ? `${process.env.REACT_APP_BACKEND_URL}${result.image_url}`
                 : result.image_url
               }
@@ -263,7 +263,7 @@ const ResultDisplay = ({ result, clientData }) => {
       {/* CTA */}
       <div className="ml-13 space-y-3" data-testid="cta-section">
         <Link to={`/reservation?business=${encodeURIComponent(clientData.enseigne)}&contact=${encodeURIComponent(clientData.prenom)}`}>
-          <Button 
+          <Button
             className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-8 py-6 text-lg font-bold w-full sm:w-auto"
             data-testid="book-session-button"
           >
@@ -294,7 +294,7 @@ const AssistantPage = () => {
   const [inputConfig, setInputConfig] = useState(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiResult, setAiResult] = useState(null);
-  
+
   // Client data collection - Structure complète
   const [clientData, setClientData] = useState({
     prenom: '',
@@ -323,6 +323,7 @@ const AssistantPage = () => {
     if (initializedRef.current) return;
     initializedRef.current = true;
     startConversation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addMessage = (type, content) => {
@@ -356,7 +357,7 @@ const AssistantPage = () => {
   const handleTextSubmit = async (value) => {
     setShowInput(false);
     addMessage('user', value);
-    
+
     switch (currentStep) {
       case 'prenom':
         updateClientData('prenom', value);
@@ -366,7 +367,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'text', placeholder: 'Nom de votre établissement', key: 'enseigne' });
         setCurrentStep('enseigne');
         break;
-        
+
       case 'enseigne':
         updateClientData('enseigne', value);
         await simulateTyping(1000);
@@ -375,7 +376,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'text', placeholder: 'Ex: Restaurant italien, Boulangerie artisanale...', key: 'activite' });
         setCurrentStep('activite');
         break;
-        
+
       case 'activite':
         updateClientData('activite', value);
         await simulateTyping(1200);
@@ -384,7 +385,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'options', options: PRODUCT_FAMILY_OPTIONS, key: 'productFamily' });
         setCurrentStep('product_family');
         break;
-        
+
       case 'produit_detail':
         updateClientData('produitDetail', value);
         await simulateTyping(1000);
@@ -393,7 +394,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
         setCurrentStep('volume');
         break;
-        
+
       case 'branding_description':
         updateClientData('branding', value);
         await simulateTyping(1000);
@@ -402,12 +403,12 @@ const AssistantPage = () => {
         setInputConfig({ type: 'text', placeholder: 'Ex: Logo, slogan, QR code menu, @instagram...', key: 'elements' });
         setCurrentStep('elements');
         break;
-        
+
       case 'elements':
         updateClientData('elements', value);
         await handleGenerateSynthesis({ ...clientData, elements: value });
         break;
-        
+
       default:
         break;
     }
@@ -416,11 +417,11 @@ const AssistantPage = () => {
   const handleOptionSelect = async (option) => {
     setShowInput(false);
     addMessage('user', option.label);
-    
+
     switch (currentStep) {
       case 'product_family':
         updateClientData('productFamily', option.id);
-        
+
         // Si c'est un sac kraft, demander les poignées
         if (option.id === 'sac_kraft') {
           await simulateTyping(1000);
@@ -428,7 +429,7 @@ const AssistantPage = () => {
           setShowInput(true);
           setInputConfig({ type: 'options', options: HANDLE_OPTIONS, key: 'poignees' });
           setCurrentStep('poignees');
-        } 
+        }
         // Si c'est un sac SOS ou fruits, pas de question poignées
         else if (option.id === 'sac_sos' || option.id === 'sac_fruits') {
           updateClientData('poignees', 'Sans poignées');
@@ -455,11 +456,11 @@ const AssistantPage = () => {
           setCurrentStep('volume');
         }
         break;
-        
+
       case 'poignees':
         updateClientData('poignees', option.label);
         await simulateTyping(800);
-        const poigneesComment = option.id === 'indifferent' 
+        const poigneesComment = option.id === 'indifferent'
           ? "Pas de souci, on verra ça ensemble en détail."
           : `Ok, ${option.label.toLowerCase()}.`;
         addMessage('ai', `${poigneesComment}\n\nVous préférez un papier vierge ou recyclé ?`);
@@ -467,7 +468,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'options', options: PAPER_OPTIONS, key: 'papier' });
         setCurrentStep('papier');
         break;
-        
+
       case 'papier':
         updateClientData('papier', option.label);
         await simulateTyping(800);
@@ -477,7 +478,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'options', options: KRAFT_COLOR_OPTIONS, key: 'couleurKraft' });
         setCurrentStep('couleur_kraft');
         break;
-        
+
       case 'couleur_kraft':
         updateClientData('couleurKraft', option.label);
         await simulateTyping(1000);
@@ -486,7 +487,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'options', options: VOLUME_OPTIONS, key: 'volume' });
         setCurrentStep('volume');
         break;
-        
+
       case 'volume':
         updateClientData('volume', option.label);
         await simulateTyping(1000);
@@ -495,7 +496,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'yesno', key: 'hasLogo' });
         setCurrentStep('branding_question');
         break;
-        
+
       default:
         break;
     }
@@ -504,7 +505,7 @@ const AssistantPage = () => {
   const handleYesNo = async (value) => {
     setShowInput(false);
     addMessage('user', value ? 'Oui' : 'Non');
-    
+
     switch (currentStep) {
       case 'branding_question':
         updateClientData('hasLogo', value);
@@ -520,7 +521,7 @@ const AssistantPage = () => {
         setInputConfig({ type: 'text', placeholder: 'Décrivez l\'ambiance souhaitée...', key: 'branding_description' });
         setCurrentStep('branding_description');
         break;
-        
+
       default:
         break;
     }
@@ -529,7 +530,7 @@ const AssistantPage = () => {
   const handleGenerateSynthesis = async (finalData) => {
     setShowInput(false);
     setIsGenerating(true);
-    
+
     // Déterminer le type de produit pour l'API
     const getProductType = () => {
       switch (finalData.productFamily) {
@@ -541,7 +542,7 @@ const AssistantPage = () => {
         default: return 'sac_kraft';
       }
     };
-    
+
     // Déterminer le volume pour l'API
     const getVolumeEstimate = () => {
       if (finalData.volume.includes('30 000') && finalData.volume.includes('Plus')) return '50k+';
@@ -549,24 +550,24 @@ const AssistantPage = () => {
       if (finalData.volume.includes('15 000') || finalData.volume.includes('10 000')) return '5k-10k';
       return '<5k';
     };
-    
+
     try {
       const apiData = {
-        business_type: finalData.activite.toLowerCase().includes('franchise') ? 'franchise' : 
-                       finalData.activite.toLowerCase().includes('restaurant') ? 'restaurant' :
-                       finalData.activite.toLowerCase().includes('boulangerie') ? 'boulangerie' :
-                       finalData.activite.toLowerCase().includes('café') || finalData.activite.toLowerCase().includes('coffee') ? 'cafe' :
-                       finalData.activite.toLowerCase().includes('dark kitchen') ? 'dark_kitchen' :
-                       'autre',
+        business_type: finalData.activite.toLowerCase().includes('franchise') ? 'franchise' :
+          finalData.activite.toLowerCase().includes('restaurant') ? 'restaurant' :
+            finalData.activite.toLowerCase().includes('boulangerie') ? 'boulangerie' :
+              finalData.activite.toLowerCase().includes('café') || finalData.activite.toLowerCase().includes('coffee') ? 'cafe' :
+                finalData.activite.toLowerCase().includes('dark kitchen') ? 'dark_kitchen' :
+                  'autre',
         product_type: getProductType(),
         volume_estimate: getVolumeEstimate(),
         brand_style: finalData.branding.toLowerCase().includes('luxe') || finalData.branding.toLowerCase().includes('premium') || finalData.branding.toLowerCase().includes('haut de gamme') ? 'luxe' :
-                     finalData.branding.toLowerCase().includes('éco') || finalData.branding.toLowerCase().includes('nature') || finalData.branding.toLowerCase().includes('recyclé') ? 'eco' :
-                     finalData.branding.toLowerCase().includes('fun') || finalData.branding.toLowerCase().includes('color') || finalData.branding.toLowerCase().includes('coloré') ? 'fun' : 'minimaliste',
+          finalData.branding.toLowerCase().includes('éco') || finalData.branding.toLowerCase().includes('nature') || finalData.branding.toLowerCase().includes('recyclé') ? 'eco' :
+            finalData.branding.toLowerCase().includes('fun') || finalData.branding.toLowerCase().includes('color') || finalData.branding.toLowerCase().includes('coloré') ? 'fun' : 'minimaliste',
         text_on_bag: finalData.elements || finalData.enseigne,
         business_name: finalData.enseigne
       };
-      
+
       const result = await assistantApi.createDesign(apiData);
       setAiResult(result);
       setClientData(finalData);
@@ -596,12 +597,12 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
 
   const renderInput = () => {
     if (!showInput || !inputConfig) return null;
-    
+
     switch (inputConfig.type) {
       case 'text':
       case 'tel':
         return (
-          <TextInput 
+          <TextInput
             placeholder={inputConfig.placeholder}
             onSubmit={handleTextSubmit}
             disabled={isTyping}
@@ -610,7 +611,7 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
         );
       case 'options':
         return (
-          <QuickReplies 
+          <QuickReplies
             options={inputConfig.options}
             onSelect={handleOptionSelect}
             disabled={isTyping}
@@ -618,7 +619,7 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
         );
       case 'yesno':
         return (
-          <YesNoButtons 
+          <YesNoButtons
             onSelect={handleYesNo}
             disabled={isTyping}
           />
@@ -647,7 +648,7 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
       </div>
 
       {/* Chat Area */}
-      <div 
+      <div
         ref={chatRef}
         className="flex-1 overflow-y-auto py-8 px-4"
         style={{ maxHeight: 'calc(100vh - 180px)' }}
@@ -656,7 +657,7 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
         <div className="max-w-3xl mx-auto space-y-6">
           {/* Messages */}
           {messages.map((msg) => (
-            msg.type === 'ai' 
+            msg.type === 'ai'
               ? <AIMessage key={msg.id}>{msg.content}</AIMessage>
               : <UserMessage key={msg.id}>{msg.content}</UserMessage>
           ))}
@@ -673,8 +674,8 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
 
           {/* Result Display */}
           {currentStep === 'result' && aiResult && (
-            <ResultDisplay 
-              result={aiResult} 
+            <ResultDisplay
+              result={aiResult}
               clientData={clientData}
             />
           )}
