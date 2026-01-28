@@ -650,8 +650,8 @@ Le volume que vous ciblez (${finalData.volume}) nous permet d'envisager une pers
       {/* Chat Area */}
       <div
         ref={chatRef}
-        className="flex-1 overflow-y-auto py-8 px-4"
-        style={{ maxHeight: 'calc(100vh - 180px)' }}
+        className="flex-1 overflow-y-auto py-8 px-4 scroll-smooth"
+        style={{ height: 'calc(100dvh - 140px)' }}
         data-testid="chat-area"
       >
         <div className="max-w-3xl mx-auto space-y-6">

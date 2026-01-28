@@ -1,11 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  ArrowRight, 
-  Play, 
-  Factory, 
-  Truck, 
-  Award, 
+import {
+  ArrowRight,
+  Play,
+  Factory,
+  Truck,
+  Award,
   Shield,
   ChevronDown,
   Sparkles,
@@ -20,10 +20,10 @@ import { Button } from '../components/ui/button';
 
 const HomePage = () => {
   const videoRef = useRef(null);
-  
+
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
+      videoRef.current.play().catch(() => { });
     }
   }, []);
 
@@ -72,15 +72,15 @@ const HomePage = () => {
           className="absolute inset-0 w-full h-full object-cover"
           poster="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/fxbbibta_logo%20Eonite%20base.jpeg"
         >
-          <source 
-            src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/85rjobm7_video%20unine%20turquie.mp4" 
-            type="video/mp4" 
+          <source
+            src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/85rjobm7_video%20unine%20turquie.mp4"
+            type="video/mp4"
           />
         </video>
 
         {/* Olive Overlay */}
         <div className="absolute inset-0 bg-[#6B705C]/50" />
-        
+
         {/* Gradient for text readability */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-[#F9F8EF]" />
 
@@ -88,57 +88,57 @@ const HomePage = () => {
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 pb-20">
           <div className="max-w-5xl">
             {/* Main Headline - H1 */}
-            <h1 
-              className="text-5xl md:text-7xl lg:text-[7rem] font-black text-[#F9F8EF] leading-[0.95] mb-8 tracking-tight"
+            <h1
+              className="text-3xl sm:text-5xl md:text-7xl lg:text-[7rem] font-black text-[#F9F8EF] leading-tight mb-6 tracking-tight break-words"
               style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5), 0 2px 10px rgba(0,0,0,0.3)' }}
               data-testid="hero-h1"
             >
-              Votre emballage<br />
-              personnalisé<br />
+              Votre emballage<br className="hidden sm:block" />
+              personnalisé<br className="hidden sm:block" />
               au prix du neutre.
             </h1>
 
             {/* Subheadline */}
-            <p 
-              className="text-xl md:text-2xl text-[#F9F8EF] max-w-2xl mb-10 leading-relaxed"
+            <p
+              className="text-lg sm:text-2xl text-[#F9F8EF] max-w-2xl mb-8 leading-relaxed"
               style={{ textShadow: '0 2px 15px rgba(0,0,0,0.4)' }}
               data-testid="hero-subtitle"
             >
-              Sacs kraft, boîtes pizza, pâtissières et bols.<br />
+              Sacs kraft, boîtes pizza, pâtissières et bols.<br className="hidden sm:block" />
               <span className="font-semibold">Design offert et co-création en direct avec nos experts.</span>
             </p>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-16">
-              <Link to="/assistant">
-                <Button 
-                  className="bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-10 py-7 text-lg font-bold uppercase tracking-wider border-0 shadow-2xl flex items-center"
+            <div className="flex flex-col sm:flex-row gap-4 mb-12 w-full">
+              <Link to="/assistant" className="w-full sm:w-auto">
+                <Button
+                  className="w-full sm:w-auto bg-[#1A1A1A] hover:bg-[#000000] text-[#F9F8EF] px-6 py-5 sm:px-10 sm:py-7 text-base sm:text-lg font-bold uppercase tracking-wider border-0 shadow-2xl flex items-center justify-center whitespace-normal text-center h-auto"
                   data-testid="cta-primary"
                 >
-                  <Sparkles className="mr-3" size={22} />
-                  Créer mon design gratuitement
-                  <ArrowRight className="ml-3" size={22} />
+                  <Sparkles className="mr-2 flex-shrink-0" size={20} />
+                  <span>Créer mon design gratuitement</span>
+                  <ArrowRight className="ml-2 flex-shrink-0" size={20} />
                 </Button>
               </Link>
-              <Link to="/reservation">
-                <Button 
-                  className="bg-transparent text-[#F9F8EF] border-2 border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-10 py-7 text-lg font-bold uppercase tracking-wider"
+              <Link to="/reservation" className="w-full sm:w-auto">
+                <Button
+                  className="w-full sm:w-auto bg-transparent text-[#F9F8EF] border-2 border-[#F9F8EF] hover:bg-[#F9F8EF] hover:text-[#1A1A1A] px-6 py-5 sm:px-10 sm:py-7 text-base sm:text-lg font-bold uppercase tracking-wider flex items-center justify-center whitespace-normal text-center h-auto"
                   data-testid="cta-secondary"
                 >
-                  <Video className="mr-3" size={22} />
-                  Prendre RDV en visio
+                  <Video className="mr-2 flex-shrink-0" size={20} />
+                  <span>Prendre RDV en visio</span>
                 </Button>
               </Link>
             </div>
 
             {/* Bandeau de Réassurance */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-[#F9F8EF]/30">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6 pt-8 border-t border-[#F9F8EF]/30">
               {reassuranceItems.map((item, index) => (
-                <div key={index} className="flex items-center gap-3 text-[#F9F8EF]">
-                  <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0">
+                <div key={index} className="flex flex-col sm:flex-row items-center sm:items-start gap-2 sm:gap-3 text-[#F9F8EF] text-center sm:text-left">
+                  <div className="w-10 h-10 bg-[#6B705C] flex items-center justify-center flex-shrink-0 rounded-full sm:rounded-none">
                     <item.icon size={20} className="text-[#F9F8EF]" />
                   </div>
-                  <span className="text-sm font-medium">{item.label}</span>
+                  <span className="text-xs sm:text-sm font-medium">{item.label}</span>
                 </div>
               ))}
             </div>
@@ -146,7 +146,7 @@ const HomePage = () => {
         </div>
 
         {/* Scroll Indicator */}
-        <button 
+        <button
           onClick={() => document.getElementById('pourquoi-eonite')?.scrollIntoView({ behavior: 'smooth' })}
           className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#F9F8EF]/70 hover:text-[#F9F8EF] transition-colors animate-bounce"
         >
@@ -166,16 +166,16 @@ const HomePage = () => {
             POURQUOI ÉONITE ?
           </h2>
           <p className="text-xl md:text-2xl text-[#F9F8EF]/80 leading-relaxed max-w-3xl mx-auto">
-            Nous avons supprimé les intermédiaires et les frais d&apos;agence. 
+            Nous avons supprimé les intermédiaires et les frais d&apos;agence.
             Nous ne margeons que sur la production industrielle.
           </p>
           <p className="text-2xl md:text-3xl text-[#F9F8EF] font-bold mt-6">
             Résultat : vous payez votre emballage au prix du neutre,<br />
             <span className="text-[#CDCEBD]">sans frais de création graphique ni surcoût logistique caché.</span>
           </p>
-          
+
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 mt-12 pt-12 border-t border-[#F9F8EF]/10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12 pt-12 border-t border-[#F9F8EF]/10">
             <div>
               <p className="text-5xl font-black text-[#CDCEBD]">0€</p>
               <p className="text-[#F9F8EF]/60 text-sm uppercase tracking-wider mt-2">Frais de création</p>
@@ -207,9 +207,9 @@ const HomePage = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {proofs.map((proof, index) => (
-              <div 
+              <div
                 key={index}
                 className="bg-[#F9F8EF] border border-[#6B705C] p-8 hover:shadow-lg transition-shadow"
               >
@@ -240,7 +240,7 @@ const HomePage = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {tunnelSteps.map((step, i) => (
               <div key={i} className="relative">
                 {i < 2 && (
@@ -286,9 +286,9 @@ const HomePage = () => {
                 playsInline
                 className="w-full h-full object-cover"
               >
-                <source 
-                  src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/85rjobm7_video%20unine%20turquie.mp4" 
-                  type="video/mp4" 
+                <source
+                  src="https://customer-assets.emergentagent.com/job_crystal-designs/artifacts/85rjobm7_video%20unine%20turquie.mp4"
+                  type="video/mp4"
                 />
               </video>
               <div className="absolute inset-0 flex items-center justify-center bg-black/30">
@@ -310,7 +310,7 @@ const HomePage = () => {
                 <span className="text-[#F9F8EF]/50">ZÉRO INTERMÉDIAIRE</span>
               </h2>
               <p className="text-[#F9F8EF]/70 text-lg leading-relaxed">
-                Notre usine partenaire produit pour les plus grandes enseignes européennes. 
+                Notre usine partenaire produit pour les plus grandes enseignes européennes.
                 Vous bénéficiez des mêmes standards de qualité, sans les marges des importateurs.
               </p>
               <ul className="space-y-4">
@@ -344,7 +344,7 @@ const HomePage = () => {
                   <span className="text-[#F9F8EF]/50">COMPLET</span>
                 </h2>
                 <p className="text-[#F9F8EF]/70 text-lg mt-6 leading-relaxed">
-                  Sacs kraft, boîtes pizza, gobelets, bols... 
+                  Sacs kraft, boîtes pizza, gobelets, bols...
                   Toutes les solutions d&apos;emballage pour votre activité.
                 </p>
               </div>
@@ -369,7 +369,7 @@ const HomePage = () => {
             <span className="text-[#6B705C]">AU PRIX DU NEUTRE ?</span>
           </h2>
           <p className="text-[#1A1A1A]/70 text-xl mb-10 max-w-2xl mx-auto">
-            Design gratuit, validation en 30 min, transport au prix coûtant. 
+            Design gratuit, validation en 30 min, transport au prix coûtant.
             Lancez votre projet maintenant.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -400,7 +400,7 @@ const HomePage = () => {
         aria-label="Contacter sur WhatsApp"
       >
         <MessageCircle size={28} className="text-white" />
-        
+
         {/* Tooltip */}
         <div className="absolute right-20 bottom-0 w-64 bg-white rounded-lg shadow-xl p-4 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
           <p className="text-[#1A1A1A] text-sm font-medium">
