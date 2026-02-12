@@ -19,7 +19,7 @@ import './App.css';
 
 function AppContent() {
   const location = useLocation();
-  const isSacPage = location.pathname === '/sac';
+  const isSacPage = location.pathname.replace(/\/$/, '') === '/sac';
 
   return (
     <div className="App bg-[#F9F8EF] min-h-screen">
